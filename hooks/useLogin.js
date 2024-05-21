@@ -1,61 +1,59 @@
-import { useState } from "react";
+import { useState } from "react"
 import { Alert } from "react-native";
-import { AlertPrincipal } from "../pages/Components/alert";
+import Home from "../pages/indexHome"; 
+import { useNavigation } from "@react-navigation/native";
+
+
 
 export const useLogin = () => {
-  const { showAlert } = AlertPrincipal();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
 
-  const handleCreateAccount = (e) => {
-    let _username = e.target.value;
-    console.log(_username);
-  };
+    const navigation = useNavigation();
 
-  const handleChangeUsername = (e) => {
-    let _username = e.target.value;
-    setUsername(_username);
-  };
+    //userdata
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
 
-  const handleChangePassword = (e) => {
-    let _password = e.target.value;
-    setPassword(_password);
-  };
 
-  const validateSession = () => {
-    let _username = username;
-    let _password = password;
 
-    console.log("Harás la petición con estos datos", _username, _password);
-  };
 
-  //Validacion de contraseña ingresada
-  const handleCheckPassword = (e) => {
-    let password = e.target.value;
-    console.log(password);
-  };
-  //* Acciones registro *//
-  const onSubmit = (data) => {
-    console.log(data);
-    if (data.password == data.passwordConfirmation) {
-        const data = [{ status: "Exito",msj:"Los datos se han registrado" }];
-        showAlert(data);
-    } else {
-      const data = [{ status: "Advertencia",msj:"Las contraseñas no coinciden" }];
-      showAlert(data);
+
+    const handleChangeUsername = (Text) => {
+        setUsername(Text);
     }
-  };
 
-  return {
-    //sing up
-    handleCreateAccount,
-    //login
-    validateSession,
-    username,
-    password,
-    handleChangeUsername,
-    handleChangePassword,
-    onSubmit,
-    handleCheckPassword,
-  };
-};
+    const handleChangePassword = (Text) => {
+        setPassword(Text);
+    }
+    
+
+    const validateSession = async () => {
+        let _username = username;
+        let _password = password;
+        if(_username.trim() === '' || _password.trim() === '')
+        {
+           Alert.alert('Por favor, llena todos los campos');
+        }
+        else
+        {
+         
+            navigation.navigate('IndexScreen')
+        }
+    }
+
+
+    //#REGION SIGN UP
+
+    const handleCreateAccount =  async () => {
+
+    }
+
+
+    return {
+        //Log in
+        handleChangeUsername, handleChangePassword, validateSession, username, password,
+
+
+        //Sign up
+        handleCreateAccount
+    }
+}
