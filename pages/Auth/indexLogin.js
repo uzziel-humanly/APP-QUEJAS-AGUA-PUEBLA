@@ -6,7 +6,7 @@ import { useLogin } from '../../hooks/useLogin';
 export default function Login() {
     const {
         //Log in
-        handleChangeUsername, handleChangePassword, validateSession, username, password,
+        handleChangeUsername, handleChangePassword, validateSession, username, password, messageEror, failedLogin, handleForgetPassword,
 
 
         //Sign Up
@@ -18,7 +18,7 @@ export default function Login() {
           <View style={styles.container}>
               <View style={styles.header}>
                 <Image
-                source={require('../../assets/logo_soapap.png')}
+                source={require('../../assets/logo.png')}
                 style={styles.headerImg}
               />
               <Text style={styles.title}>Inicio de sesión</Text>
@@ -46,6 +46,13 @@ export default function Login() {
                  onChangeText={handleChangePassword} />
                </View>
              </View>
+
+             {
+              failedLogin === 1 ? 
+              <Text style={{color:'red'}}>{messageEror}</Text>
+              : 
+              ""
+             }
     
              <View style={styles.formAction}>
               <TouchableOpacity
@@ -54,6 +61,12 @@ export default function Login() {
                 <View style={styles.btn}>
                   <Text style={styles.btnTxt}>Iniciar sesión</Text>
                 </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+              onPress={() => handleForgetPassword()}
+              >
+                <Text>Olvidé mi contraseña</Text>
               </TouchableOpacity>
     
               <TouchableOpacity
