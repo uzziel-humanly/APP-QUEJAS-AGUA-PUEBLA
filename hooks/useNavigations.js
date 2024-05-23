@@ -7,6 +7,11 @@ import Home from "../pages/indexHome";
 import Login from "../pages/Auth/indexLogin";
 import Complaints from "../pages/Complaints/indexComplaints";
 import Reports from "../pages/Reports/indexReports";
+import IndexBoarding from "../pages/indexBoarding";
+import IndexBoarding2 from "../pages/indexBoarding2";
+import IndexBoarding3 from "../pages/indexBoarding3";
+import ForgetPassword from "../pages/Auth/indexForgetPassword";
+import NewPassword from "../pages/indexBoardingForgetPassword";
 
 
 const Stack = createStackNavigator();
@@ -60,10 +65,35 @@ function MainStack() {
 export default function StackNavigation() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="Boarding">
+        <Stack.Screen
+          name="Boarding"
+          component={IndexBoarding}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Boarding2"
+          component={IndexBoarding2}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Boarding3"
+          component={IndexBoarding3}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="Login"
           component={Login}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Forget Password"
+          component={ForgetPassword}
+          options={{ title: false }}
+        />
+        <Stack.Screen
+          name="New Password"
+          component={NewPassword}
           options={{ headerShown: false }}
         />
         <Stack.Screen
