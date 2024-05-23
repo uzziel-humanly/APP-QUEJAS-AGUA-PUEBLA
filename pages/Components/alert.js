@@ -1,19 +1,22 @@
 import { Alert, AppRegistry, Button, StyleSheet, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 export const AlertPrincipal = () => {
 
-    const showAlert = (data) => {
+  const navigation = useNavigation();
+
+    const showAlertRegister = (data) => {
       Alert.alert(data[0].status, data[0].msj, [
         {
           text: "Cancelar",
-          onPress: () => console.log("Cancel Pressed"),
+          onPress: () =>   navigation.navigate('BoardingScreen'),
           style: "cancel",
         },
-        { text: "OK", onPress: () => console.log("OK Pressed") },
+        { text: "OK", onPress: () => navigation.navigate('BoardingScreen') },
       ]);
     };
   
     return {
-      showAlert,
+      showAlertRegister,
     };
   };

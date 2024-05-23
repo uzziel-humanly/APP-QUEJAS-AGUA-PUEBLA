@@ -15,12 +15,10 @@ export default function Login() {
 
 
     return (
-
-
           <View style={styles.container}>
               <View style={styles.header}>
                 <Image
-                source={require('../../assets/logoAPPT.png')}
+                source={require('../../assets/logo_soapap.png')}
                 style={styles.headerImg}
               />
               <Text style={styles.title}>Inicio de sesión</Text>
@@ -65,9 +63,8 @@ export default function Login() {
               </TouchableOpacity>
              </View>
     
-        </View>
-        
-        
+
+        </View>     
     
       );
     
@@ -87,9 +84,10 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
   },
   headerImg:{
-    width: 300,
+    width: 350,
     height: 80,
-    alignSelf: 'center',
+    resizeMode: "center",
+    alignSelf: "center",
     marginBottom: 36,
   
   },

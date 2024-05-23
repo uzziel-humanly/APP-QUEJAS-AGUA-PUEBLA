@@ -11,7 +11,8 @@ import com.facebook.react.ReactHost
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.soloader.SoLoader
-import com.reactnativedocumentpicker.DocumentPickerPackage
+import com.rumax.reactnative.pdfviewer.PDFViewPackage
+import com.rnfs.RNFSPackage
 
 
 import expo.modules.ApplicationLifecycleDispatcher
@@ -37,6 +38,21 @@ class MainApplication : Application(), ReactApplication {
       }
   )
 
+Override
+protected List<ReactPackage> getPackages() {
+    return Arrays.<ReactPackage>asList(
+        new MainReactPackage(),
+        new PDFViewPackage()
+    );
+
+    @Override
+protected List<ReactPackage> getPackages() {
+    return Arrays.asList(
+        new MainReactPackage(),
+        new RNFSPackage() // Añade esta línea
+    );
+}
+
   override val reactHost: ReactHost
     get() = ReactNativeHostWrapper.createReactHost(applicationContext, reactNativeHost)
 
@@ -55,12 +71,5 @@ class MainApplication : Application(), ReactApplication {
     ApplicationLifecycleDispatcher.onConfigurationChanged(this, newConfig)
   }
 
-   @Override
-  protected List<ReactPackage> getPackages() {
-    @SuppressWarnings("UnnecessaryLocalVariable")
-    List<ReactPackage> packages = new PackageList(this).getPackages();
-    packages.add(new DocumentPickerPackage()); // Añade esta línea
-    return packages;
-  }
 
 }

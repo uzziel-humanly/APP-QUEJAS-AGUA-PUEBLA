@@ -42,9 +42,9 @@ export const useLogin = () => {
 
 
     //#REGION SIGN UP
-
+    //Esta funcion redirige a la parte donde se crea una cuenta nueva
     const handleCreateAccount =  async () => {
-
+        navigation.navigate('Register');
     }
 
 

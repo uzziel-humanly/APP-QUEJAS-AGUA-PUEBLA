@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useEffect } from "react";
 import {
   Text,
   View,
@@ -8,15 +8,26 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Button,
+  Switch,
 } from "react-native";
-import { useLogin } from "../../hooks/useLogin";
+import { useRegister } from "../../hooks/useRegister";
 import { useForm, Controller } from "react-hook-form";
 import { Picker } from "@react-native-picker/picker";
 import { useState } from "react";
 import * as DocumentPicker from "expo-document-picker";
+import * as ImagePicker from "expo-image-picker";
+import { CameraView, useCameraPermissions } from "expo-camera";
+import { AntDesign } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
+import * as FileSystem from "expo-file-system";
+import { Asset } from "expo-asset";
+import { WebView } from "react-native-webview";
 
 export default function Register() {
-  const { onSubmit } = useLogin();
+  //Boton para guardar el formulario
+  const { onSubmit } = useRegister();
+  //Formulario
   const {
     control,
     handleSubmit,
@@ -27,25 +38,98 @@ export default function Register() {
   const [selectedValue, setSelectedValue] = useState("");
   const [selectedDocument, setSelectedDocument] = useState("");
 
-  const handleDocumentPicker = async (setValue) => {
+  const handleDocumentPicker = async (setValue, option) => {
     try {
       let result = await DocumentPicker.getDocumentAsync({});
       if (result.assets.length == 1) {
-        setSelectedDocument(result.assets.name);
-        setValue("document", result);
+        if (option == "RECIBOPDF") {
+          setSelectedDocument(result.assets.name);
+          setValue("reciboPDF", result);
+        } else if (option == "CDOMIPDF") {
+          setSelectedDocument(result.assets.name);
+          setValue("comprobantePDF", result);
+        }
       }
     } catch (err) {
       console.log("Error picking document: ", err);
     }
   };
 
+  const [image, setImage] = useState(null);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    setImage(result.assets.name);
+    setValue("image", result);
+    console.log(result);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
+
+  const takePhoto = async (option) => {
+    let result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    if (option == "PICINEFRONTAL") {
+      setImage(result.assets.name);
+      setValue("imageIneFrontal", result);
+    } else if (option == "PICINETRASERO") {
+      setImage(result.assets.name);
+      setValue("imageIneTrasero", result);
+    } else if (option == "PICRECIBO") {
+      setImage(result.assets.name);
+      setValue("imageRecibo", result);
+    } else if (option == "PICCDOM") {
+      setImage(result.assets.name);
+      setValue("imageComprobante", result);
+    } else if (option == "SELFIE") {
+      setImage(result.assets.name);
+      setValue("selfie", result);
+    }
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
+
+  // const [facing, setFacing] = useState("back");
+  const [permission, requestPermission] = useCameraPermissions();
+
+  if (!permission) {
+    // Camera permissions are still loading.
+    return <View />;
+  }
+
+  if (!permission.granted) {
+    // Camera permissions are not granted yet.
+    return (
+      <View style={styles.container}>
+        <Text style={{ textAlign: "center" }}>
+          Necesitamos permisos para acceder a la camara.
+        </Text>
+        <Button onPress={requestPermission} title="Aceptar Permisos" />
+      </View>
+    );
+  }
+
   return (
-    <View style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <View style={styles.safeArea}>
         <View style={styles.container}>
           <View style={styles.header}>
             <Image
-              source={require("../../assets/logoAPPT.png")}
+              source={require("../../assets/logo_soapap.png")}
               style={styles.headerImg}
             />
             <Text style={styles.title}>Formulario de Registro</Text>
@@ -207,63 +291,206 @@ export default function Register() {
               )}
             </View>
 
-            <Text style={styles.inputLabel}>Tipo de cuenta:</Text>
-            <Controller
-              control={control}
-              rules={{ required: true }}
-              render={({ field: { onChange, value } }) => (
-                <View style={styles.pickerContainer}>
-                  <Picker
-                    selectedValue={value}
-                    style={styles.picker}
-                    onValueChange={(itemValue) => {
-                      onChange(itemValue);
-                      setSelectedValue(itemValue);
-                    }}
-                  >
-                    <Picker.Item label="Selecciona una opción" value="" />
-                    <Picker.Item
-                      label="Cliente Titular"
-                      value="ClienteTitular"
-                    />
-                    <Picker.Item
-                      label="Gestor Autorizado"
-                      value="GestorAutorizado"
-                    />
-                  </Picker>
-                </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Tipo de cuenta:</Text>
+              <Controller
+                control={control}
+                rules={{ required: true }}
+                render={({ field: { onChange, value } }) => (
+                  <View style={styles.pickerContainer}>
+                    <Picker
+                      selectedValue={value}
+                      style={styles.picker}
+                      onValueChange={(itemValue) => {
+                        onChange(itemValue);
+                        setSelectedValue(itemValue);
+                      }}
+                    >
+                      <Picker.Item label="Selecciona una opción" value="" />
+                      <Picker.Item
+                        label="Cliente Titular"
+                        value="ClienteTitular"
+                      />
+                      <Picker.Item
+                        label="Gestor Autorizado"
+                        value="GestorAutorizado"
+                      />
+                    </Picker>
+                  </View>
+                )}
+                name="select"
+                defaultValue=""
+              />
+              {errors.select && (
+                <Text style={styles.error}>Este campo es obligatorio.</Text>
               )}
-              name="select"
-              defaultValue=""
-            />
-            {errors.select && (
-              <Text style={styles.error}>Este campo es obligatorio.</Text>
-            )}
+            </View>
 
             <Text style={styles.inputLabel}>INE (Por ambos lados):</Text>
-            <Controller
-              control={control}
-              name="document"
-              rules={{ required: true }}
-              render={({ field: { onChange, value } }) => (
-                <View>
-                  <TouchableOpacity
-                    style={styles.btnUploadFile}
-                    onPress={() => handleDocumentPicker(setValue)}
-                  >
-                    <Text style={styles.btnTxt}>Seleccionar Documento</Text>
-                  </TouchableOpacity>
-                  {value && (
-                    <Text style={styles.selectedText}>{value.name}</Text>
-                  )}
-                </View>
-              )}
-            />
-            {errors.document && (
-              <Text style={styles.error}>Este campo es obligatorio.</Text>
-            )}
+            <View style={styles.containerBtn}>
+              {/* <TouchableOpacity style={styles.button} 
+              //onPress={pickImage}
+              onPress={() => pickImage('INEFILE')}
+              >
+                <FontAwesome name="file-photo-o" size={24} color="#FFFFFF" />
+                <Text style={styles.buttonText}>Elige una pdf</Text>
+              </TouchableOpacity> */}
 
-            {/*** */}
+              <TouchableOpacity
+                style={styles.button}
+                //onPress={takePhoto}
+                onPress={() => takePhoto("PICINEFRONTAL")}
+              >
+                <AntDesign name="camera" size={24} color="#FFFFFF" />
+                <Text style={styles.buttonText}>Foto frontal</Text>
+              </TouchableOpacity>
+              {image && <Image source={{ uri: image }} style={styles.image} />}
+
+              <TouchableOpacity
+                style={styles.button}
+                //onPress={takePhoto}
+                onPress={() => takePhoto("PICINETRASERO")}
+              >
+                <AntDesign name="camera" size={24} color="#FFFFFF" />
+                <Text style={styles.buttonText}>Foto trasera</Text>
+              </TouchableOpacity>
+              {image && <Image source={{ uri: image }} style={styles.image} />}
+            </View>
+
+            <Text style={styles.inputLabel}>Ultimo recibo Agua de Puebla:</Text>
+            <View style={styles.containerBtn}>
+              <Controller
+                control={control}
+                name="document"
+                //rules={{ required: true }}
+                render={({ field: { onChange, value } }) => (
+                  <View>
+                    <TouchableOpacity
+                      style={styles.button}
+                      onPress={() =>
+                        handleDocumentPicker(setValue, "RECIBOPDF")
+                      }
+                    >
+                      <FontAwesome
+                        name="file-pdf-o"
+                        size={24}
+                        color="#FFFFFF"
+                      />
+                      <Text style={styles.buttonText}>Adjunta un pdf</Text>
+                    </TouchableOpacity>
+                    {value && (
+                      <Text style={styles.selectedText}>{value.name}</Text>
+                    )}
+                  </View>
+                )}
+              />
+              {errors.document && (
+                <Text style={styles.error}>Este campo es obligatorio.</Text>
+              )}
+
+              <TouchableOpacity
+                style={styles.button}
+                //onPress={takePhoto}
+                onPress={() => takePhoto("PICRECIBO")}
+              >
+                <AntDesign name="camera" size={24} color="#FFFFFF" />
+                <Text style={styles.buttonText}>Toma una foto</Text>
+              </TouchableOpacity>
+              {image && <Image source={{ uri: image }} style={styles.image} />}
+            </View>
+
+            <Text style={styles.inputLabel}>
+              Comprobante de domicilio (No mayor a 3 meses):
+            </Text>
+            <View style={styles.containerBtn}>
+              <Controller
+                control={control}
+                name="document"
+                //rules={{ required: true }}
+                render={({ field: { onChange, value } }) => (
+                  <View>
+                    <TouchableOpacity
+                      style={styles.button}
+                      onPress={() => handleDocumentPicker(setValue, "CDOMIPDF")}
+                    >
+                      <FontAwesome
+                        name="file-pdf-o"
+                        size={24}
+                        color="#FFFFFF"
+                      />
+                      <Text style={styles.buttonText}>Adjunta un pdf</Text>
+                    </TouchableOpacity>
+                    {value && (
+                      <Text style={styles.selectedText}>{value.name}</Text>
+                    )}
+                  </View>
+                )}
+              />
+              {errors.document && (
+                <Text style={styles.error}>Este campo es obligatorio.</Text>
+              )}
+
+              <TouchableOpacity
+                style={styles.button}
+                //onPress={takePhoto}
+                onPress={() => takePhoto("PICCDOM")}
+              >
+                <AntDesign name="camera" size={24} color="#FFFFFF" />
+                <Text style={styles.buttonText}>Toma una foto</Text>
+              </TouchableOpacity>
+              {image && <Image source={{ uri: image }} style={styles.image} />}
+            </View>
+
+            <Text style={styles.inputLabel}>Fotografia (Selfie):</Text>
+            <TouchableOpacity
+              style={styles.button}
+              //onPress={takePhoto}
+              onPress={() => takePhoto("SELFIE")}
+            >
+              <AntDesign name="camera" size={24} color="#FFFFFF" />
+              <Text style={styles.buttonText}>Toma una foto</Text>
+            </TouchableOpacity>
+            {image && <Image source={{ uri: image }} style={styles.image} />}
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>
+                Acepto los términos y condiciones
+              </Text>
+              <Controller
+                control={control}
+                rules={{
+                  required: "Debe aceptar los términos y condiciones",
+                }}
+                render={({ field: { onChange, value } }) => (
+                  <Switch value={value} onValueChange={onChange} />
+                )}
+                name="acceptTerms"
+                defaultValue={false}
+              />
+              {errors.acceptTerms && (
+                <Text style={styles.error}>{errors.acceptTerms.message}</Text>
+              )}
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Contrato de adhesión</Text>
+              <Controller
+                control={control}
+                rules={{
+                  required: "Debe aceptar el contrato de adhesión",
+                }}
+                render={({ field: { onChange, value } }) => (
+                  <Switch value={value} onValueChange={onChange} />
+                )}
+                name="acceptContract"
+                defaultValue={false}
+              />
+              {errors.acceptContract && (
+                <Text style={styles.error}>
+                  {errors.acceptContract.message}
+                </Text>
+              )}
+            </View>
           </View>
 
           <View style={styles.formAction}>
@@ -275,30 +502,42 @@ export default function Register() {
             </TouchableOpacity>
           </View>
         </View>
-      </ScrollView>
-    </View>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   safeArea: {
-    backgroundColor: "#e8ecf4",
+    backgroundColor: "#f2f2f2",
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     backgroundSize: "cover",
     backgroundPosition: "center center",
   },
-  //   scrollContainer: {
-  //     flexGrow: 1,
-  //     justifyContent: 'center',
-  //     alignItems: 'center',
-  //     padding: 24,
-  //   },
+  webview: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+  },
+  // scrollContainer: {
+  //   flexGrow: 1,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   padding: 24
+  // },
   container: {
     justifyContent: "center",
     alignItems: "center",
     padding: 24,
+    flex: 1,
+  },
+  containerBtn: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
     flex: 1,
   },
   header: {
@@ -311,7 +550,7 @@ const styles = StyleSheet.create({
   headerImg: {
     width: 250,
     height: 80,
-    resizeMode: "cover",
+    resizeMode: "center",
     alignSelf: "center",
     marginBottom: 20,
   },
@@ -386,14 +625,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   btnUploadFile: {
-    backgroundColor: "#2f784a",
+    backgroundColor: "#00bf63",
+    borderColor: "#FFFFFF",
     borderRadius: 8,
     borderWidth: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 8,
-    paddingHorizontal: 20,
+    //paddingHorizontal: 20,
   },
   btnTxt: {
     fontSize: 18,
@@ -403,5 +643,17 @@ const styles = StyleSheet.create({
   fileName: {
     marginTop: 10,
     fontSize: 16,
+  },
+  button: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#00bf63",
+    padding: 10,
+    borderRadius: 8,
+    marginRight: 5,
+  },
+  buttonText: {
+    color: "#FFFFFF",
+    marginLeft: 10,
   },
 });
