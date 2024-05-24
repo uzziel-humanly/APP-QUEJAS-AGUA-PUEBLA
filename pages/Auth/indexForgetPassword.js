@@ -1,22 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 
 
 export default function ForgetPassword() {
 
+    const [email, setEmail] = useState('');
+
     const navigation = useNavigation();
 
 
+    const handleChangeEmail = (Text) => {
+        setEmail(Text);
+        console.log('email ', email);
+    }
+
 
     const handleGeneratePassword = () => {
-        navigation.navigate('New Password')
+           if(email.trim() === '')
+            {
+                alert('Por favor, introduce tu correo');
+            }
+            else
+            {
+                navigation.navigate('New Password');
+            }
     }
 
     return (
-        <View style={styles.container}>
+       <GestureHandlerRootView>
+         <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+         >
+            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+             <View style={styles.container}>
             <View  style={styles.header}>
             <Text style={styles.title}>¿Olvidaste tu contraseña?</Text>
             <Text style={styles.subtitle}>Escribe el correo que registraste a tu cuenta y presiona el botón de "Generar nueva contraseña"
@@ -26,6 +48,13 @@ export default function ForgetPassword() {
                 <Image
                     source={require('../../assets/resource-5.png')}
                     style={styles.headerImg}
+                />
+            </View>
+            <View style={styles.form}>
+                <TextInput
+                style={styles.inputControl}
+                placeholder="ejemplo@correo.com"
+                onChangeText={handleChangeEmail}
                 />
             </View>
             <View style={styles.formAction}>
@@ -39,6 +68,9 @@ export default function ForgetPassword() {
                
             </View>
         </View>
+        </ScrollView>
+        </KeyboardAvoidingView>
+       </GestureHandlerRootView>
     );
 }
 
@@ -48,8 +80,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: 20,
-        paddingTop: 50,
-        paddingBottom: 20,
+        backgroundSize: "cover",
     },
     header: {
         marginVertical: 36,
@@ -72,6 +103,27 @@ const styles = StyleSheet.create({
         height: 250,
         alignSelf: 'center',
     },
+    form: {
+        width: '100%'
+    },
+    input: {
+        width: '100%',
+        marginBottom: 16,
+      },
+    inputLabel: {
+        fontSize: 17,
+        fontWeight: '600',
+        color: '#222',
+        marginBottom: 8,
+      },
+      inputControl: {
+        backgroundColor: '#fff',
+        height: 44,
+        paddingHorizontal: 16,
+        borderRadius: 12,
+        fontWeight: '500',
+        color: '#222',
+      },
     formAction: {
         width: '100%',
         paddingHorizontal: 20,

@@ -1,7 +1,9 @@
 import React from 'react';
 import { Text, View, Image, StyleSheet, SafeAreaView, TextInput, TouchableOpacity } from 'react-native';
 import { useLogin } from '../../hooks/useLogin';
-
+import { ScrollView, Keyboard, Platform } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { KeyboardAvoidingView } from 'react-native';
 
 export default function Login() {
     const {
@@ -15,7 +17,15 @@ export default function Login() {
 
 
     return (
-          <View style={styles.container}>
+           <GestureHandlerRootView>
+           <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+            >
+            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+
+            <View style={styles.container}>
               <View style={styles.header}>
                 <Image
                 source={require('../../assets/logo.png')}
@@ -26,6 +36,7 @@ export default function Login() {
              </View>
     
              <View style={styles.form}>
+             
                <View style={styles.input}>
                  <Text style={styles.inputLabel}>Usuario</Text>
                  <TextInput 
@@ -33,9 +44,9 @@ export default function Login() {
                  style={styles.inputControl}
                  value={username}
                  placeholder='usuario@ejemplo.com'
+                 onSubmitEditing={Keyboard.dismiss}
                  onChangeText={handleChangeUsername} />
                </View>
-    
                <View style={styles.input}>
                  <Text style={styles.inputLabel}>Contraseña</Text>
                  <TextInput 
@@ -43,8 +54,10 @@ export default function Login() {
                  style={styles.inputControl}
                  value={password}
                  placeholder='*********'
+                 onSubmitEditing={Keyboard.dismiss}
                  onChangeText={handleChangePassword} />
                </View>
+             
              </View>
 
              {
@@ -68,16 +81,19 @@ export default function Login() {
               >
                 <Text>Olvidé mi contraseña</Text>
               </TouchableOpacity>
-    
+           
               <TouchableOpacity
               onPress={() => handleCreateAccount()}
               >
-                <Text>¿No tienes una cuenta? crea una</Text>
+                <Text style={{paddingTop:10}}>¿No tienes una cuenta? crea una</Text>
               </TouchableOpacity>
              </View>
     
 
-        </View>     
+        </View>  
+            </ScrollView>
+            </KeyboardAvoidingView>
+           </GestureHandlerRootView>
     
       );
     
@@ -90,7 +106,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20, 
+    paddingHorizontal: 20,
+    backgroundSize: "cover", 
   },
   header: {
     marginVertical: 36,
@@ -99,7 +116,6 @@ const styles = StyleSheet.create({
   headerImg:{
     width: 350,
     height: 80,
-    resizeMode: "center",
     alignSelf: "center",
     marginBottom: 36,
   

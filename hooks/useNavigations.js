@@ -1,4 +1,4 @@
-import React from "react";
+import React, { } from "react";
 import {
   NavigationContainer,
   useScrollToTop,
@@ -24,8 +24,10 @@ import ForgetPassword from "../pages/Auth/indexForgetPassword";
 import NewPassword from "../pages/indexBoardingForgetPassword";
 
 
+
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
+
 
 const MenuButtonItem = ({ text, onPress }) => {
   return (
@@ -71,11 +73,11 @@ function MainStack() {
 export default function StackNavigation() {
   return (
     <NavigationContainer>
-      <GestureHandlerRootView
+      {/* <GestureHandlerRootView
         contentContainerStyle={{ minHeight: "100%", overflow: "visible" }}
         style={styles.container}
-      >
-        <Stack.Navigator initialRouteName="Boarding">
+      > */}
+        <Stack.Navigator initialRouteName={"Boarding"}>
           
         <Stack.Screen
           name="Boarding"
@@ -113,11 +115,6 @@ export default function StackNavigation() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="IndexScreen"
-          component={MainStack}
-          options={{ headerShown: false }}
-           />
-        <Stack.Screen
             name="Register"
             component={Register}
             options={{ headerShown: false }}
@@ -128,7 +125,7 @@ export default function StackNavigation() {
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
-      </GestureHandlerRootView>
+      {/* </GestureHandlerRootView> */}
       
     </NavigationContainer>
   );

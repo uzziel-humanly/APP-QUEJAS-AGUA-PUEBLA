@@ -86,7 +86,7 @@ export const useLogin = () => {
 
                     })
 
-                    console.log(_nis);
+                    // console.log(_nis);
 
               
                     AsyncStorage.setItem('username', _userdata.nombre)
