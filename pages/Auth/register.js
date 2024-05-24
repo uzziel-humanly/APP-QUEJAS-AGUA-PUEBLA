@@ -23,6 +23,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import * as FileSystem from "expo-file-system";
 import { Asset } from "expo-asset";
 import { WebView } from "react-native-webview";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function Register() {
   //Boton para guardar el formulario
@@ -124,7 +125,8 @@ export default function Register() {
   }
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <GestureHandlerRootView style={{flex:1}}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.safeArea}>
         <View style={styles.container}>
           <View style={styles.header}>
@@ -504,6 +506,7 @@ export default function Register() {
         </View>
       </View>
     </ScrollView>
+    </GestureHandlerRootView>
   );
 }
 
@@ -512,21 +515,21 @@ const styles = StyleSheet.create({
     backgroundColor: "#f2f2f2",
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
-    backgroundSize: "cover",
-    backgroundPosition: "center center",
+    // alignItems: "center",
+    // backgroundSize: "cover",
+    // backgroundPosition: "center center",
   },
   webview: {
     flex: 1,
-    width: "100%",
-    height: "100%",
+    // width: "100%",
+    // height: "100%",
   },
-  // scrollContainer: {
-  //   flexGrow: 1,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   padding: 24
-  // },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // padding: 24
+  },
   container: {
     justifyContent: "center",
     alignItems: "center",

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { } from "react";
 import {
   NavigationContainer,
   useScrollToTop,
@@ -16,11 +16,18 @@ import Register from "../pages/Auth/register";
 import BoardingScreen from "../pages/Components/boarding_screen";
 import Complaints from "../pages/Complaints/indexComplaints";
 import Reports from "../pages/Reports/indexReports";
-//import { ScrollView } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import IndexBoarding from "../pages/indexBoarding";
+import IndexBoarding2 from "../pages/indexBoarding2";
+import IndexBoarding3 from "../pages/indexBoarding3";
+import ForgetPassword from "../pages/Auth/indexForgetPassword";
+import NewPassword from "../pages/indexBoardingForgetPassword";
+
+
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
+
 
 const MenuButtonItem = ({ text, onPress }) => {
   return (
@@ -66,33 +73,60 @@ function MainStack() {
 export default function StackNavigation() {
   return (
     <NavigationContainer>
-      <GestureHandlerRootView
+      {/* <GestureHandlerRootView
         contentContainerStyle={{ minHeight: "100%", overflow: "visible" }}
         style={styles.container}
-      >
-        <Stack.Navigator initialRouteName="Login">
-          <Stack.Screen
-            name="Login"
-            component={Login}
-            options={{ headerShown: false }}
-          />
+      > */}
+        <Stack.Navigator initialRouteName={"Boarding"}>
+          
+        <Stack.Screen
+          name="Boarding"
+          component={IndexBoarding}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Boarding2"
+          component={IndexBoarding2}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Boarding3"
+          component={IndexBoarding3}
+          options={{ headerShown: false }}
+        />
           <Stack.Screen
             name="IndexScreen"
             component={MainStack}
             options={{ headerShown: false }}
           />
-          <Stack.Screen
+        <Stack.Screen
+          name="Login"
+          component={Login}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Forget Password"
+          component={ForgetPassword}
+          options={{ title: false }}
+        />
+        <Stack.Screen
+          name="New Password"
+          component={NewPassword}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
             name="Register"
             component={Register}
             options={{ headerShown: false }}
           />
-          <Stack.Screen
+        <Stack.Screen
             name="BoardingScreen"
             component={BoardingScreen}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
-      </GestureHandlerRootView>
+      {/* </GestureHandlerRootView> */}
+      
     </NavigationContainer>
   );
 }

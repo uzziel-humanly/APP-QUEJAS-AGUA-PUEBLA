@@ -1,10 +1,10 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, ScrollView } from "react-native";
-import StackNavigation from "./hooks/useNavigations";
-import Register from "./pages/Auth/register";
-import Login from "./pages/Auth/indexLogin";
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View, } from 'react-native';
+import StackNavigation from './hooks/useNavigations';
+
 
 export default function App() {
+
   return (
       <StackNavigation/>
   );

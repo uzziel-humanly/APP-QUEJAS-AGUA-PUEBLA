@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundSize: "cover",
-    backgroundPosition: "center center",
+    // backgroundPosition: "center center",
   },
   // scrollContainer: {
   //   flexGrow: 1,
