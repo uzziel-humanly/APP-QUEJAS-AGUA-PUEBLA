@@ -1,4 +1,4 @@
-import React, { } from "react";
+import React from "react";
 import {
   NavigationContainer,
   useScrollToTop,
@@ -14,8 +14,11 @@ import Home from "../pages/indexHome";
 import Login from "../pages/Auth/indexLogin";
 import Register from "../pages/Auth/register";
 import BoardingScreen from "../pages/Components/boarding_screen";
+import BoardingScreenReport from "../pages/Components/boarding_screenReport";
 import Complaints from "../pages/Complaints/indexComplaints";
 import Reports from "../pages/Reports/indexReports";
+import FormReports from "../pages/Reports/formReports";
+import IndexStatusReports from "../pages/Reports/indexStatusReports";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import IndexBoarding from "../pages/indexBoarding";
 import IndexBoarding2 from "../pages/indexBoarding2";
@@ -23,11 +26,8 @@ import IndexBoarding3 from "../pages/indexBoarding3";
 import ForgetPassword from "../pages/Auth/indexForgetPassword";
 import NewPassword from "../pages/indexBoardingForgetPassword";
 
-
-
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
-
 
 const MenuButtonItem = ({ text, onPress }) => {
   return (
@@ -77,8 +77,7 @@ export default function StackNavigation() {
         contentContainerStyle={{ minHeight: "100%", overflow: "visible" }}
         style={styles.container}
       > */}
-        <Stack.Navigator initialRouteName={"Boarding"}>
-          
+      <Stack.Navigator initialRouteName={"Login"}>
         <Stack.Screen
           name="Boarding"
           component={IndexBoarding}
@@ -94,11 +93,11 @@ export default function StackNavigation() {
           component={IndexBoarding3}
           options={{ headerShown: false }}
         />
-          <Stack.Screen
-            name="IndexScreen"
-            component={MainStack}
-            options={{ headerShown: false }}
-          />
+        <Stack.Screen
+          name="IndexScreen"
+          component={MainStack}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="Login"
           component={Login}
@@ -115,18 +114,32 @@ export default function StackNavigation() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-            name="Register"
-            component={Register}
-            options={{ headerShown: false }}
-          />
+          name="Register"
+          component={Register}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
-            name="BoardingScreen"
-            component={BoardingScreen}
-            options={{ headerShown: false }}
-          />
-        </Stack.Navigator>
+          name="BoardingScreen"
+          component={BoardingScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="BoardingScreenReport"
+          component={BoardingScreenReport}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="FormReports"
+          component={FormReports}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="IndexStatusReports"
+          component={IndexStatusReports}
+          options={{ headerShown: false }}
+        />
+      </Stack.Navigator>
       {/* </GestureHandlerRootView> */}
-      
     </NavigationContainer>
   );
 }

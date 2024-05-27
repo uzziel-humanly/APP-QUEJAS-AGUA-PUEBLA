@@ -28,7 +28,7 @@ export default function Login() {
             <View style={styles.container}>
               <View style={styles.header}>
                 <Image
-                source={require('../../assets/logo.png')}
+                source={require('../../assets/logo_soapap3.png')}
                 style={styles.headerImg}
               />
               <Text style={styles.title}>Inicio de sesión</Text>
@@ -113,13 +113,12 @@ const styles = StyleSheet.create({
     marginVertical: 36,
     alignItems: 'center', 
   },
-  headerImg:{
+  headerImg: {
     width: 350,
-    height: 80,
-    alignSelf: "center",
+    height: 100, 
     marginBottom: 36,
-  
-  },
+    resizeMode:'contain'
+},
   title: {
     fontWeight: '700',
     fontSize: 27,

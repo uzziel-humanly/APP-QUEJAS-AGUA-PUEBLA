@@ -39,6 +39,8 @@ export default function Register() {
   const [selectedValue, setSelectedValue] = useState("");
   const [selectedDocument, setSelectedDocument] = useState("");
 
+  setValue("document","NADA");
+
   const handleDocumentPicker = async (setValue, option) => {
     try {
       let result = await DocumentPicker.getDocumentAsync({});
@@ -125,212 +127,260 @@ export default function Register() {
   }
 
   return (
-    <GestureHandlerRootView style={{flex:1}}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.safeArea}>
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <Image
-              source={require("../../assets/logo_soapap.png")}
-              style={styles.headerImg}
-            />
-            <Text style={styles.title}>Formulario de Registro</Text>
-            <Text style={styles.subtitle}>
-              A continuación ingrese cada uno de los datos solicitados sin
-              omitir campos.
-            </Text>
-          </View>
-
-          <View style={styles.form}>
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Nombre Completo</Text>
-              <Controller
-                control={control}
-                rules={{
-                  required: "El nombre es obligatorio",
-                }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    style={styles.inputControl}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                    placeholder="Nombre Apellidos (Paterno y Materno)"
-                  />
-                )}
-                name="nombre"
-                defaultValue=""
+        <View style={styles.safeArea}>
+          <View style={styles.container}>
+            <View style={styles.header}>
+              <Image
+                source={require("../../assets/logo_soapap3.png")}
+                style={styles.headerImg}
               />
-              {errors.nombre && (
-                <Text style={styles.error}>{errors.nombre.message}</Text>
-              )}
+              <Text style={styles.title}>Formulario de Registro</Text>
+              <Text style={styles.subtitle}>
+                A continuación ingrese cada uno de los datos solicitados sin
+                omitir campos.
+              </Text>
             </View>
 
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Número de cuenta</Text>
-              <Controller
-                control={control}
-                rules={{
-                  required: "El número de cuenta es obligatorio",
-                }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    style={styles.inputControl}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                    keyboardType="numeric"
-                    placeholder="NIS"
-                  />
+            <View style={styles.form}>
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>Nombre</Text>
+                <Controller
+                  control={control}
+                  rules={{
+                    required: "El nombre es obligatorio",
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      style={styles.inputControl}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      placeholder="Nombre"
+                    />
+                  )}
+                  name="nombre"
+                  defaultValue=""
+                />
+                {errors.nombre && (
+                  <Text style={styles.error}>{errors.nombre.message}</Text>
                 )}
-                name="noCuenta"
-                defaultValue=""
-              />
-              {errors.noCuenta && (
-                <Text style={styles.error}>{errors.noCuenta.message}</Text>
-              )}
-            </View>
+              </View>
 
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Teléfono celular</Text>
-              <Controller
-                control={control}
-                rules={{
-                  required: "El número de celular es obligatorio",
-                }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    style={styles.inputControl}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                    keyboardType="numeric"
-                    placeholder="221-222-2222"
-                    maxLength={10}
-                  />
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>Apellido Paterno</Text>
+                <Controller
+                  control={control}
+                  rules={{
+                    required: "El apellido paterno es obligatorio",
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      style={styles.inputControl}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      placeholder="Apellido paterno"
+                    />
+                  )}
+                  name="apellido_p"
+                  defaultValue=""
+                />
+                {errors.apellido_p && (
+                  <Text style={styles.error}>{errors.apellido_p.message}</Text>
                 )}
-                name="cellphone"
-                defaultValue=""
-              />
-              {errors.cellphone && (
-                <Text style={styles.error}>{errors.cellphone.message}</Text>
-              )}
-            </View>
+              </View>
 
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Correo electrónico</Text>
-              <Controller
-                control={control}
-                rules={{
-                  required: "El correo electronico es obligatorio",
-                }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    style={styles.inputControl}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                    placeholder="usuario@ejemplo.com"
-                  />
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>Apellido Materno</Text>
+                <Controller
+                  control={control}
+                  rules={{
+                    required: "El apellido materno es obligatorio",
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      style={styles.inputControl}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      placeholder="Apellido materno"
+                    />
+                  )}
+                  name="apellido_m"
+                  defaultValue=""
+                />
+                {errors.apellido_m && (
+                  <Text style={styles.error}>{errors.apellido_m.message}</Text>
                 )}
-                name="email"
-                defaultValue=""
-              />
-              {errors.email && (
-                <Text style={styles.error}>{errors.email.message}</Text>
-              )}
-            </View>
+              </View>
 
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Contraseña</Text>
-              <Controller
-                control={control}
-                rules={{
-                  required: "La contraseña es obligatoria",
-                }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    style={styles.inputControl}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                    secureTextEntry={true}
-                    placeholder="*********"
-                  />
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>Número de cuenta</Text>
+                <Controller
+                  control={control}
+                  rules={{
+                    required: "El número de cuenta es obligatorio",
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      style={styles.inputControl}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      keyboardType="numeric"
+                      placeholder="NIS"
+                    />
+                  )}
+                  name="nis"
+                  defaultValue=""
+                />
+                {errors.nis && (
+                  <Text style={styles.error}>{errors.nis.message}</Text>
                 )}
-                name="password"
-                defaultValue=""
-              />
-              {errors.password && (
-                <Text style={styles.error}>{errors.password.message}</Text>
-              )}
-            </View>
+              </View>
 
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Confirma tu contraseña</Text>
-              <Controller
-                control={control}
-                rules={{
-                  required: "La confirmación de contraseña es obligatoria",
-                }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    style={styles.inputControl}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                    secureTextEntry={true}
-                    placeholder="*********"
-                  />
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>Teléfono celular</Text>
+                <Controller
+                  control={control}
+                  rules={{
+                    required: "El número de celular es obligatorio",
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      style={styles.inputControl}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      keyboardType="numeric"
+                      placeholder="221-222-2222"
+                      maxLength={10}
+                    />
+                  )}
+                  name="celular"
+                  defaultValue=""
+                />
+                {errors.celular && (
+                  <Text style={styles.error}>{errors.celular.message}</Text>
                 )}
-                name="passwordConfirmation"
-                defaultValue=""
-              />
-              {errors.passwordConfirmation && (
-                <Text style={styles.error}>
-                  {errors.passwordConfirmation.message}
-                </Text>
-              )}
-            </View>
+              </View>
 
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Tipo de cuenta:</Text>
-              <Controller
-                control={control}
-                rules={{ required: true }}
-                render={({ field: { onChange, value } }) => (
-                  <View style={styles.pickerContainer}>
-                    <Picker
-                      selectedValue={value}
-                      style={styles.picker}
-                      onValueChange={(itemValue) => {
-                        onChange(itemValue);
-                        setSelectedValue(itemValue);
-                      }}
-                    >
-                      <Picker.Item label="Selecciona una opción" value="" />
-                      <Picker.Item
-                        label="Cliente Titular"
-                        value="ClienteTitular"
-                      />
-                      <Picker.Item
-                        label="Gestor Autorizado"
-                        value="GestorAutorizado"
-                      />
-                    </Picker>
-                  </View>
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>Correo electrónico</Text>
+                <Controller
+                  control={control}
+                  rules={{
+                    required: "El correo electronico es obligatorio",
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      style={styles.inputControl}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      placeholder="usuario@ejemplo.com"
+                    />
+                  )}
+                  name="correo"
+                  defaultValue=""
+                />
+                {errors.correo && (
+                  <Text style={styles.error}>{errors.correo.message}</Text>
                 )}
-                name="select"
-                defaultValue=""
-              />
-              {errors.select && (
-                <Text style={styles.error}>Este campo es obligatorio.</Text>
-              )}
-            </View>
+              </View>
 
-            <Text style={styles.inputLabel}>INE (Por ambos lados):</Text>
-            <View style={styles.containerBtn}>
-              {/* <TouchableOpacity style={styles.button} 
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>Contraseña</Text>
+                <Controller
+                  control={control}
+                  rules={{
+                    required: "La contraseña es obligatoria",
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      style={styles.inputControl}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      secureTextEntry={true}
+                      placeholder="*********"
+                    />
+                  )}
+                  name="pass"
+                  defaultValue=""
+                />
+                {errors.pass && (
+                  <Text style={styles.error}>{errors.pass.message}</Text>
+                )}
+              </View>
+
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>Confirma tu contraseña</Text>
+                <Controller
+                  control={control}
+                  rules={{
+                    required: "La confirmación de contraseña es obligatoria",
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      style={styles.inputControl}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      secureTextEntry={true}
+                      placeholder="*********"
+                    />
+                  )}
+                  name="passwordConfirmation"
+                  defaultValue=""
+                />
+                {errors.passwordConfirmation && (
+                  <Text style={styles.error}>
+                    {errors.passwordConfirmation.message}
+                  </Text>
+                )}
+              </View>
+
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>Tipo de cuenta:</Text>
+                <Controller
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { onChange, value } }) => (
+                    <View style={styles.pickerContainer}>
+                      <Picker
+                        selectedValue={value}
+                        style={styles.picker}
+                        onValueChange={(itemValue) => {
+                          onChange(itemValue);
+                          setSelectedValue(itemValue);
+                        }}
+                      >
+                        <Picker.Item label="Selecciona una opción" value="" />
+                        <Picker.Item
+                          label="Cliente Titular"
+                          value="1"
+                        />
+                        <Picker.Item
+                          label="Gestor Autorizado"
+                          value="2"
+                        />
+                      </Picker>
+                    </View>
+                  )}
+                  name="id_tipo_cuenta"
+                  defaultValue=""
+                />
+                {errors.id_tipo_cuenta && (
+                  <Text style={styles.error}>Este campo es obligatorio.</Text>
+                )}
+              </View>
+
+              <Text style={styles.inputLabel}>INE (Por ambos lados):</Text>
+              <View style={styles.containerBtn}>
+                {/* <TouchableOpacity style={styles.button} 
               //onPress={pickImage}
               onPress={() => pickImage('INEFILE')}
               >
@@ -338,174 +388,220 @@ export default function Register() {
                 <Text style={styles.buttonText}>Elige una pdf</Text>
               </TouchableOpacity> */}
 
-              <TouchableOpacity
-                style={styles.button}
-                //onPress={takePhoto}
-                onPress={() => takePhoto("PICINEFRONTAL")}
-              >
-                <AntDesign name="camera" size={24} color="#FFFFFF" />
-                <Text style={styles.buttonText}>Foto frontal</Text>
-              </TouchableOpacity>
-              {image && <Image source={{ uri: image }} style={styles.image} />}
-
-              <TouchableOpacity
-                style={styles.button}
-                //onPress={takePhoto}
-                onPress={() => takePhoto("PICINETRASERO")}
-              >
-                <AntDesign name="camera" size={24} color="#FFFFFF" />
-                <Text style={styles.buttonText}>Foto trasera</Text>
-              </TouchableOpacity>
-              {image && <Image source={{ uri: image }} style={styles.image} />}
-            </View>
-
-            <Text style={styles.inputLabel}>Ultimo recibo Agua de Puebla:</Text>
-            <View style={styles.containerBtn}>
-              <Controller
-                control={control}
-                name="document"
-                //rules={{ required: true }}
-                render={({ field: { onChange, value } }) => (
-                  <View>
-                    <TouchableOpacity
-                      style={styles.button}
-                      onPress={() =>
-                        handleDocumentPicker(setValue, "RECIBOPDF")
-                      }
-                    >
-                      <FontAwesome
-                        name="file-pdf-o"
-                        size={24}
-                        color="#FFFFFF"
-                      />
-                      <Text style={styles.buttonText}>Adjunta un pdf</Text>
-                    </TouchableOpacity>
-                    {value && (
-                      <Text style={styles.selectedText}>{value.name}</Text>
-                    )}
-                  </View>
+                <TouchableOpacity
+                  style={styles.button}
+                  //onPress={takePhoto}
+                  onPress={() => takePhoto("PICINEFRONTAL")}
+                >
+                  <AntDesign name="camera" size={24} color="#FFFFFF" />
+                  <Text style={styles.buttonText}>Foto frontal</Text>
+                </TouchableOpacity>
+                {image && (
+                  <Image source={{ uri: image }} style={styles.image} />
                 )}
-              />
-              {errors.document && (
-                <Text style={styles.error}>Este campo es obligatorio.</Text>
-              )}
 
-              <TouchableOpacity
-                style={styles.button}
-                //onPress={takePhoto}
-                onPress={() => takePhoto("PICRECIBO")}
-              >
-                <AntDesign name="camera" size={24} color="#FFFFFF" />
-                <Text style={styles.buttonText}>Toma una foto</Text>
-              </TouchableOpacity>
-              {image && <Image source={{ uri: image }} style={styles.image} />}
-            </View>
-
-            <Text style={styles.inputLabel}>
-              Comprobante de domicilio (No mayor a 3 meses):
-            </Text>
-            <View style={styles.containerBtn}>
-              <Controller
-                control={control}
-                name="document"
-                //rules={{ required: true }}
-                render={({ field: { onChange, value } }) => (
-                  <View>
-                    <TouchableOpacity
-                      style={styles.button}
-                      onPress={() => handleDocumentPicker(setValue, "CDOMIPDF")}
-                    >
-                      <FontAwesome
-                        name="file-pdf-o"
-                        size={24}
-                        color="#FFFFFF"
-                      />
-                      <Text style={styles.buttonText}>Adjunta un pdf</Text>
-                    </TouchableOpacity>
-                    {value && (
-                      <Text style={styles.selectedText}>{value.name}</Text>
-                    )}
-                  </View>
+                <TouchableOpacity
+                  style={styles.button}
+                  //onPress={takePhoto}
+                  onPress={() => takePhoto("PICINETRASERO")}
+                >
+                  <AntDesign name="camera" size={24} color="#FFFFFF" />
+                  <Text style={styles.buttonText}>Foto trasera</Text>
+                </TouchableOpacity>
+                {image && (
+                  <Image source={{ uri: image }} style={styles.image} />
                 )}
-              />
-              {errors.document && (
-                <Text style={styles.error}>Este campo es obligatorio.</Text>
-              )}
+              </View>
 
-              <TouchableOpacity
-                style={styles.button}
-                //onPress={takePhoto}
-                onPress={() => takePhoto("PICCDOM")}
-              >
-                <AntDesign name="camera" size={24} color="#FFFFFF" />
-                <Text style={styles.buttonText}>Toma una foto</Text>
-              </TouchableOpacity>
-              {image && <Image source={{ uri: image }} style={styles.image} />}
-            </View>
-
-            <Text style={styles.inputLabel}>Fotografia (Selfie):</Text>
-            <TouchableOpacity
-              style={styles.button}
-              //onPress={takePhoto}
-              onPress={() => takePhoto("SELFIE")}
-            >
-              <AntDesign name="camera" size={24} color="#FFFFFF" />
-              <Text style={styles.buttonText}>Toma una foto</Text>
-            </TouchableOpacity>
-            {image && <Image source={{ uri: image }} style={styles.image} />}
-
-            <View style={styles.inputContainer}>
               <Text style={styles.inputLabel}>
-                Acepto los términos y condiciones
+                Ultimo recibo Agua de Puebla:
               </Text>
-              <Controller
-                control={control}
-                rules={{
-                  required: "Debe aceptar los términos y condiciones",
-                }}
-                render={({ field: { onChange, value } }) => (
-                  <Switch value={value} onValueChange={onChange} />
+              <View style={styles.containerBtn}>
+                <Controller
+                  control={control}
+                  name="document"
+                  //rules={{ required: true }}
+                  render={({ field: { onChange, value } }) => (
+                    <View>
+                      <TouchableOpacity
+                        style={styles.button}
+                        onPress={() =>
+                          handleDocumentPicker(setValue, "RECIBOPDF")
+                        }
+                      >
+                        <FontAwesome
+                          name="file-pdf-o"
+                          size={24}
+                          color="#FFFFFF"
+                        />
+                        <Text style={styles.buttonText}>Adjunta un pdf</Text>
+                      </TouchableOpacity>
+                      {value && (
+                        <Text style={styles.selectedText}>{value.name}</Text>
+                      )}
+                    </View>
+                  )}
+                />
+                {errors.document && (
+                  <Text style={styles.error}>Este campo es obligatorio.</Text>
                 )}
-                name="acceptTerms"
-                defaultValue={false}
-              />
-              {errors.acceptTerms && (
-                <Text style={styles.error}>{errors.acceptTerms.message}</Text>
-              )}
-            </View>
 
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Contrato de adhesión</Text>
-              <Controller
-                control={control}
-                rules={{
-                  required: "Debe aceptar el contrato de adhesión",
-                }}
-                render={({ field: { onChange, value } }) => (
-                  <Switch value={value} onValueChange={onChange} />
+                <TouchableOpacity
+                  style={styles.button}
+                  //onPress={takePhoto}
+                  onPress={() => takePhoto("PICRECIBO")}
+                >
+                  <AntDesign name="camera" size={24} color="#FFFFFF" />
+                  <Text style={styles.buttonText}>Toma una foto</Text>
+                </TouchableOpacity>
+                {image && (
+                  <Image source={{ uri: image }} style={styles.image} />
                 )}
-                name="acceptContract"
-                defaultValue={false}
-              />
-              {errors.acceptContract && (
-                <Text style={styles.error}>
-                  {errors.acceptContract.message}
+              </View>
+
+              <Text style={styles.inputLabel}>
+                Comprobante de domicilio (No mayor a 3 meses):
+              </Text>
+              <View style={styles.containerBtn}>
+                <Controller
+                  control={control}
+                  name="document"
+                  //rules={{ required: true }}
+                  render={({ field: { onChange, value } }) => (
+                    <View>
+                      <TouchableOpacity
+                        style={styles.button}
+                        onPress={() =>
+                          handleDocumentPicker(setValue, "CDOMIPDF")
+                        }
+                      >
+                        <FontAwesome
+                          name="file-pdf-o"
+                          size={24}
+                          color="#FFFFFF"
+                        />
+                        <Text style={styles.buttonText}>Adjunta un pdf</Text>
+                      </TouchableOpacity>
+                      {value && (
+                        <Text style={styles.selectedText}>{value.name}</Text>
+                      )}
+                    </View>
+                  )}
+                />
+                {errors.document && (
+                  <Text style={styles.error}>Este campo es obligatorio.</Text>
+                )}
+
+                <TouchableOpacity
+                  style={styles.button}
+                  //onPress={takePhoto}
+                  onPress={() => takePhoto("PICCDOM")}
+                >
+                  <AntDesign name="camera" size={24} color="#FFFFFF" />
+                  <Text style={styles.buttonText}>Toma una foto</Text>
+                </TouchableOpacity>
+                {image && (
+                  <Image source={{ uri: image }} style={styles.image} />
+                )}
+              </View>
+
+              <Text style={styles.inputLabel}>Fotografia (Selfie):</Text>
+              <TouchableOpacity
+                style={styles.button}
+                //onPress={takePhoto}
+                onPress={() => takePhoto("SELFIE")}
+              >
+                <AntDesign name="camera" size={24} color="#FFFFFF" />
+                <Text style={styles.buttonText}>Toma una foto</Text>
+              </TouchableOpacity>
+              {image && <Image source={{ uri: image }} style={styles.image} />}
+
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>
+                  Acepto los términos y condiciones
                 </Text>
-              )}
-            </View>
-          </View>
+                <Controller
+                  control={control}
+                  rules={{
+                    required: "Debe aceptar los términos y condiciones",
+                  }}
+                  render={({ field: { onChange, value } }) => (
+                    <Switch value={value} onValueChange={onChange} />
+                  )}
+                  name="acceptTerms"
+                  defaultValue={false}
+                />
+                {errors.acceptTerms && (
+                  <Text style={styles.error}>{errors.acceptTerms.message}</Text>
+                )}
+              </View>
 
-          <View style={styles.formAction}>
-            <TouchableOpacity
-              style={styles.btn}
-              onPress={handleSubmit(onSubmit)}
-            >
-              <Text style={styles.btnTxt}>Registrar</Text>
-            </TouchableOpacity>
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>Contrato de adhesión</Text>
+                <Controller
+                  control={control}
+                  rules={{
+                    required: "Debe aceptar el contrato de adhesión",
+                  }}
+                  render={({ field: { onChange, value } }) => (
+                    <Switch value={value} onValueChange={onChange} />
+                  )}
+                  name="acceptContract"
+                  defaultValue={false}
+                />
+                {errors.acceptContract && (
+                  <Text style={styles.error}>
+                    {errors.acceptContract.message}
+                  </Text>
+                )}
+              </View>
+
+              <View style={{ marginBottom: 5 }}>
+                <TouchableOpacity
+                  style={styles.btnContratos}
+                  //onPress={handleSubmit(onSubmit)}
+                >
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      color: "#FFFFFF",
+                      textAlign: "center",
+                    }}
+                  >
+                    Terminos y condiciones
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              <View>
+                <TouchableOpacity
+                  style={styles.btnContratos}
+                  //onPress={handleSubmit(onSubmit)}
+                >
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      color: "#FFFFFF",
+                      textAlign: "center",
+                    }}
+                  >
+                    Contrato de adhesión
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View style={styles.formAction}>
+              <TouchableOpacity
+                style={styles.btn}
+                onPress={handleSubmit(onSubmit)}
+              >
+                <Text style={styles.btnTxt}>Registrar</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
     </GestureHandlerRootView>
   );
 }
@@ -526,8 +622,8 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     // padding: 24
   },
   container: {
@@ -621,6 +717,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     borderRadius: 8,
     borderWidth: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+  },
+  btnContratos: {
+    backgroundColor: "#1bbac8",
+    borderRadius: 8,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
