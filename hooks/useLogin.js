@@ -24,6 +24,10 @@ export const useLogin = () => {
     const [messageEror, setMessageError] = useState('');
 
 
+    //recover password
+    const [emailRecover, setEmailRecover] = useState('');
+    const [messageRecoverPassword, setMessageRecoverPassword] = useState('');
+
 
     const handleChangeUsername = (Text) => {
         setUsername(Text);
@@ -67,33 +71,35 @@ export const useLogin = () => {
             if(response.data.estatus === "ok")
                 {
                     let _userdata = response.data.mensaje[0];
+
+                    //Descomentar esto por si en algúbn momento se requiere realizar algo con los NIS al iniciar sesión 
                    
-                    let nis = _userdata.nis;
-                    let _nis = [];
+                    // let nis = _userdata.nis;
+                    // let _nis = [];
 
 
-                     nis.map((item, index) => {
-                        _nis.push({
-                            nis: item.nis,
-                            direction: item.direccion,
-                            colony: item.colonia,
-                            account_number: item.cuenta,
-                            account_status: item.estado_cuenta,
-                            manager: item.gestor,
-                            line: item.giro
+                    //  nis.map((item, index) => {
+                    //     _nis.push({
+                    //         nis: item.nis,
+                    //         direction: item.direccion,
+                    //         colony: item.colonia,
+                    //         account_number: item.cuenta,
+                    //         account_status: item.estado_cuenta,
+                    //         manager: item.gestor,
+                    //         line: item.giro
 
-                        })
+                    //     })
 
-                    })
+                    // })
 
                     // console.log(_nis);
 
               
                     AsyncStorage.setItem('username', _userdata.nombre)
-                    AsyncStorage.setItem('id', _userdata.id)
-                    AsyncStorage.setItem('numberphone', _userdata.cel)
+                    // AsyncStorage.setItem('id', _userdata.id)
+                    // AsyncStorage.setItem('numberphone', _userdata.cel)
                     AsyncStorage.setItem('email', _userdata.correo)
-                    AsyncStorage.setItem('nis', JSON.stringify(_nis))
+                    // AsyncStorage.setItem('nis', JSON.stringify(_nis))
                     AsyncStorage.setItem('name', _userdata.nombre + ' ' + _userdata.am + ' ' + _userdata.am)
 
 
@@ -117,6 +123,8 @@ export const useLogin = () => {
 
 
 
+
+
     //#REGION SIGN UP
     //Esta funcion redirige a la parte donde se crea una cuenta nueva
     const handleCreateAccount =  async () => {
@@ -124,12 +132,71 @@ export const useLogin = () => {
     }
 
 
+
+    //#REGION RECOVER PASSWORD
+    const handleChangeEmail = (Text) => {
+        setEmailRecover(Text);
+    }
+
+    const handleRecoverPassword = async () => {
+            if(emailRecover.trim() === '')
+            {
+                alert('Introduce un correo');
+            }
+            else
+            {
+                let _body = [{
+                    correo: emailRecover
+                }];
+
+
+                let pass = md5(API_TOKEN);
+                let credentials = `${API_AUTH}:${pass}`;
+                let encodedCredentials = btoa(credentials);
+                let auth = 'Basic ' + encodedCredentials;
+
+
+
+                try {
+                    let response = await axios({
+                        method: 'post',
+                        url: `${API_URL}/api/resetPasswd`,
+                        headers: { 'Authorization': auth, 'Content-Type': 'application/json' },
+                        data: _body[0]
+                    });
+                    console.log(response);
+                       if(response.data.estatus === "ok")
+                        {
+                            console.log(response);
+                           
+        
+                            navigation.navigate('New Password');
+                            
+        
+                        }
+                        else
+                        {
+                            let _messageRecover = response.data.mensaje;
+                            setMessageRecoverPassword(_messageRecover)
+                        }
+
+                    }
+                    catch
+                    {
+                        alert('Ocurrió un error en el servidor');
+                    }
+    }
+    }
+
     return {
         //Log in
         handleChangeUsername, handleChangePassword, validateSession, username, password, messageEror, failedLogin, handleForgetPassword,
 
 
         //Sign up
-        handleCreateAccount
+        handleCreateAccount,
+
+        //Recover password
+    emailRecover, handleChangeEmail, handleRecoverPassword, messageRecoverPassword
     }
 }

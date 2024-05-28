@@ -10,6 +10,8 @@ import {
   ScrollView,
   Button,
   Switch,
+  KeyboardAvoidingView,
+  Platform
 } from "react-native";
 import { useRegister } from "../../hooks/useRegister";
 import { useForm, Controller } from "react-hook-form";
@@ -126,7 +128,12 @@ export default function Register() {
 
   return (
     <GestureHandlerRootView style={{flex:1}}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+
+        <ScrollView contentContainerStyle={styles.scrollContainer} scrollEnabled={true}>
       <View style={styles.safeArea}>
         <View style={styles.container}>
           <View style={styles.header}>
@@ -506,6 +513,7 @@ export default function Register() {
         </View>
       </View>
     </ScrollView>
+      </KeyboardAvoidingView>
     </GestureHandlerRootView>
   );
 }
@@ -514,7 +522,7 @@ const styles = StyleSheet.create({
   safeArea: {
     backgroundColor: "#f2f2f2",
     flex: 1,
-    justifyContent: "center",
+    // justifyContent: "center",
     // alignItems: "center",
     // backgroundSize: "cover",
     // backgroundPosition: "center center",
@@ -526,8 +534,8 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    // justifyContent: 'center',
+    // alignItems: 'center',
     // padding: 24
   },
   container: {
