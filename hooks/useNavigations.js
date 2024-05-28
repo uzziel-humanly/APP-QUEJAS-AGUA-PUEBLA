@@ -9,7 +9,7 @@ import {
   DrawerContentScrollView,
   createDrawerNavigator,
 } from "@react-navigation/drawer";
-import { StyleSheet, TouchableOpacity, Text, AppRegistry } from "react-native";
+import { StyleSheet, TouchableOpacity, Text, AppRegistry, Button } from "react-native";
 import Home from "../pages/indexHome";
 import Login from "../pages/Auth/indexLogin";
 import Register from "../pages/Auth/register";
@@ -25,6 +25,7 @@ import IndexBoarding2 from "../pages/indexBoarding2";
 import IndexBoarding3 from "../pages/indexBoarding3";
 import ForgetPassword from "../pages/Auth/indexForgetPassword";
 import NewPassword from "../pages/indexBoardingForgetPassword";
+import IndexUserProfile from "../pages/Auth/indexUserProfile";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -60,9 +61,17 @@ const MenuItems = ({ navigation }) => {
 function MainStack() {
   return (
     <Drawer.Navigator
-      initialRouteName="Home"
-      drawerContent={(props) => <MenuItems {...props} />}
-    >
+    initialRouteName="Home"
+    drawerContent={(props) => <MenuItems {...props} />}
+    screenOptions={({ navigation }) => ({
+      headerStyle: {
+        backgroundColor: '#000', 
+      },
+      headerTintColor: '#fff', 
+      
+      
+    })}
+  >
       <Drawer.Screen name="Inicio" component={Home} />
       <Drawer.Screen name="Quejas" component={Complaints} />
       <Drawer.Screen name="Reportes" component={Reports} />
@@ -150,8 +159,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: "bold",
-    fontSize: 20,
-    marginBottom: 10,
+    fontSize: 40,
+    marginBottom: 20,
+    color:'#000'
   },
   buttonContainer: {
     backgroundColor: "#d9d9d9",

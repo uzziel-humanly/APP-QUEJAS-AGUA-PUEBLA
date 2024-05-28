@@ -1,34 +1,15 @@
 import React, { useState } from "react";
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, Text, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-
+import { useLogin } from "../../hooks/useLogin";
 
 
 export default function ForgetPassword() {
 
-    const [email, setEmail] = useState('');
-
-    const navigation = useNavigation();
-
-
-    const handleChangeEmail = (Text) => {
-        setEmail(Text);
-        console.log('email ', email);
-    }
-
-
-    const handleGeneratePassword = () => {
-           if(email.trim() === '')
-            {
-                alert('Por favor, introduce tu correo');
-            }
-            else
-            {
-                navigation.navigate('New Password');
-            }
-    }
+    const {
+        emailRecover, handleChangeEmail, handleRecoverPassword, messageRecoverPassword
+    } = useLogin();
 
     return (
        <GestureHandlerRootView>
@@ -59,12 +40,18 @@ export default function ForgetPassword() {
             </View>
             <View style={styles.formAction}>
                 <TouchableOpacity
-                onPress={() => handleGeneratePassword()}
+                onPress={() => handleRecoverPassword()}
                 >
                     <View style={styles.btn}>
                         <Text style={styles.btnTxt}>Generar nueva contraseña</Text>
                     </View>
                 </TouchableOpacity>
+                {
+                    messageRecoverPassword !== '' ?
+                    <Text style={{justifyContent:'center', alignContent:'center', textAlign:'center'}}>{messageRecoverPassword}</Text>
+                    :
+                    ""
+                }
                
             </View>
         </View>
