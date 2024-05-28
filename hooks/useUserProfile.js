@@ -3,8 +3,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import {API_URL, API_TOKEN,API_AUTH} from "@env"
 import { md5 } from "js-md5";
+import { useNavigation } from "@react-navigation/native";
+import ModalChangePassword from "../pages/Auth/modalChangePassword";
 
 export const useUserProfile = () => {
+  const navigation = useNavigation();
+
    const [name, setName] = useState('');
    const [email, setEmail] = useState('');
    const [modalVisible, setModalVisible] = useState(false);
@@ -16,6 +20,7 @@ export const useUserProfile = () => {
    const [messagePassword2, setMessagePassword2] = useState('');
    const [passwordMatch, setPasswordMatch] = useState(0);
    const [messageUpdatePassword, setMessageUpatePassword] = useState('');
+   const [refreshKey, setRefreshKey] = useState(0);
 
 
    const getInformationUser = async () => {
@@ -92,10 +97,12 @@ const handleUpdatePassword = async () => {
                 console.log(response);
                    if(response.data.estatus === "ok")
                     {
-                        console.log(response);
+                        let _message = response.data.mensaje;
                        
-    
-                        navigation.navigate('New Password');
+
+                        setRefreshKey(prevKey => prevKey + 1);
+                        
+                        alert(_message);
                         
     
                     }

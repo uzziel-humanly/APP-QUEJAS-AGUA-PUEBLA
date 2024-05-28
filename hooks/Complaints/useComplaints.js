@@ -5,6 +5,9 @@ import { useRef, useEffect, useState, createRef } from "react";
 export function useComplaints() {
 
   const [scrollEnabled, setScrollEnabled] = useState(true);
+  const tableHead = ["Folio seguimiento", "Estatus"];
+  const [reportes, setReportes] = useState([]);
+  const tableData = reportes.map((item) => [item.id, item.tipo]);
 
 
   const ref = useRef();
@@ -44,7 +47,9 @@ export function useComplaints() {
 
   };
 
+ const handleGetComplaints = async () => {
  
+ }
   
 
   const handleEmpty = () => {
@@ -74,6 +79,9 @@ export function useComplaints() {
 
 
   return {
+
+    //Complaints 
+    tableHead, tableData,
 
     //Signature
     handleSelectDocument, ref, webStyle, handleEmpty, handleClear, handleEnd, handleData, scrollEnabled, handleBegin

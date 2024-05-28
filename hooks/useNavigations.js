@@ -86,7 +86,7 @@ export default function StackNavigation() {
         contentContainerStyle={{ minHeight: "100%", overflow: "visible" }}
         style={styles.container}
       > */}
-      <Stack.Navigator initialRouteName={"Login"}>
+      <Stack.Navigator initialRouteName={"IndexBoarding"}>
         <Stack.Screen
           name="Boarding"
           component={IndexBoarding}
@@ -141,6 +141,11 @@ export default function StackNavigation() {
           name="FormReports"
           component={FormReports}
           options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Mi perfil"
+          component={IndexUserProfile}
+          options={{ headerTitle: false, headerBackTitle: false }}
         />
         <Stack.Screen
           name="IndexStatusReports"

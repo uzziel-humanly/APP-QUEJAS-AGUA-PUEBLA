@@ -1,7 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import IndexStatusReports from '../Reports/indexStatusReports';
+import IndexStatusComplaints from './indexStatusComplaints';
+
 import FormComplaints from './formComplaints';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 
@@ -16,7 +17,7 @@ export default function Complaints() {
     >
       <Tab.Screen 
           name="Mis quejas" 
-          component={IndexStatusReports} 
+          component={IndexStatusComplaints} 
           color={"black"}
           options={{
             tabBarInactiveTintColor: 'gray',
