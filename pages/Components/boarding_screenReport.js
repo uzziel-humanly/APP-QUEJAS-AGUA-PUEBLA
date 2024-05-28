@@ -8,26 +8,24 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { useRegister } from "../../hooks/useRegister";
+import { useReports } from "../../hooks/Reports/useReports";
 
-export default function BoardingScreen() {
-  const { handleClickLogin } = useRegister();
+export default function BoardingScreenReport() {
+  const { handleClickReport } = useReports();
   return (
     <View style={styles.safeArea}>
       <View style={styles.container}>
         <View style={styles.header}>
           <Image
-            source={require("../../assets/bannerGif3.gif")}
+            source={require("../../assets/sendReport.gif")}
             style={styles.headerImg}
           />
-          <Text style={styles.title}>¡Gracias por registrarte!</Text>
-          <Text style={styles.subtitle}>
-            Nuestro equipo de trabajo esta validando tu información, pronto nos
-            comunicaremos contigo.
-          </Text>
 
           <View style={styles.formAction}>
-            <TouchableOpacity style={styles.btn} onPress={handleClickLogin}>
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={handleClickReport}
+            >
               <Text style={styles.btnTxt}>Regresar</Text>
             </TouchableOpacity>
           </View>
@@ -39,7 +37,7 @@ export default function BoardingScreen() {
 
 const styles = StyleSheet.create({
   safeArea: {
-    backgroundColor: "#f2f2f2",
+    backgroundColor: "#f9f9f9",
     flex: 1,
     // justifyContent: "center",
     // alignItems: "center",
@@ -66,9 +64,9 @@ const styles = StyleSheet.create({
     marginVertical: 36,
   },
   headerImg: {
-    width: '70%',
-    height: 300, 
-    resizeMode: "contain", 
+    width: "100%",
+    height: 300,
+    resizeMode: "contain",
   },
   title: {
     fontWeight: "700",
