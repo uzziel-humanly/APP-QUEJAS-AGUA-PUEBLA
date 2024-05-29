@@ -10,6 +10,8 @@ import {
   ScrollView,
   Button,
   Switch,
+  KeyboardAvoidingView,
+  Platform
 } from "react-native";
 import { useRegister } from "../../hooks/useRegister";
 import { useForm, Controller } from "react-hook-form";
@@ -592,7 +594,7 @@ const styles = StyleSheet.create({
   safeArea: {
     backgroundColor: "#f2f2f2",
     flex: 1,
-    justifyContent: "center",
+    // justifyContent: "center",
     // alignItems: "center",
     // backgroundSize: "cover",
     //backgroundPosition: "center center",
