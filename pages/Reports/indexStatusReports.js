@@ -31,20 +31,26 @@ export default function IndexStatusReports() {
       let encodedCredentials = btoa(credentials);
       let auth = "Basic " + encodedCredentials;
 
+      const data = {
+        id_usuario_app: "1",
+      };
+      let body = JSON.stringify(data);
+
       let response = await axios({
         method: "post",
-        url: `${API_URL}/api/getTipoArchivos`,
+        url: `${API_URL}/api/getReportes`,
         headers: { Authorization: auth, "Content-Type": "application/json" },
+        data: body,
       });
 
       if (response.data.estatus === "ok") {
         let _data = response.data.mensaje;
         setReportes(_data);
       } else {
-        console.error("Error en la respuesta de la API");
+        //console.error("Error en la respuesta de la API");
       }
     } catch (error) {
-      console.error(error);
+      //console.error(error);
       alert("Ocurrió un error en el servidor");
     }
   };
@@ -59,7 +65,7 @@ export default function IndexStatusReports() {
           <View style={styles.line} />
 
           <Image
-            source={require("../../assets/histReport2.png")}
+            source={require("../../assets/report5.png")}
             style={styles.headerImg}
           />
 
@@ -71,12 +77,9 @@ export default function IndexStatusReports() {
             <Row
               data={tableHead}
               style={styles.head}
-              //textStyle={styles.text}
+              textStyle={{ textAlign: "center", color: "white" }}
             />
-            <Rows
-              data={tableData}
-              //textStyle={styles.text}
-            />
+            <Rows data={tableData} textStyle={{ textAlign: "center" }} />
           </Table>
         </View>
       </ScrollView>
@@ -126,6 +129,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   container2: { flex: 1, padding: 16, color: "#ffffff" },
-  head: { height: 40, backgroundColor: "#00bf63", color: "#FFFFFF" },
+  head: { height: 40, backgroundColor: "#52a7d7", color: "#FFFFFF" },
   text: { margin: 6 },
 });

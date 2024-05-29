@@ -28,7 +28,7 @@ export default function Login() {
             <View style={styles.container}>
               <View style={styles.header}>
                 <Image
-                source={require('../../assets/logo_soapap3.png')}
+                source={require('../../assets/tuSoapap.png')}
                 style={styles.headerImg}
               />
               <Text style={styles.title}>Inicio de sesión</Text>

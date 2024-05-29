@@ -22,6 +22,7 @@ import { API_URL, API_TOKEN, API_AUTH } from "@env";
 import md5 from "js-md5";
 import { Picker } from "@react-native-picker/picker";
 import { useFocusEffect } from "@react-navigation/native";
+import { Feather } from "@expo/vector-icons";
 
 export default function FormReports() {
   const { handleRegisterReport } = useReports();
@@ -49,22 +50,36 @@ export default function FormReports() {
 
   const [image, setImage] = useState(null);
 
+  //Se le bajo la calidad a la imagen para que la base 64 no pesara tanto
   const takePhoto = async (option) => {
-    let result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-      base64: true,
-    });
+    try {
+      let result = await ImagePicker.launchCameraAsync({
+        // allowsEditing: true,
+        // aspect: [4, 3],
+        // quality: 1,
+        base64: true,
+        mediaType: "photo",
+        allowsEditing: true,
+        //aspect:[4,3],
+        quality: 0.1,
+      });
 
-    console.log(result.assets.base64);
+      if (option == "PICINCIDENCIA") {
+        let base64Image = `data:image/jpeg;base64,${result.assets[0].base64}`;
+        base64Image = base64Image.replace(/(?:\r\n|\r|\n)/g, "");
+        setImage(result.assets.name);
+        setValue("evidencia", base64Image);
+      }
 
-    if (option == "PICINCIDENCIA") {
-      setImage(result.assets.name);
-      setValue("evidencia", "BASE 64");
-    }
-    if (!result.cancelled) {
-      setImage(result.uri);
+      // if (!result.cancelled) {
+      // let base64Image = `data:image/jpeg;base64,${result.assets[0].base64}`;
+      //base64Image = base64Image.replace(/\s/g, '');
+      // if (!result.cancelled) {
+      //   setImage(result.uri);
+      // }
+    } catch (err) {
+      //console.log("Error picking document: ", err);
+      //alert("Ocurrió un error en el servidor");
     }
   };
 
@@ -88,36 +103,62 @@ export default function FormReports() {
     })();
   };
 
-  const [tipoArchivos, setTipoArchivos] = useState([]);
+  const [tipoReporte, setTipoReporte] = useState([]);
+  const [tipoIncidencia, setTipoIncidencia] = useState([]);
 
   useEffect(() => {
-    getTipoArchivos();
+    getTipoReporte();
+    getTipoIncidencia();
   }, []);
 
-  const getTipoArchivos = async () => {
+  const getTipoReporte = async () => {
     try {
       let pass = md5(API_TOKEN);
       let credentials = `${API_AUTH}:${pass}`;
       let encodedCredentials = btoa(credentials);
       let auth = "Basic " + encodedCredentials;
-      console.log(auth);
 
       let response = await axios({
         method: "post",
-        url: `${API_URL}/api/getTipoArchivos`,
+        url: `${API_URL}/api/getTipoReporte`,
         headers: { Authorization: auth, "Content-Type": "application/json" },
       });
 
       if (response.data.estatus === "ok") {
-        //console.log("si entre");
-        let _data = response.data.mensaje;
-        setTipoArchivos(_data);
-        //console.log(tipoArchivos);
+        let _data = response.data.tipo;
+        setTipoReporte(_data);
       } else {
-        console.error("Error en la respuesta de la API");
+        //console.error("Error en la respuesta de la API");
+        alert("Ocurrió un error en el servidor");
       }
     } catch (error) {
-      console.error(error);
+      //console.error(error);
+      alert("Ocurrió un error en el servidor");
+    }
+  };
+
+  const getTipoIncidencia = async () => {
+    try {
+      let pass = md5(API_TOKEN);
+      let credentials = `${API_AUTH}:${pass}`;
+      let encodedCredentials = btoa(credentials);
+      let auth = "Basic " + encodedCredentials;
+
+      let response = await axios({
+        method: "post",
+        url: `${API_URL}/api/getTipoReporte`,
+        headers: { Authorization: auth, "Content-Type": "application/json" },
+      });
+
+      if (response.data.estatus === "ok") {
+        let _data = response.data.incidencia;
+        setTipoIncidencia(_data);
+      } else {
+        alert("Ocurrió un error en el servidor");
+        //console.error("Error en la respuesta de la API");
+      }
+    } catch (error) {
+      //console.error(error);
       alert("Ocurrió un error en el servidor");
     }
   };
@@ -146,6 +187,44 @@ export default function FormReports() {
           {showElement && (
             <View style={styles.form}>
               <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>Tipo de reporte:</Text>
+                <Controller
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { onChange, value } }) => (
+                    <View style={styles.pickerContainer}>
+                      <Picker
+                        selectedValue={value}
+                        //style={styles.picker}
+                        style={[
+                          styles.picker,
+                          value !== "" && styles.selectedPicker,
+                        ]}
+                        onValueChange={(itemValue) => {
+                          onChange(itemValue);
+                          setSelectedValue(itemValue);
+                        }}
+                      >
+                        <Picker.Item label="Selecciona una opción" value="" />
+                        {tipoReporte.map((item) => (
+                          <Picker.Item
+                            label={item.tipo.toUpperCase()}
+                            value={item.id}
+                            key={item.id}
+                          />
+                        ))}
+                      </Picker>
+                    </View>
+                  )}
+                  name="id_tipo_reporte"
+                  defaultValue=""
+                />
+                {errors.id_tipo_reporte && (
+                  <Text style={styles.error}>Este campo es obligatorio.</Text>
+                )}
+              </View>
+
+              <View style={styles.inputContainer}>
                 <Text style={styles.inputLabel}>Tipo de incidencia:</Text>
                 <Controller
                   control={control}
@@ -154,16 +233,20 @@ export default function FormReports() {
                     <View style={styles.pickerContainer}>
                       <Picker
                         selectedValue={value}
-                        style={styles.picker}
+                        //style={styles.picker}
+                        style={[
+                          styles.picker,
+                          value !== "" && styles.selectedPicker,
+                        ]}
                         onValueChange={(itemValue) => {
                           onChange(itemValue);
                           setSelectedValue(itemValue);
                         }}
                       >
                         <Picker.Item label="Selecciona una opción" value="" />
-                        {tipoArchivos.map((item) => (
+                        {tipoIncidencia.map((item) => (
                           <Picker.Item
-                            label={item.tipo}
+                            label={item.incidencia.toUpperCase()}
                             value={item.id}
                             key={item.id}
                           />
@@ -171,24 +254,38 @@ export default function FormReports() {
                       </Picker>
                     </View>
                   )}
-                  name="select"
+                  name="id_tipo_incidencia"
                   defaultValue=""
                 />
-                {errors.select && (
+                {errors.id_tipo_incidencia && (
                   <Text style={styles.error}>Este campo es obligatorio.</Text>
                 )}
               </View>
 
               <Text style={styles.inputLabel}>Fotografia de incidencia:</Text>
-              <TouchableOpacity
-                style={styles.button}
-                //onPress={takePhoto}
-                onPress={() => takePhoto("PICINCIDENCIA")}
-              >
-                <AntDesign name="camera" size={24} color="#FFFFFF" />
-                <Text style={styles.buttonText}>Toma una foto</Text>
-              </TouchableOpacity>
-              {image && <Image source={{ uri: image }} style={styles.image} />}
+              <Controller
+                control={control}
+                name="evidencia"
+                rules={{ required: true }}
+                render={({ field: { onChange, value } }) => (
+                  <View>
+                    <TouchableOpacity
+                      style={styles.button}
+                      //onPress={takePhoto}
+                      onPress={() => takePhoto("PICINCIDENCIA")}
+                    >
+                      <AntDesign name="camera" size={24} color="#FFFFFF" />
+                      <Text style={styles.buttonText}>Toma una foto</Text>
+                    </TouchableOpacity>
+                    {value && (
+                      <Text style={styles.selectedText}>{value.name}</Text>
+                    )}
+                  </View>
+                )}
+              />
+              {errors.evidencia && (
+                <Text style={styles.error}>La fotografia es obligatoria.</Text>
+              )}
 
               <View style={styles.inputContainer}>
                 <Text style={styles.inputLabel}>
@@ -260,8 +357,8 @@ export default function FormReports() {
                   name="calle"
                   defaultValue=""
                 />
-                {errors.descripcion && (
-                  <Text style={styles.error}>{errors.descripcion.message}</Text>
+                {errors.calle && (
+                  <Text style={styles.error}>{errors.calle.message}</Text>
                 )}
               </View>
 
@@ -329,7 +426,7 @@ export default function FormReports() {
                         }}
                       >
                         <Picker.Item label="Selecciona tu colonia" value="" />
-                        {tipoArchivos.map((item) => (
+                        {tipoReporte.map((item) => (
                           <Picker.Item
                             label={item.tipo}
                             value={item.id}
@@ -348,7 +445,7 @@ export default function FormReports() {
               </View>
             </View>
           )}
-          {showElement && (
+          {showElement && Object.keys(errors).length === 0 && (
             <View style={styles.formAction}>
               <TouchableOpacity
                 style={styles.btn}
@@ -358,6 +455,39 @@ export default function FormReports() {
               </TouchableOpacity>
             </View>
           )}
+
+          {showElement && Object.keys(errors).length != 0 && (
+            <View
+              style={{
+                flexDirection: "row",
+                padding: 10,
+                width: 320,
+                borderRadius: 10,
+                backgroundColor: "#feba29",
+              }}
+            >
+              <Feather
+                style={{
+                  marginRight: 5,
+                  marginTop: 5,
+                }}
+                name="alert-triangle"
+                size={24}
+                color="white"
+              />
+              <Text
+                style={{
+                  fontWeight: "600",
+                  color: "white",
+                  fontSize: 14,
+                  textAlign: "center",
+                }}
+              >
+                Hay campos requeridos que necesitan ser completados. ¡Verifica!
+              </Text>
+            </View>
+          )}
+          <View style={styles.ribbonEnd}></View>
           <StatusBar style="auto" />
         </View>
       </ScrollView>
@@ -411,6 +541,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   inputLabel: {
+    width: "100%",
     fontSize: 17,
     fontWeight: "600",
     color: "#222",
@@ -447,7 +578,7 @@ const styles = StyleSheet.create({
     color: "#222",
     borderRadius: 12,
     fontWeight: "500",
-    ///textAlignVertical: "top", // Para asegurar que el texto empieza desde arriba en Android
+    ///textAlignVertical: "top",
     borderColor: "#fff",
   },
   error: {
@@ -459,13 +590,13 @@ const styles = StyleSheet.create({
     marginVertical: 24,
   },
   button: {
+    width: 150,
     flexDirection: "row",
-    alignItems: "center",
     backgroundColor: "#00bf63",
     padding: 10,
     borderRadius: 8,
-    marginRight: 5,
     marginBottom: 10,
+    alignSelf: "center",
   },
   buttonText: {
     color: "#FFFFFF",
@@ -495,7 +626,7 @@ const styles = StyleSheet.create({
   },
   pickerContainer: {
     borderWidth: 1,
-    borderColor: "gray",
+    borderColor: "white",
     borderRadius: 8,
     overflow: "hidden",
     backgroundColor: "#FFFFFF",
@@ -508,4 +639,8 @@ const styles = StyleSheet.create({
     height: 50,
     width: "100%",
   },
+
+  // selectedPicker: {
+  //   color: 'green'
+  // },
 });
