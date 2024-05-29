@@ -28,7 +28,7 @@ export const useReports = () => {
       //Esa informacion extra la metemos dentro del json body
       const completeData = { ...data, ...additionalData };
       let body = JSON.stringify(completeData);
-      console.log(body);
+      //console.log(body);
 
       let response = await axios({
         method: "POST",
@@ -50,7 +50,7 @@ export const useReports = () => {
         showAlertReport(data);
       }
     } catch (error) {
-      console.error(error);
+      //console.error(error);
       alert("Ocurrió un error en el servidor");
     }
   };

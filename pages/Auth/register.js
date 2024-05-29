@@ -39,7 +39,7 @@ export default function Register() {
   const [selectedValue, setSelectedValue] = useState("");
   const [selectedDocument, setSelectedDocument] = useState("");
 
-  setValue("document","NADA");
+  setValue("document", "NADA");
 
   const handleDocumentPicker = async (setValue, option) => {
     try {
@@ -54,7 +54,7 @@ export default function Register() {
         }
       }
     } catch (err) {
-      console.log("Error picking document: ", err);
+      //console.log("Error picking document: ", err);
     }
   };
 
@@ -69,40 +69,42 @@ export default function Register() {
     });
     setImage(result.assets.name);
     setValue("image", result);
-    console.log(result);
+    //console.log(result);
 
     if (!result.cancelled) {
-      setImage(result.uri);
+      //setImage(result.uri);
     }
   };
 
   const takePhoto = async (option) => {
-    let result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-    if (option == "PICINEFRONTAL") {
-      setImage(result.assets.name);
-      setValue("imageIneFrontal", result);
-    } else if (option == "PICINETRASERO") {
-      setImage(result.assets.name);
-      setValue("imageIneTrasero", result);
-    } else if (option == "PICRECIBO") {
-      setImage(result.assets.name);
-      setValue("imageRecibo", result);
-    } else if (option == "PICCDOM") {
-      setImage(result.assets.name);
-      setValue("imageComprobante", result);
-    } else if (option == "SELFIE") {
-      setImage(result.assets.name);
-      setValue("selfie", result);
-    }
+    try {
+      let result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+      if (option == "PICINEFRONTAL") {
+        setImage(result.assets.name);
+        setValue("imageIneFrontal", result);
+      } else if (option == "PICINETRASERO") {
+        setImage(result.assets.name);
+        setValue("imageIneTrasero", result);
+      } else if (option == "PICRECIBO") {
+        setImage(result.assets.name);
+        setValue("imageRecibo", result);
+      } else if (option == "PICCDOM") {
+        setImage(result.assets.name);
+        setValue("imageComprobante", result);
+      } else if (option == "SELFIE") {
+        setImage(result.assets.name);
+        setValue("selfie", result);
+      }
 
-    console.log(result);
-
-    if (!result.cancelled) {
-      setImage(result.uri);
+      if (!result.cancelled) {
+        setImage(result.uri);
+      }
+    } catch (err) {
+      //console.log("Error picking document: ", err);
     }
   };
 
@@ -133,7 +135,7 @@ export default function Register() {
           <View style={styles.container}>
             <View style={styles.header}>
               <Image
-                source={require("../../assets/logo_soapap3.png")}
+                source={require("../../assets/tuSoapap.png")}
                 style={styles.headerImg}
               />
               <Text style={styles.title}>Formulario de Registro</Text>
@@ -359,14 +361,8 @@ export default function Register() {
                         }}
                       >
                         <Picker.Item label="Selecciona una opción" value="" />
-                        <Picker.Item
-                          label="Cliente Titular"
-                          value="1"
-                        />
-                        <Picker.Item
-                          label="Gestor Autorizado"
-                          value="2"
-                        />
+                        <Picker.Item label="Cliente Titular" value="1" />
+                        <Picker.Item label="Gestor Autorizado" value="2" />
                       </Picker>
                     </View>
                   )}
@@ -378,16 +374,13 @@ export default function Register() {
                 )}
               </View>
 
+              <Text style={{ textAlign: "justify", marginBottom: 20 }}>
+                Nota: en caso de recibo de agua y comprobante domiciliario solo
+                debe elegir una opción (Adjuntar PDF o tomar fotografia)
+              </Text>
+
               <Text style={styles.inputLabel}>INE (Por ambos lados):</Text>
               <View style={styles.containerBtn}>
-                {/* <TouchableOpacity style={styles.button} 
-              //onPress={pickImage}
-              onPress={() => pickImage('INEFILE')}
-              >
-                <FontAwesome name="file-photo-o" size={24} color="#FFFFFF" />
-                <Text style={styles.buttonText}>Elige una pdf</Text>
-              </TouchableOpacity> */}
-
                 <TouchableOpacity
                   style={styles.button}
                   //onPress={takePhoto}
@@ -417,26 +410,20 @@ export default function Register() {
                 Ultimo recibo Agua de Puebla:
               </Text>
               <View style={styles.containerBtn}>
-                <Controller
+                {/* <Controller
                   control={control}
                   name="document"
                   //rules={{ required: true }}
                   render={({ field: { onChange, value } }) => (
-                    <View>
-                      <TouchableOpacity
-                        style={styles.button}
-                        onPress={() =>
-                          handleDocumentPicker(setValue, "RECIBOPDF")
-                        }
-                      >
-                        <FontAwesome
-                          name="file-pdf-o"
-                          size={24}
-                          color="#FFFFFF"
-                        />
-                        <Text style={styles.buttonText}>Adjunta un pdf</Text>
-                      </TouchableOpacity>
-                      {value && (
+                    <View> */}
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => handleDocumentPicker(setValue, "RECIBOPDF")}
+                >
+                  <FontAwesome name="file-pdf-o" size={24} color="#FFFFFF" />
+                  <Text style={styles.buttonText}>Adjunta un pdf</Text>
+                </TouchableOpacity>
+                {/* {value && (
                         <Text style={styles.selectedText}>{value.name}</Text>
                       )}
                     </View>
@@ -444,7 +431,7 @@ export default function Register() {
                 />
                 {errors.document && (
                   <Text style={styles.error}>Este campo es obligatorio.</Text>
-                )}
+                )} */}
 
                 <TouchableOpacity
                   style={styles.button}
@@ -463,26 +450,20 @@ export default function Register() {
                 Comprobante de domicilio (No mayor a 3 meses):
               </Text>
               <View style={styles.containerBtn}>
-                <Controller
+                {/* <Controller
                   control={control}
                   name="document"
                   //rules={{ required: true }}
                   render={({ field: { onChange, value } }) => (
-                    <View>
-                      <TouchableOpacity
-                        style={styles.button}
-                        onPress={() =>
-                          handleDocumentPicker(setValue, "CDOMIPDF")
-                        }
-                      >
-                        <FontAwesome
-                          name="file-pdf-o"
-                          size={24}
-                          color="#FFFFFF"
-                        />
-                        <Text style={styles.buttonText}>Adjunta un pdf</Text>
-                      </TouchableOpacity>
-                      {value && (
+                    <View> */}
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => handleDocumentPicker(setValue, "CDOMIPDF")}
+                >
+                  <FontAwesome name="file-pdf-o" size={24} color="#FFFFFF" />
+                  <Text style={styles.buttonText}>Adjunta un pdf</Text>
+                </TouchableOpacity>
+                {/* {value && (
                         <Text style={styles.selectedText}>{value.name}</Text>
                       )}
                     </View>
@@ -490,7 +471,7 @@ export default function Register() {
                 />
                 {errors.document && (
                   <Text style={styles.error}>Este campo es obligatorio.</Text>
-                )}
+                )} */}
 
                 <TouchableOpacity
                   style={styles.button}
@@ -516,10 +497,28 @@ export default function Register() {
               </TouchableOpacity>
               {image && <Image source={{ uri: image }} style={styles.image} />}
 
-              <View style={styles.inputContainer}>
-                <Text style={styles.inputLabel}>
-                  Acepto los términos y condiciones
-                </Text>
+              <View style={styles.line} />
+              {/* ESTA ES LA PARTE DE TERMINOS Y CONDICIONES */}
+              <Text style={styles.inputLabelC}>
+                Acepto los términos y condiciones más contrato de adhesión
+              </Text>
+              <View style={styles.containerBtn}>
+                <View style={{ marginRight: 40 }}>
+                  <TouchableOpacity
+                    style={styles.btnContratos}
+                    //onPress={handleSubmit(onSubmit)}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        color: "#FFFFFF",
+                        textAlign: "center",
+                      }}
+                    >
+                      Terminos y condiciones
+                    </Text>
+                  </TouchableOpacity>
+                </View>
                 <Controller
                   control={control}
                   rules={{
@@ -531,13 +530,30 @@ export default function Register() {
                   name="acceptTerms"
                   defaultValue={false}
                 />
-                {errors.acceptTerms && (
-                  <Text style={styles.error}>{errors.acceptTerms.message}</Text>
-                )}
               </View>
+              {errors.acceptTerms && (
+                <Text style={styles.error}>{errors.acceptTerms.message}</Text>
+              )}
 
-              <View style={styles.inputContainer}>
-                <Text style={styles.inputLabel}>Contrato de adhesión</Text>
+              {/* ESTA ES LA PARTE DE CONTRATO DE ADHESION */}
+              {/* <Text style={styles.inputLabel}>Contrato de adhesión</Text> */}
+              <View style={styles.containerBtn}>
+                <View style={{ marginRight: 40 }}>
+                  <TouchableOpacity
+                    style={styles.btnContratos}
+                    //onPress={handleSubmit(onSubmit)}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        color: "#FFFFFF",
+                        textAlign: "center",
+                      }}
+                    >
+                      Contrato de adhesión
+                    </Text>
+                  </TouchableOpacity>
+                </View>
                 <Controller
                   control={control}
                   rules={{
@@ -549,46 +565,12 @@ export default function Register() {
                   name="acceptContract"
                   defaultValue={false}
                 />
-                {errors.acceptContract && (
-                  <Text style={styles.error}>
-                    {errors.acceptContract.message}
-                  </Text>
-                )}
               </View>
-
-              <View style={{ marginBottom: 5 }}>
-                <TouchableOpacity
-                  style={styles.btnContratos}
-                  //onPress={handleSubmit(onSubmit)}
-                >
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      color: "#FFFFFF",
-                      textAlign: "center",
-                    }}
-                  >
-                    Terminos y condiciones
-                  </Text>
-                </TouchableOpacity>
-              </View>
-
-              <View>
-                <TouchableOpacity
-                  style={styles.btnContratos}
-                  //onPress={handleSubmit(onSubmit)}
-                >
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      color: "#FFFFFF",
-                      textAlign: "center",
-                    }}
-                  >
-                    Contrato de adhesión
-                  </Text>
-                </TouchableOpacity>
-              </View>
+              {errors.acceptContract && (
+                <Text style={styles.error}>
+                  {errors.acceptContract.message}
+                </Text>
+              )}
             </View>
 
             <View style={styles.formAction}>
@@ -613,7 +595,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     // alignItems: "center",
     // backgroundSize: "cover",
-    // backgroundPosition: "center center",
+    //backgroundPosition: "center center",
   },
   webview: {
     flex: 1,
@@ -660,12 +642,12 @@ const styles = StyleSheet.create({
   },
   pickerContainer: {
     borderWidth: 1,
-    borderColor: "gray",
+    borderColor: "white",
     borderRadius: 8,
     overflow: "hidden",
     backgroundColor: "#FFFFFF",
     height: 44,
-    width: "115%",
+    width: "105%",
     alignSelf: "center",
     marginBottom: 20,
   },
@@ -685,7 +667,7 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   inputContainer: {
-    // width: "100%",
+    width: "100%",
     alignItems: "center",
   },
   inputLabel: {
@@ -694,9 +676,18 @@ const styles = StyleSheet.create({
     color: "#222",
     marginBottom: 8,
     alignSelf: "flex-start",
+    width: "100%",
+  },
+  inputLabelC: {
+    textAlign: "center",
+    marginTop: 20,
+    fontSize: 17,
+    fontWeight: "600",
+    color: "#222",
+    marginBottom: 8,
   },
   inputControl: {
-    width: "115%",
+    width: 320,
     backgroundColor: "#fff",
     height: 44,
     paddingHorizontal: 16,
@@ -724,13 +715,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   btnContratos: {
+    width: 200,
     backgroundColor: "#1bbac8",
     borderRadius: 8,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 8,
-    paddingHorizontal: 20,
+    //paddingHorizontal: 20,
   },
   btnUploadFile: {
     backgroundColor: "#00bf63",
@@ -763,5 +755,12 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#FFFFFF",
     marginLeft: 10,
+  },
+  line: {
+    marginTop: 50,
+    borderBottomColor: "black",
+    borderBottomWidth: 1,
+    alignItems: "center",
+    color: "blue",
   },
 });
