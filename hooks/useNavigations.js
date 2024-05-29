@@ -86,7 +86,7 @@ export default function StackNavigation() {
         contentContainerStyle={{ minHeight: "100%", overflow: "visible" }}
         style={styles.container}
       > */}
-      <Stack.Navigator initialRouteName={"IndexBoarding"}>
+      <Stack.Navigator initialRouteName={"IndexScreen"}>
         <Stack.Screen
           name="Boarding"
           component={IndexBoarding}
