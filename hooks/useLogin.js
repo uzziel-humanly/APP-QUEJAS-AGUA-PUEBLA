@@ -72,25 +72,25 @@ export const useLogin = () => {
                 {
                     let _userdata = response.data.mensaje[0];
 
-                    //Descomentar esto por si en algúbn momento se requiere realizar algo con los NIS al iniciar sesión 
+               
                    
-                    // let nis = _userdata.nis;
-                    // let _nis = [];
+                    let nis = _userdata.nis;
+                    let _nis = [];
 
 
-                    //  nis.map((item, index) => {
-                    //     _nis.push({
-                    //         nis: item.nis,
-                    //         direction: item.direccion,
-                    //         colony: item.colonia,
-                    //         account_number: item.cuenta,
-                    //         account_status: item.estado_cuenta,
-                    //         manager: item.gestor,
-                    //         line: item.giro
+                     nis.map((item, index) => {
+                        _nis.push({
+                            nis: item.nis,
+                            direction: item.direccion,
+                            colony: item.colonia,
+                            account_number: item.cuenta,
+                            account_status: item.estado_cuenta,
+                            manager: item.gestor,
+                            line: item.giro
 
-                    //     })
+                        })
 
-                    // })
+                    })
 
                     // console.log(_nis);
 
@@ -99,8 +99,8 @@ export const useLogin = () => {
                     // AsyncStorage.setItem('id', _userdata.id)
                     // AsyncStorage.setItem('numberphone', _userdata.cel)
                     AsyncStorage.setItem('email', _userdata.correo)
-                    // AsyncStorage.setItem('nis', JSON.stringify(_nis))
-                    AsyncStorage.setItem('name', _userdata.nombre + ' ' + _userdata.am + ' ' + _userdata.am)
+                    AsyncStorage.setItem('nis', JSON.stringify(_nis))
+                    AsyncStorage.setItem('name', _userdata.nombre + ' ' + _userdata.ap + ' ' + _userdata.am)
 
 
                     

@@ -1,21 +1,27 @@
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button, KeyboardAvoidingView, Platform, ScrollView, TextInput, TouchableOpacity, Keyboard } from 'react-native';
 import { useComplaints } from '../../hooks/Complaints/useComplaints';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import React , { useRef, useState } from 'react';
 import SignatureScreen from 'react-native-signature-canvas';
+import MultiSelect from 'react-native-multiple-select';
+import { MaterialIcons } from '@expo/vector-icons';
 
 export default function FormComplaints({ text, onOK }) {
-  const { handleSelectDocument, ref, webStyle, handleEmpty, handleClear, handleData, scrollEnabled, handleEnd, handleBegin } = useComplaints();
+  const {  ref, webStyle, handleEmpty, handleClear, handleData, scrollEnabled, handleEnd, handleBegin,
+    niss, handleSelectNiss, nisSelected, requests, inputValue, handleAddRequest, handleRemoveRequest, setInputValue,
+    handleFileSelect, handleFileRemove, selectedFiles
+  } = useComplaints();
+  
+  
 
+  
 
-    const handleOK = (signature) => {
-      console.log('entras');
-      if (onOK) {
-        onOK(signature);
-      }
-    };
-
+  const handleOK = (signature) => {
+    if (onOK) {
+      onOK(signature);
+    }
+  };
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -32,11 +38,35 @@ export default function FormComplaints({ text, onOK }) {
 
             <View style={styles.form}>
               <View style={styles.input}>
+                <Text style={styles.inputLabel}>NIS asociados a la queja</Text>
+                <MultiSelect
+                  items={niss}
+                  uniqueKey="id"
+                  ref={(component) => { this.multiSelect = component }}
+                  onSelectedItemsChange={handleSelectNiss}
+                  selectedItems={nisSelected}
+                  selectText="Selecciona los NIS asociados a la queja"
+                  searchInputPlaceholderText="Buscar NIS..."
+                  onChangeInput={(text) => console.log('pruebas ', text)}
+                  altFontFamily="ProximaNova-Light"
+                  tagRemoveIconColor="#fff"
+                  tagBorderColor="#000"
+                  tagContainerStyle={{backgroundColor:'#000'}}
+                  tagTextColor="#fff"
+                  selectedItemTextColor="#CCC"
+                  selectedItemIconColor="#CCC"
+                  itemTextColor="#000"
+                  displayKey="name"
+                  searchInputStyle={{ color: '#CCC' }}
+                  submitButtonColor="#000"
+                  submitButtonText="Seleccionar NIS"
+                />
+              </View>
+
+              <View style={styles.input}>
                 <Text style={styles.inputLabel}>Nombre</Text>
                 <TextInput
-                  keyboardType='email-address'
                   style={styles.inputControl}
-                  placeholder='usuario@ejemplo.com'
                   onSubmitEditing={Keyboard.dismiss}
                 />
               </View>
@@ -47,6 +77,53 @@ export default function FormComplaints({ text, onOK }) {
                   onSubmitEditing={Keyboard.dismiss}
                 />
               </View>
+              <View style={styles.input}>
+                <Text style={styles.inputLabel}>Descripción de la queja</Text>
+                <TextInput
+                  style={styles.inputControlMulti}
+                  onSubmitEditing={Keyboard.dismiss}
+                  multiline={true}
+                  rows={10}
+                />
+              </View>
+
+              <View style={styles.input}>
+                <Text style={styles.inputLabel}>Solicitudes expresas</Text>
+                <View style={styles.requestsContainer}>
+                  {requests.map((request, index) => (
+                    <View key={index} style={styles.requestBadge}>
+                      <Text style={styles.requestText}>{request}</Text>
+                      <TouchableOpacity onPress={() => handleRemoveRequest(index)}>
+                        <MaterialIcons name="close" size={16} color="#fff" />
+                      </TouchableOpacity>
+                    </View>
+                  ))}
+                </View>
+                <TextInput
+                  style={styles.inputControl}
+                  value={inputValue}
+                  onChangeText={setInputValue}
+                  onSubmitEditing={handleAddRequest}
+                  returnKeyType="done"
+                />
+                <Button title="Agregar solicitud" onPress={handleAddRequest} color={'#000'} />
+              </View>
+
+              <View style={styles.input}>
+                <Text style={styles.inputLabel}>Archivos (Opcional)</Text>
+                <Button title="Seleccionar archivos" onPress={handleFileSelect} color={'#000'} />
+                <View style={styles.filesContainer}>
+                  {selectedFiles.map((file, index) => (
+                    <View key={index} style={styles.fileBadge}>
+                      <Text style={styles.fileText}>{file.name}</Text>
+                      <TouchableOpacity onPress={() => handleFileRemove(index)}>
+                        <MaterialIcons name="close" size={16} color="#fff" />
+                      </TouchableOpacity>
+                    </View>
+                  ))}
+                </View>
+              </View>
+
               <View style={styles.input}>
                 <Text style={styles.inputLabel}>Confirma tu nombre</Text>
                 <TextInput
@@ -108,7 +185,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '100%',
-    marginBottom: 16,
+    marginBottom: 26,
   },
   inputLabel: {
     fontSize: 17,
@@ -123,6 +200,14 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     fontWeight: '500',
     color: '#222',
+  },
+  inputControlMulti: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    fontWeight: '500',
+    color: '#222',
+    height: 150
   },
   signatureContainer: {
     width: '100%',
@@ -156,5 +241,42 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#fff',
+  },
+  requestsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  requestBadge: {
+    backgroundColor: '#000',
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    marginRight: 8,
+    marginBottom: 8,
+  },
+  requestText: {
+    color: '#fff',
+    marginRight: 4,
+  },
+  filesContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 8,
+  },
+  fileBadge: {
+    backgroundColor: '#000',
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    marginRight: 8,
+    marginBottom: 8,
+  },
+  fileText: {
+    color: '#fff',
+    marginRight: 4,
   },
 });
