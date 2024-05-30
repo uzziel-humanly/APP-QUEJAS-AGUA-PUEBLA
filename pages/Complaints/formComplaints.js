@@ -153,7 +153,7 @@ export default function FormComplaints({ text, onOK }) {
                 </View>
 
                 <View style={styles.input}>
-                  <Text style={styles.inputLabel}>Solicitudes expresas</Text>
+                  <Text style={styles.inputLabel}>Solicitudes expresas (Máximo 6)</Text>
                   <Controller
                     control={control}
                     name="requests"

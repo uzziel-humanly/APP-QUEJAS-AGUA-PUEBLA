@@ -172,10 +172,15 @@ export function useComplaints() {
  
 
   const handleAddRequest = () => {
-    if (inputValue.trim()) {
-      setRequests([...requests, inputValue.trim()]);
-      setInputValue('');
-    }
+    let _request = ([...requests]);
+    if(_request.length < 6)
+      {
+        if (inputValue.trim()) {
+          setRequests([...requests, inputValue.trim()]);
+          setInputValue('');
+        }
+      }
+    
   };
 
   const handleRemoveRequest = (index) => {
