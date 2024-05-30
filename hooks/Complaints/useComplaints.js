@@ -90,6 +90,7 @@ export function useComplaints() {
     setInputValue('');
     requests.splice(0, requests.length);
     selectedFiles.splice(0, selectedFiles.length);
+    reset();
   };
 
   const getNisAccount = async () => {
