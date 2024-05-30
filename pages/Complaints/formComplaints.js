@@ -63,7 +63,7 @@ export default function FormComplaints({ text, onOK }) {
                   <Text style={styles.inputLabel}>NIS asociados a la queja</Text>
                   <Controller
                     control={control}
-                    name="nisSelected"
+                    name="nis"
                     rules={{ required: 'Selecciona al menos un NIS.' }}
                     render={({ field: { onChange, value } }) => (
                       <MultiSelect
@@ -90,14 +90,14 @@ export default function FormComplaints({ text, onOK }) {
                       />
                     )}
                   />
-                  {errors.nisSelected && <Text style={styles.errorText}>{errors.nisSelected.message}</Text>}
+                  {errors.nis && <Text style={styles.errorText}>{errors.nis.message}</Text>}
                 </View>
 
                 <View style={styles.input}>
                   <Text style={styles.inputLabel}>Nombre</Text>
                   <Controller
                     control={control}
-                    name="nombre"
+                    name="name"
                     rules={{ required: 'El nombre no puede estar vacío.' }}
                     render={({ field: { onChange, onBlur, value } }) => (
                       <TextInput
@@ -109,14 +109,14 @@ export default function FormComplaints({ text, onOK }) {
                       />
                     )}
                   />
-                  {errors.nombre && <Text style={styles.errorText}>{errors.nombre.message}</Text>}
+                  {errors.name && <Text style={styles.errorText}>{errors.name.message}</Text>}
                 </View>
 
                 <View style={styles.input}>
                   <Text style={styles.inputLabel}>Domicilio</Text>
                   <Controller
                     control={control}
-                    name="domicilio"
+                    name="address"
                     rules={{ required: 'El domicilio no puede estar vacío.' }}
                     render={({ field: { onChange, onBlur, value } }) => (
                       <TextInput
@@ -128,14 +128,14 @@ export default function FormComplaints({ text, onOK }) {
                       />
                     )}
                   />
-                  {errors.domicilio && <Text style={styles.errorText}>{errors.domicilio.message}</Text>}
+                  {errors.address && <Text style={styles.errorText}>{errors.address.message}</Text>}
                 </View>
 
                 <View style={styles.input}>
                   <Text style={styles.inputLabel}>Descripción de la queja</Text>
                   <Controller
                     control={control}
-                    name="descripcion"
+                    name="description"
                     rules={{ required: 'La descripción no puede estar vacía.' }}
                     render={({ field: { onChange, onBlur, value } }) => (
                       <TextInput
@@ -149,7 +149,7 @@ export default function FormComplaints({ text, onOK }) {
                       />
                     )}
                   />
-                  {errors.descripcion && <Text style={styles.errorText}>{errors.descripcion.message}</Text>}
+                  {errors.description && <Text style={styles.errorText}>{errors.description.message}</Text>}
                 </View>
 
                 <View style={styles.input}>
@@ -207,7 +207,7 @@ export default function FormComplaints({ text, onOK }) {
                   <Text style={styles.inputLabel}>Confirma tu nombre</Text>
                   <Controller
                     control={control}
-                    name="confirmNombre"
+                    name="name_confirmed"
                     rules={{ required: 'Confirma tu nombre.' }}
                     render={({ field: { onChange, onBlur, value } }) => (
                       <TextInput
@@ -219,7 +219,7 @@ export default function FormComplaints({ text, onOK }) {
                       />
                     )}
                   />
-                  {errors.confirmNombre && <Text style={styles.errorText}>{errors.confirmNombre.message}</Text>}
+                  {errors.name_confirmed && <Text style={styles.errorText}>{errors.name_confirmed.message}</Text>}
                 </View>
 
                 <View style={styles.signatureContainer}>
