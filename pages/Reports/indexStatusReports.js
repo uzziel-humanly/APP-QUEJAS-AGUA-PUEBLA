@@ -15,16 +15,30 @@ import axios from "axios";
 import { API_URL, API_TOKEN, API_AUTH } from "@env";
 import md5 from "js-md5";
 import { useState, useEffect } from "react";
+import { LinearGradient } from "expo-linear-gradient";
+
+const getRandomColors = () => {
+  const colorsList = [
+    ["#fda400", "#fda400"],
+    ["#00bf63", "#00bf63"],
+    ["#1bbac8", "#1bbac8"],
+  ];
+
+  const randomIndex = Math.floor(Math.random() * colorsList.length);
+  return colorsList[randomIndex];
+};
 
 export default function IndexStatusReports() {
   const tableHead = ["Folio seguimiento", "Estatus"];
   const [reportes, setReportes] = useState([]);
+  const [estatus, setEstatus] = useState([]);
 
   useEffect(() => {
-    getTipoArchivos();
+    getReportes();
+    getEstatus();
   }, []);
 
-  const getTipoArchivos = async () => {
+  const getReportes = async () => {
     try {
       let pass = md5(API_TOKEN);
       let credentials = `${API_AUTH}:${pass}`;
@@ -45,6 +59,7 @@ export default function IndexStatusReports() {
 
       if (response.data.estatus === "ok") {
         let _data = response.data.mensaje;
+        //console.log(_data);
         setReportes(_data);
       } else {
         //console.error("Error en la respuesta de la API");
@@ -55,7 +70,45 @@ export default function IndexStatusReports() {
     }
   };
 
-  const tableData = reportes.map((item) => [item.id, item.tipo]);
+  const getEstatus = async () => {
+    try {
+      let pass = md5(API_TOKEN);
+      let credentials = `${API_AUTH}:${pass}`;
+      let encodedCredentials = btoa(credentials);
+      let auth = "Basic " + encodedCredentials;
+
+      const data = {
+        id_usuario_app: "1",
+      };
+      let body = JSON.stringify(data);
+
+      let response = await axios({
+        method: "post",
+        url: `${API_URL}/api/getEstatus`,
+        headers: { Authorization: auth, "Content-Type": "application/json" },
+        data: body,
+      });
+
+      if (response.data.estatus === "ok") {
+        let _data = response.data.mensaje;
+        setEstatus(_data);
+      } else {
+        //console.error("Error en la respuesta de la API");
+      }
+    } catch (error) {
+      //console.error(error);
+      alert("Ocurrió un error en el servidor");
+    }
+  };
+
+  const tableData = reportes.map((item) => {
+    const status = estatus.find((status) => status.id === item.tipo);
+    return [item.id, status ? status.estatus : "Desconocido"];
+  });
+
+  console.log(tableData);
+
+  //const tableData = reportes.map((item) => [item.id, item.tipo]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -79,7 +132,55 @@ export default function IndexStatusReports() {
               style={styles.head}
               textStyle={{ textAlign: "center", color: "white" }}
             />
-            <Rows data={tableData} textStyle={{ textAlign: "center" }} />
+            {/* <Rows data={tableData} textStyle={{ textAlign: "center" }} /> */}
+            {tableData.map((reportes) => {
+              let color;
+
+              if (reportes[1] === "ALTA") {
+                color = "#fda400";
+              } else if (reportes[1] === "TRAMITE") {
+                color = "#00bf63";
+              } else if (reportes[1] === "CONCLUIDO") {
+                color = "#1bbac8";
+              }
+
+              return (
+                <LinearGradient
+                  //key={index}
+                  style={{
+                    width: 350,
+                    marginTop: 10,
+                    padding: 10,
+                    //backgroundColor: color,
+                    borderRadius: 20,
+                  }}
+                  colors={getRandomColors()}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        alignSelf: "left",
+                        color: "white",
+                        fontWeight: "600",
+                        marginRight: 100,
+                      }}
+                    >
+                      FOL-SOAP{reportes[0]}
+                    </Text>
+
+                    <Text style={{ color: "white", fontWeight: "600" }}>
+                      {reportes[1]}
+                    </Text>
+                  </View>
+                </LinearGradient>
+              );
+            })}
           </Table>
         </View>
       </ScrollView>
@@ -129,6 +230,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   container2: { flex: 1, padding: 16, color: "#ffffff" },
-  head: { height: 40, backgroundColor: "#52a7d7", color: "#FFFFFF" },
+  head: { height: 40, backgroundColor: "#000000", color: "#FFFFFF" },
   text: { margin: 6 },
 });

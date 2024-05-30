@@ -57,9 +57,13 @@ export function useHome() {
         navigation.navigate('Mi perfil');
     }
 
+    const getTransparencia = () => {
+        navigation.navigate('Transparencia');
+    }
+
  
 
     return {
-        username, email, welcomeMessage, viewProfile
+        username, email, welcomeMessage, viewProfile,getTransparencia
     }
 }

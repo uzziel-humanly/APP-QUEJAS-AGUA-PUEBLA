@@ -9,8 +9,15 @@ import {
   DrawerContentScrollView,
   createDrawerNavigator,
 } from "@react-navigation/drawer";
-import { StyleSheet, TouchableOpacity, Text, AppRegistry, Button } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  AppRegistry,
+  Button,
+} from "react-native";
 import Home from "../pages/indexHome";
+import TransparenciaPagina from "../pages/indexTransparencia";
 import Login from "../pages/Auth/indexLogin";
 import Register from "../pages/Auth/register";
 import BoardingScreen from "../pages/Components/boarding_screen";
@@ -61,17 +68,15 @@ const MenuItems = ({ navigation }) => {
 function MainStack() {
   return (
     <Drawer.Navigator
-    initialRouteName="Home"
-    drawerContent={(props) => <MenuItems {...props} />}
-    screenOptions={({ navigation }) => ({
-      headerStyle: {
-        backgroundColor: '#000', 
-      },
-      headerTintColor: '#fff', 
-      
-      
-    })}
-  >
+      initialRouteName="Home"
+      drawerContent={(props) => <MenuItems {...props} />}
+      screenOptions={({ navigation }) => ({
+        headerStyle: {
+          backgroundColor: "#000",
+        },
+        headerTintColor: "#fff",
+      })}
+    >
       <Drawer.Screen name="Inicio" component={Home} />
       <Drawer.Screen name="Quejas" component={Complaints} />
       <Drawer.Screen name="Reportes" component={Reports} />
@@ -86,7 +91,7 @@ export default function StackNavigation() {
         contentContainerStyle={{ minHeight: "100%", overflow: "visible" }}
         style={styles.container}
       > */}
-      <Stack.Navigator initialRouteName={"IndexScreen"}>
+      <Stack.Navigator initialRouteName={"Login"}>
         <Stack.Screen
           name="Boarding"
           component={IndexBoarding}
@@ -133,9 +138,10 @@ export default function StackNavigation() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="BoardingScreenReport"
+          name="Regresar a reportes"
           component={BoardingScreenReport}
-          options={{ headerShown: false }}
+          //options={{ headerShown: false }}
+          options={{ headerTitle: false, headerBackTitle: false }}
         />
         <Stack.Screen
           name="FormReports"
@@ -152,6 +158,11 @@ export default function StackNavigation() {
           component={IndexStatusReports}
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="Transparencia"
+          component={TransparenciaPagina}
+          options={{ headerTitle: false, headerBackTitle: false }}
+        />
       </Stack.Navigator>
       {/* </GestureHandlerRootView> */}
     </NavigationContainer>
@@ -166,7 +177,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 40,
     marginBottom: 20,
-    color:'#000'
+    color: "#000",
   },
   buttonContainer: {
     backgroundColor: "#d9d9d9",
