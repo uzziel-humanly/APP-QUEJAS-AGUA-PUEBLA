@@ -105,10 +105,12 @@ export default function FormReports() {
 
   const [tipoReporte, setTipoReporte] = useState([]);
   const [tipoIncidencia, setTipoIncidencia] = useState([]);
+  const [colonias, setColonias] = useState([]);
 
   useEffect(() => {
     getTipoReporte();
     getTipoIncidencia();
+    getCatalogoColonias();
   }, []);
 
   const getTipoReporte = async () => {
@@ -153,6 +155,32 @@ export default function FormReports() {
       if (response.data.estatus === "ok") {
         let _data = response.data.incidencia;
         setTipoIncidencia(_data);
+      } else {
+        alert("Ocurrió un error en el servidor");
+        //console.error("Error en la respuesta de la API");
+      }
+    } catch (error) {
+      //console.error(error);
+      alert("Ocurrió un error en el servidor");
+    }
+  };
+
+  const getCatalogoColonias = async () => {
+    try {
+      let pass = md5(API_TOKEN);
+      let credentials = `${API_AUTH}:${pass}`;
+      let encodedCredentials = btoa(credentials);
+      let auth = "Basic " + encodedCredentials;
+
+      let response = await axios({
+        method: "post",
+        url: `${API_URL}/api/getColonias`,
+        headers: { Authorization: auth, "Content-Type": "application/json" },
+      });
+
+      if (response.data.estatus === "ok") {
+        let _data = response.data.mensaje;
+        setColonias(_data);
       } else {
         alert("Ocurrió un error en el servidor");
         //console.error("Error en la respuesta de la API");
@@ -378,11 +406,11 @@ export default function FormReports() {
                       placeholder="#No. exterior"
                     />
                   )}
-                  name="noExterior"
+                  name="num_ext"
                   defaultValue=""
                 />
-                {errors.noExterior && (
-                  <Text style={styles.error}>{errors.noExterior.message}</Text>
+                {errors.num_ext && (
+                  <Text style={styles.error}>{errors.num_ext.message}</Text>
                 )}
               </View>
 
@@ -402,11 +430,11 @@ export default function FormReports() {
                       placeholder="#No. interior (Opcional)"
                     />
                   )}
-                  name="noInterior"
+                  name="num_int"
                   defaultValue=""
                 />
-                {errors.noInterior && (
-                  <Text style={styles.error}>{errors.noInterior.message}</Text>
+                {errors.num_int && (
+                  <Text style={styles.error}>{errors.num_int.message}</Text>
                 )}
               </View>
 
@@ -426,9 +454,9 @@ export default function FormReports() {
                         }}
                       >
                         <Picker.Item label="Selecciona tu colonia" value="" />
-                        {tipoReporte.map((item) => (
+                        {colonias.map((item) => (
                           <Picker.Item
-                            label={item.tipo}
+                            label={item.nombre}
                             value={item.id}
                             key={item.id}
                           />
@@ -436,11 +464,11 @@ export default function FormReports() {
                       </Picker>
                     </View>
                   )}
-                  name="colonia"
+                  name="id_colonia"
                   defaultValue=""
                 />
-                {errors.colonia && (
-                  <Text style={styles.error}>Este campo es obligatorio.</Text>
+                {errors.id_colonia && (
+                  <Text style={styles.error}>La colonia es obligatoria</Text>
                 )}
               </View>
             </View>

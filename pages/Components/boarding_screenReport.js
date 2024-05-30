@@ -21,14 +21,14 @@ export default function BoardingScreenReport() {
             style={styles.headerImg}
           />
 
-          <View style={styles.formAction}>
+          {/* <View style={styles.formAction}>
             <TouchableOpacity
               style={styles.btn}
               onPress={handleClickReport}
             >
               <Text style={styles.btnTxt}>Regresar</Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
         </View>
       </View>
     </View>

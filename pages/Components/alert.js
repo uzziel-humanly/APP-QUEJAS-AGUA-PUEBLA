@@ -37,7 +37,7 @@ export const AlertPrincipal = () => {
         },
         {
           text: "OK",
-          onPress: () => navigation.navigate("BoardingScreenReport"),
+          onPress: () => navigation.navigate("Regresar a reportes"),
         },
       ]);
     } else if (data[0].status == "Error") {
