@@ -248,7 +248,9 @@ export default function FormComplaints({ text, onOK }) {
                   />
                   {errors.signature && <Text style={styles.errorText}>{errors.signature.message}</Text>}
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 16 }}>
-                    <Button title="Limpiar firma" onPress={handleClear} color={'#000'} />
+                    <TouchableOpacity onPress={handleClear}>
+                      <Text>Repetir firma</Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
 

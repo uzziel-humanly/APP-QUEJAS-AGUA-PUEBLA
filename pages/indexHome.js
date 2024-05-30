@@ -29,6 +29,12 @@ export default function Home() {
         </TouchableOpacity>
       </View>
       <View style={{ marginBottom: 40 }}>
+
+        <View style={{marginBottom:40}}>
+        <Text style={styles.title}>Nuestros horarios</Text>
+        <Text style={styles.subtitle}>Lunes a viernes de 08:00 a 17:00</Text>
+        </View>
+
         <Text style={styles.title}>Transparencia</Text>
         <View style={styles.groupButtons}>
           <TouchableOpacity
@@ -91,12 +97,14 @@ const styles = StyleSheet.create({
     fontSize: 27,
     textAlign: "left",
     marginLeft: 5,
+    
   },
   subtitle: {
     fontSize: 15,
     fontWeight: "500",
     color: "#929292",
-    textAlign: "center",
+    marginLeft: 10,
+    marginTop:10
   },
   input: {
     width: "100%",
