@@ -1,5 +1,5 @@
 import * as DocumentPicker from "expo-document-picker";
-import { useRef, useEffect, useState, createRef } from "react";
+import { useRef, useEffect, useState, createRef, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import MultiSelect from "react-native-multiple-select";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -9,7 +9,9 @@ import { useFocusEffect } from "@react-navigation/native";
 export function useComplaints() {
 
   //New complaint
+  const { control, handleSubmit, formState: { errors }, reset, setValue } = useForm();
   const [enabledForm, setEnabledForm] = useState(false);
+  
 
   const [scrollEnabled, setScrollEnabled] = useState(true);
 
@@ -62,6 +64,33 @@ export function useComplaints() {
     cursor: pointer; /* Ensure buttons are clickable */
   }
   `;
+  const [isFormVisible, setIsFormVisible] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      setIsFormVisible(false);
+      return () => {
+        handleClearForm();
+      };
+    }, [])
+  );
+
+  useEffect(() => {
+    if (isFormVisible) {
+      handleClearForm();
+    }
+  }, [isFormVisible]);
+
+  const handleNewComplaint = () => {
+    setIsFormVisible(true);
+  };
+
+  const handleClearForm = () => {
+    handleSelectNiss([]);
+    setInputValue('');
+    requests.splice(0, requests.length);
+    selectedFiles.splice(0, selectedFiles.length);
+  };
 
   const getNisAccount = async () => {
     let _niss = [];
@@ -103,6 +132,7 @@ export function useComplaints() {
 
      
       setSelectedFiles(_selectedFiles);
+      setValue("file", _selectedFiles);
     }
   };
 
@@ -151,6 +181,16 @@ export function useComplaints() {
     setRequests(requests.filter((_, i) => i !== index));
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      setEnabledForm(false);
+    }, [])
+  );
+
+
+  const onSubmit = (data) => {
+    console.log(data);
+  };
 
   return {
 
@@ -160,7 +200,7 @@ export function useComplaints() {
     //Create complaint
     ref, webStyle, handleEmpty, handleClear, handleEnd, handleData, scrollEnabled, handleBegin,
     niss, handleSelectNiss, nisSelected, handleAddRequest, handleRemoveRequest, requests, inputValue, setInputValue,
-    handleFileSelect, handleFileRemove, selectedFiles
+    handleFileSelect, handleFileRemove, selectedFiles, isFormVisible, handleNewComplaint, setValue, handleSubmit, control, errors, onSubmit
    
   };
 }
