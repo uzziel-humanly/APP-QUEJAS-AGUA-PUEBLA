@@ -11,7 +11,7 @@ import {
   Button,
   Switch,
   KeyboardAvoidingView,
-  Platform
+  Platform,
 } from "react-native";
 import { useRegister } from "../../hooks/useRegister";
 import { useForm, Controller } from "react-hook-form";
@@ -26,6 +26,7 @@ import * as FileSystem from "expo-file-system";
 import { Asset } from "expo-asset";
 import { WebView } from "react-native-webview";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { PDFIMP } from "../../assets/docPrueba.pdf";
 
 export default function Register() {
   //Boton para guardar el formulario
@@ -312,11 +313,11 @@ export default function Register() {
                       placeholder="*********"
                     />
                   )}
-                  name="pass"
+                  name="passprev"
                   defaultValue=""
                 />
-                {errors.pass && (
-                  <Text style={styles.error}>{errors.pass.message}</Text>
+                {errors.passprev && (
+                  <Text style={styles.error}>{errors.passprev.message}</Text>
                 )}
               </View>
 

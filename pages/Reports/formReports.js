@@ -23,6 +23,8 @@ import md5 from "js-md5";
 import { Picker } from "@react-native-picker/picker";
 import { useFocusEffect } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
+import * as DocumentPicker from "expo-document-picker";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function FormReports() {
   const { handleRegisterReport } = useReports();
@@ -104,12 +106,13 @@ export default function FormReports() {
   };
 
   const [tipoReporte, setTipoReporte] = useState([]);
-  const [tipoIncidencia, setTipoIncidencia] = useState([]);
+  const [incidenciaFiltrada, setIncidenciaFiltrada] = useState([]);
+
   const [colonias, setColonias] = useState([]);
 
   useEffect(() => {
     getTipoReporte();
-    getTipoIncidencia();
+    //getTipoIncidencia();
     getCatalogoColonias();
   }, []);
 
@@ -139,7 +142,7 @@ export default function FormReports() {
     }
   };
 
-  const getTipoIncidencia = async () => {
+  const getTipoIncidencia = async (idTipo) => {
     try {
       let pass = md5(API_TOKEN);
       let credentials = `${API_AUTH}:${pass}`;
@@ -154,9 +157,14 @@ export default function FormReports() {
 
       if (response.data.estatus === "ok") {
         let _data = response.data.incidencia;
-        setTipoIncidencia(_data);
+        //En esta parte filtramos por el idTipo que se haya seleccionado
+        const incidenciaFiltrada = _data.filter(
+          (incidencia) => incidencia.id_tipo === idTipo
+        );
+        //Lo asiganamos al arreglo de incidencias con los nuevos campos filtrados
+        setIncidenciaFiltrada(incidenciaFiltrada);
       } else {
-        alert("Ocurrió un error en el servidor");
+        alert("Ocurrió un error en la petición");
         //console.error("Error en la respuesta de la API");
       }
     } catch (error) {
@@ -188,6 +196,57 @@ export default function FormReports() {
     } catch (error) {
       //console.error(error);
       alert("Ocurrió un error en el servidor");
+    }
+  };
+
+  const [selectedDocument, setSelectedDocument] = useState("");
+
+  // const handleDocumentPicker = async (setValue, option) => {
+  //   try {
+  //     let result = await DocumentPicker.getDocumentAsync({});
+  //     if (result.assets.length == 1) {
+  //       if (option == "evidencia") {
+  //         setSelectedDocument(result.assets.name);
+  //         setValue("evidencia", result);
+  //       }
+  //     }
+  //   } catch (err) {
+  //     //console.log("Error picking document: ", err);
+  //   }
+  // };
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [base64Image, setBase64Image] = useState(null);
+
+  const handleDocumentPicker = async (setValue, option) => {
+    let permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert("Necesitamos permisos para acceder a tu multimedia");
+      return;
+    }
+
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        // allowsEditing: true,
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        // aspect: [4, 3],
+        // quality: 1,
+        base64: true,
+        mediaType: "photo",
+        allowsEditing: true,
+        //aspect:[4,3],
+        quality: 0.1,
+      });
+
+      if (option == "evidencia") {
+        let base64Image = `data:image/jpeg;base64,${result.assets[0].base64}`;
+        base64Image = base64Image.replace(/(?:\r\n|\r|\n)/g, "");
+        setImage(result.assets.name);
+        setValue("evidencia", base64Image);
+      }
+    } catch (err) {
+      //console.log("Error picking document: ", err);
+      //alert("Ocurrió un error en el servidor");
     }
   };
 
@@ -231,6 +290,7 @@ export default function FormReports() {
                         onValueChange={(itemValue) => {
                           onChange(itemValue);
                           setSelectedValue(itemValue);
+                          getTipoIncidencia(itemValue);
                         }}
                       >
                         <Picker.Item label="Selecciona una opción" value="" />
@@ -244,10 +304,10 @@ export default function FormReports() {
                       </Picker>
                     </View>
                   )}
-                  name="id_tipo_reporte"
+                  name="id_tipo"
                   defaultValue=""
                 />
-                {errors.id_tipo_reporte && (
+                {errors.id_tipo && (
                   <Text style={styles.error}>Este campo es obligatorio.</Text>
                 )}
               </View>
@@ -272,7 +332,7 @@ export default function FormReports() {
                         }}
                       >
                         <Picker.Item label="Selecciona una opción" value="" />
-                        {tipoIncidencia.map((item) => (
+                        {incidenciaFiltrada.map((item) => (
                           <Picker.Item
                             label={item.incidencia.toUpperCase()}
                             value={item.id}
@@ -282,38 +342,51 @@ export default function FormReports() {
                       </Picker>
                     </View>
                   )}
-                  name="id_tipo_incidencia"
+                  name="id_incidencia"
                   defaultValue=""
                 />
-                {errors.id_tipo_incidencia && (
+                {errors.id_incidencia && (
                   <Text style={styles.error}>Este campo es obligatorio.</Text>
                 )}
               </View>
 
               <Text style={styles.inputLabel}>Fotografia de incidencia:</Text>
-              <Controller
-                control={control}
-                name="evidencia"
-                rules={{ required: true }}
-                render={({ field: { onChange, value } }) => (
-                  <View>
-                    <TouchableOpacity
-                      style={styles.button}
-                      //onPress={takePhoto}
-                      onPress={() => takePhoto("PICINCIDENCIA")}
-                    >
-                      <AntDesign name="camera" size={24} color="#FFFFFF" />
-                      <Text style={styles.buttonText}>Toma una foto</Text>
-                    </TouchableOpacity>
-                    {value && (
-                      <Text style={styles.selectedText}>{value.name}</Text>
-                    )}
-                  </View>
-                )}
-              />
-              {errors.evidencia && (
+              <View style={styles.btnFotos}>
+                <Controller
+                  control={control}
+                  name="evidencia"
+                  //rules={{ required: true }}
+                  render={({ field: { onChange, value } }) => (
+                    <View>
+                      <TouchableOpacity
+                        style={styles.button}
+                        //onPress={takePhoto}
+                        onPress={() => takePhoto("PICINCIDENCIA")}
+                      >
+                        <AntDesign name="camera" size={24} color="#FFFFFF" />
+                        <Text style={styles.buttonText}>Toma una foto</Text>
+                      </TouchableOpacity>
+                      {value && (
+                        <Text style={styles.selectedText}>{value.name}</Text>
+                      )}
+                    </View>
+                  )}
+                />
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => handleDocumentPicker(setValue, "evidencia")}
+                >
+                  <MaterialCommunityIcons
+                    name="file-image-outline"
+                    size={24}
+                    color="#FFFFFF"
+                  />
+                  <Text style={styles.buttonText}>Adjunta imagen</Text>
+                </TouchableOpacity>
+              </View>
+              {/* {errors.evidencia && (
                 <Text style={styles.error}>La fotografia es obligatoria.</Text>
-              )}
+              )} */}
 
               <View style={styles.inputContainer}>
                 <Text style={styles.inputLabel}>
@@ -619,16 +692,18 @@ const styles = StyleSheet.create({
   },
   button: {
     width: 150,
+    height: 45,
     flexDirection: "row",
     backgroundColor: "#00bf63",
     padding: 10,
     borderRadius: 8,
     marginBottom: 10,
-    alignSelf: "center",
+    marginRight: 4,
   },
   buttonText: {
     color: "#FFFFFF",
-    marginLeft: 10,
+
+    //marginLeft: 10,
   },
   formAction: {
     marginVertical: 24,
@@ -666,6 +741,9 @@ const styles = StyleSheet.create({
   picker: {
     height: 50,
     width: "100%",
+  },
+  btnFotos: {
+    flexDirection: "row",
   },
 
   // selectedPicker: {

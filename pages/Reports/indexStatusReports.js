@@ -8,14 +8,18 @@ import {
   TextInput,
   TouchableOpacity,
   Switch,
+  ActivityIndicator,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Table, Row, Rows } from "react-native-table-component";
 import axios from "axios";
 import { API_URL, API_TOKEN, API_AUTH } from "@env";
 import md5 from "js-md5";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { LinearGradient } from "expo-linear-gradient";
+import { useReports } from "../../hooks/Reports/useReports";
+import ModalReports from "./modalReports";
+import { useFocusEffect } from "@react-navigation/native";
 
 const getRandomColors = () => {
   const colorsList = [
@@ -29,14 +33,25 @@ const getRandomColors = () => {
 };
 
 export default function IndexStatusReports() {
+  const { modalVisible, setModalVisible, idReporte, handleModalReport } =
+    useReports();
+
   const tableHead = ["Folio seguimiento", "Estatus"];
   const [reportes, setReportes] = useState([]);
   const [estatus, setEstatus] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    getReportes();
-    getEstatus();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getReportes();
+      getEstatus();
+    }, [])
+  );
+
+  // useEffect(() => {
+  //   getReportes();
+  //   getEstatus();
+  // }, []);
 
   const getReportes = async () => {
     try {
@@ -61,6 +76,7 @@ export default function IndexStatusReports() {
         let _data = response.data.mensaje;
         //console.log(_data);
         setReportes(_data);
+        setLoading(false);
       } else {
         //console.error("Error en la respuesta de la API");
       }
@@ -106,7 +122,7 @@ export default function IndexStatusReports() {
     return [item.id, status ? status.estatus : "Desconocido"];
   });
 
-  console.log(tableData);
+  //console.log(tableData);
 
   //const tableData = reportes.map((item) => [item.id, item.tipo]);
 
@@ -126,62 +142,81 @@ export default function IndexStatusReports() {
         </View>
 
         <View style={styles.container2}>
-          <Table borderStyle={styles.tableBorder}>
-            <Row
-              data={tableHead}
-              style={styles.head}
-              textStyle={{ textAlign: "center", color: "white" }}
-            />
-            {/* <Rows data={tableData} textStyle={{ textAlign: "center" }} /> */}
-            {tableData.map((reportes) => {
-              let color;
+          {loading ? (
+            // Si loading es true, no se muestra nada
+            <ActivityIndicator size="large" />
+          ) : (
+            !loading && (
+              <Table borderStyle={styles.tableBorder}>
+                <Row
+                  data={tableHead}
+                  style={styles.head}
+                  textStyle={{ textAlign: "center", color: "white" }}
+                />
 
-              if (reportes[1] === "ALTA") {
-                color = "#fda400";
-              } else if (reportes[1] === "TRAMITE") {
-                color = "#00bf63";
-              } else if (reportes[1] === "CONCLUIDO") {
-                color = "#1bbac8";
-              }
+                {/* <Rows data={tableData} textStyle={{ textAlign: "center" }} /> */}
+                {tableData.map((reportes) => {
+                  let color;
 
-              return (
-                <LinearGradient
-                  //key={index}
-                  style={{
-                    width: 350,
-                    marginTop: 10,
-                    padding: 10,
-                    //backgroundColor: color,
-                    borderRadius: 20,
-                  }}
-                  colors={getRandomColors()}
-                >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Text
-                      style={{
-                        alignSelf: "left",
-                        color: "white",
-                        fontWeight: "600",
-                        marginRight: 100,
-                      }}
+                  if (reportes[1] === "ALTA") {
+                    color = "#fda400";
+                  } else if (reportes[1] === "TRAMITE") {
+                    color = "#00bf63";
+                  } else if (reportes[1] === "CONCLUIDO") {
+                    color = "#1bbac8";
+                  }
+
+                  return (
+                    <TouchableOpacity
+                      onPress={() => handleModalReport(reportes[0])}
                     >
-                      FOL-SOAP{reportes[0]}
-                    </Text>
+                      <LinearGradient
+                        //key={index}
+                        style={{
+                          width: 350,
+                          marginTop: 10,
+                          padding: 10,
+                          //backgroundColor: color,
+                          borderRadius: 20,
+                        }}
+                        colors={getRandomColors()}
+                      >
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Text
+                            style={{
+                              alignSelf: "left",
+                              color: "white",
+                              fontWeight: "600",
+                              marginRight: 100,
+                            }}
+                          >
+                            FOL-SOAP{reportes[0]}
+                          </Text>
 
-                    <Text style={{ color: "white", fontWeight: "600" }}>
-                      {reportes[1]}
-                    </Text>
-                  </View>
-                </LinearGradient>
-              );
-            })}
-          </Table>
+                          <Text style={{ color: "white", fontWeight: "600" }}>
+                            {reportes[1]}
+                          </Text>
+                        </View>
+                      </LinearGradient>
+                    </TouchableOpacity>
+                  );
+                })}
+              </Table>
+            )
+          )}
+          {modalVisible && (
+            <ModalReports
+              modalVisible={modalVisible}
+              setModalVisible={setModalVisible}
+              idReporte={idReporte}
+            />
+          )}
         </View>
       </ScrollView>
     </GestureHandlerRootView>

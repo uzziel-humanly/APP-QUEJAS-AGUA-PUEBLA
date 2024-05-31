@@ -4,10 +4,13 @@ import md5 from "js-md5";
 import axios from "axios";
 import { AlertPrincipal } from "../../pages/Components/alert";
 import { useNavigation } from "@react-navigation/native";
+import { useState, useEffect, useCallback } from "react";
 
 export const useReports = () => {
   const { showAlertReport } = AlertPrincipal();
   const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [idReporte, setIdReporte] = useState('');
 
   //* Acciones registro *//
   const handleRegisterReport = async (data) => {
@@ -21,8 +24,6 @@ export const useReports = () => {
       const additionalData = {
         id_usuario_app: "1",
         folio: "SOAPAP1",
-        id_tipo: "1",
-        id_incidencia: "1",
         fecha: currentDate,
       };
       //Esa informacion extra la metemos dentro del json body
@@ -59,8 +60,19 @@ export const useReports = () => {
     navigation.navigate("FormReports");
   };
 
+  
+  const handleModalReport = (id) => {
+    setIdReporte(id);
+    setModalVisible(!modalVisible);
+  
+}
+
   return {
     handleRegisterReport,
     handleClickReport,
+    handleModalReport,
+    modalVisible, setModalVisible,
+    idReporte,setIdReporte
   };
+
 };

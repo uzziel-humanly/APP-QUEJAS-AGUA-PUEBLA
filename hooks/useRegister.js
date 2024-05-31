@@ -19,8 +19,9 @@ export function useRegister() {
   const onSubmit = async (data) => {
     //  const onSubmit = (data) => {
     var json = data;
-    if (data.pass == data.passwordConfirmation) {
+    if (data.passprev == data.passwordConfirmation) {
       try {
+        let passcyrpt = md5(data.passprev);
         let pass = md5(API_TOKEN);
         let credentials = `${API_AUTH}:${pass}`;
         let encodedCredentials = btoa(credentials);
@@ -32,10 +33,12 @@ export function useRegister() {
           .split("T")[1]
           .split(".")[0];
 
+        //console.log("A->"+passcyrpt);
         const additionalData = {
           fecha_registro: currentDate,
           hr_registro: currentTime,
           id_estatus_registro: "1",
+          pass:passcyrpt
         };
         //Esa informacion extra la metemos dentro del json body
         const completeData = { ...data, ...additionalData };
