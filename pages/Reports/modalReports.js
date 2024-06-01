@@ -24,6 +24,7 @@ export default function ModalReports({
   modalVisible,
   setModalVisible,
   idReporte,
+  status
 }) {
   const [dataFiltrada, setDataFiltrada] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -100,9 +101,10 @@ export default function ModalReports({
                     ) : !loading && dataFiltrada ? (
                       // Si loading es false y dataFiltrada tiene datos, mostrar los datos
                       <View>
-                        <Text>Folio: {dataFiltrada.folio}</Text>
+                        <Text style={{}}>Folio: {dataFiltrada.folio}</Text>
                         <Text>Descripcion: {dataFiltrada.descripcion}</Text>
                         <Text>Fecha: {dataFiltrada.fecha}</Text>
+                        <Text>Estatus: {status}</Text>
                         <Text>Evidencia:</Text>
                         <Image
                           source={{

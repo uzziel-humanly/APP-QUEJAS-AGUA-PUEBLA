@@ -82,34 +82,154 @@ export default function Register() {
   const takePhoto = async (option) => {
     try {
       let result = await ImagePicker.launchCameraAsync({
+        mediaType: "photo",
         allowsEditing: true,
-        aspect: [4, 3],
         quality: 1,
       });
+
+      let dato = {
+        uri: result.assets[0].uri,
+        type: "image/jpeg",
+        name: result.assets[0].fileName,
+      };
+
       if (option == "PICINEFRONTAL") {
         setImage(result.assets.name);
-        setValue("imageIneFrontal", result);
+        setValue("Archivo2", dato);
       } else if (option == "PICINETRASERO") {
         setImage(result.assets.name);
-        setValue("imageIneTrasero", result);
+        setValue("Archivo3", result.assets);
       } else if (option == "PICRECIBO") {
         setImage(result.assets.name);
-        setValue("imageRecibo", result);
+        setValue("Archivo4", result.assets);
       } else if (option == "PICCDOM") {
         setImage(result.assets.name);
-        setValue("imageComprobante", result);
+        setValue("imageComprobante", result.assets);
       } else if (option == "SELFIE") {
         setImage(result.assets.name);
-        setValue("selfie", result);
+        setValue("Archivo1", result.assets);
       }
 
-      if (!result.cancelled) {
+      if (!result.canceled) {
         setImage(result.uri);
       }
     } catch (err) {
       //console.log("Error picking document: ", err);
     }
   };
+
+  // const takePhoto = async (option) => {
+  //   try {
+  //     let result = await ImagePicker.launchCameraAsync({
+  //       mediaType: "photo",
+  //       allowsEditing: true,
+  //       quality: 0.1,
+  //     });
+
+  //     if (!result.canceled) {
+  //       const photo = result.assets[0];
+  //       const response = await fetch(photo.uri);
+  //       const blob = await response.blob();
+
+  //       // Prepare the form data
+  //       const formData = new FormData();
+  //       // Append the blob to the FormData
+  //       formData.append("Archivo2", {
+  //         uri: photo.uri,
+  //         name: photo.fileName || "photo.jpg",
+  //         type: photo.type || "image/jpeg",
+  //         data: blob,
+  //       });
+
+  //       // Set the image and form data for the specific option
+  //       if (option === "PICINEFRONTAL") {
+  //         setImage(photo.uri);
+  //         setValue("Archivo2", formData._parts[0]);
+  //       } else if (option === "PICINETRASERO") {
+  //         setImage(photo.uri);
+  //         setValue("Archivo3", formData);
+  //       } else if (option === "PICRECIBO") {
+  //         setImage(photo.uri);
+  //         setValue("Archivo4", formData);
+  //       } else if (option === "PICCDOM") {
+  //         setImage(photo.uri);
+  //         setValue("imageComprobante", formData);
+  //       } else if (option === "SELFIE") {
+  //         setImage(photo.uri);
+  //         setValue("Archivo1", formData);
+  //       }
+  //     }
+  //   } catch (err) {
+  //     console.log("Error picking document: ", err);
+  //   }
+  // };
+
+  // const takePhoto = async (option) => {
+  //   try {
+  //     let result = await ImagePicker.launchCameraAsync({
+  //       mediaType: "photo",
+  //       allowsEditing: true,
+  //       quality: 0.1,
+  //     });
+
+  //     //console.log(result);
+
+  //     if (!result.canceled) {
+  //       const photo = result.assets[0];
+  //       const formData = new FormData();
+
+  //       formData.append("file", {
+  //         uri: photo.uri,
+  //         name: photo.fileName || "photo.jpg",
+  //         type: photo.type || "image/jpeg",
+  //       });
+
+  //       let keyName = "";
+  //       if (option === "PICINEFRONTAL") {
+  //         keyName = "Archivo2";
+  //         formData.append(keyName, {
+  //           uri: photo.uri,
+  //           name: photo.fileName || "photo.jpg",
+  //           type: photo.type || "image/jpeg",
+  //         });
+  //         console.log(formData._parts[1]);
+  //         setValue("Archivo2", formData._parts[1].uri);
+  //       } else if (option === "PICINETRASERO") {
+  //         keyName = "Archivo3";
+  //         formData.append(keyName, {
+  //           uri: photo.uri,
+  //           name: photo.fileName || "photo.jpg",
+  //           type: photo.type || "image/jpeg",
+  //         });
+  //         setValue("Archivo3", formData._parts[1].keyName);
+  //       } else if (option === "PICRECIBO") {
+  //         keyName = "Archivo4";
+  //         formData.append(keyName, {
+  //           uri: photo.uri,
+  //           name: photo.fileName || "photo.jpg",
+  //           type: photo.type || "image/jpeg",
+  //         });
+  //         setValue("Archivo4", formData._parts[1].keyName);
+  //       } else if (option === "PICCDOM") {
+  //         keyName = "imageComprobante";
+  //       } else if (option === "SELFIE") {
+  //         keyName = "Archivo1";
+  //         formData.append(keyName, {
+  //           uri: photo.uri,
+  //           name: photo.fileName || "photo.jpg",
+  //           type: photo.type || "image/jpeg",
+  //         });
+  //         setValue("Archivo4", formData._parts[1].keyName);
+  //       }
+
+  //       if (!result.canceled) {
+  //         setImage(result.uri);
+  //       }
+  //     }
+  //   } catch (err) {
+  //     console.log("Error picking document: ", err);
+  //   }
+  // };
 
   // const [facing, setFacing] = useState("back");
   const [permission, requestPermission] = useCameraPermissions();

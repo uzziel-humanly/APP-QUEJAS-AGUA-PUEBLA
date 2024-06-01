@@ -23,9 +23,14 @@ import { useFocusEffect } from "@react-navigation/native";
 
 const getRandomColors = () => {
   const colorsList = [
-    ["#fda400", "#fda400"],
+    //["#fda400", "#fda400"],
     ["#00bf63", "#00bf63"],
-    ["#1bbac8", "#1bbac8"],
+    //["#1bbac8", "#1bbac8"],
+    //["#72e128", "#72e128"],
+    ["#26c6f9", "#26c6f9"],
+    //["#dfdfe3", "#dfdfe3"],
+    //["#7678100", "#7678100"],
+    ["#4b4b4b", "#4b4b4b"],
   ];
 
   const randomIndex = Math.floor(Math.random() * colorsList.length);
@@ -33,8 +38,13 @@ const getRandomColors = () => {
 };
 
 export default function IndexStatusReports() {
-  const { modalVisible, setModalVisible, idReporte, handleModalReport } =
-    useReports();
+  const {
+    modalVisible,
+    setModalVisible,
+    idReporte,
+    handleModalReport,
+    status,
+  } = useReports();
 
   const tableHead = ["Folio seguimiento", "Estatus"];
   const [reportes, setReportes] = useState([]);
@@ -168,7 +178,9 @@ export default function IndexStatusReports() {
 
                   return (
                     <TouchableOpacity
-                      onPress={() => handleModalReport(reportes[0])}
+                      onPress={() =>
+                        handleModalReport(reportes[0], reportes[1])
+                      }
                     >
                       <LinearGradient
                         //key={index}
@@ -215,6 +227,7 @@ export default function IndexStatusReports() {
               modalVisible={modalVisible}
               setModalVisible={setModalVisible}
               idReporte={idReporte}
+              status={status}
             />
           )}
         </View>

@@ -11,6 +11,7 @@ export const useReports = () => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [idReporte, setIdReporte] = useState('');
+  const [status, setStatus] = useState('');
 
   //* Acciones registro *//
   const handleRegisterReport = async (data) => {
@@ -29,7 +30,7 @@ export const useReports = () => {
       //Esa informacion extra la metemos dentro del json body
       const completeData = { ...data, ...additionalData };
       let body = JSON.stringify(completeData);
-      //console.log(body);
+      console.log(body);
 
       let response = await axios({
         method: "POST",
@@ -61,8 +62,9 @@ export const useReports = () => {
   };
 
   
-  const handleModalReport = (id) => {
+  const handleModalReport = (id,estatus) => {
     setIdReporte(id);
+    setStatus(estatus);
     setModalVisible(!modalVisible);
   
 }
@@ -72,7 +74,7 @@ export const useReports = () => {
     handleClickReport,
     handleModalReport,
     modalVisible, setModalVisible,
-    idReporte,setIdReporte
+    idReporte,setIdReporte,status,setStatus
   };
 
 };

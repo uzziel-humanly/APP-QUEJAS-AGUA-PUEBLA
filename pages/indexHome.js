@@ -58,7 +58,13 @@ export default function Home() {
 
       <View>
         <Text style={styles.title}>Módulo comercial</Text>
-        <TouchableOpacity style={styles.btnNeutral2}>
+        <TouchableOpacity style={styles.btnNeutral2}
+           onPress={() => {
+            Linking.openURL(
+              "https://www.aguapuebla.mx/"
+            );
+          }}
+        >
           <Text style={styles.textNeutral}>Mi servicio</Text>
         </TouchableOpacity>
       </View>
