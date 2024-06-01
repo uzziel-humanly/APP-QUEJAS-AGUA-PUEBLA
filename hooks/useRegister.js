@@ -9,134 +9,139 @@ import md5 from "js-md5";
 export function useRegister() {
   const { showAlertRegister, showAlertPasswordIncorrect } = AlertPrincipal();
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
+  const [passwordMatch, setPasswordMatch] = useState(0);
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [messagePassword, setMessagePassword] = useState("");
+  const [messagePassword2, setMessagePassword2] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   //Validacion de contraseña ingresada
   const handleCheckPassword = (e) => {
     let password = e.target.value;
     //console.log(password);
   };
 
-  //* Acciones registro *//
-  // const onSubmit = async (data) => {
-  //   var formData = new FormData();
-
-  //   // Agrega los datos adicionales al FormData
-  //   formData.append("document", "NADA");
-  //   formData.append("nombre", data.nombre);
-  //   formData.append("apellido_p", data.apellido_p);
-  //   formData.append("apellido_m", data.apellido_m);
-  //   // Agrega otros campos según sea necesario
-
-  //   // Agrega el archivo físico al FormData
-  //   if (data.Archivo2 && data.Archivo2[0] && data.Archivo2[0].uri) {
-  //     formData.append("Archivo2", {
-  //       uri: data.Archivo2[0].uri,
-  //       type: "image/jpeg",
-  //       name: data.Archivo2[0].fileName,
-  //     });
-  //   }
-
-  //   // Realiza una solicitud POST al servidor
-  //   try {
-  //     let passcyrpt = md5(data.passprev);
-  //     let pass = md5(API_TOKEN);
-  //     let credentials = `${API_AUTH}:${pass}`;
-  //     let encodedCredentials = btoa(credentials);
-  //     let auth = "Basic " + encodedCredentials;
-  //     //Obtenemos el la fecha actual y la hora para el registro
-  //     const currentDate = new Date().toISOString().split("T")[0];
-  //     const currentTime = new Date().toISOString().split("T")[1].split(".")[0];
-
-  //     console.log(formData);
-
-  //     let response = await fetch(
-  //       `https://hs.ac-labs.com.mx/copia_insumos/contenido/apis/api.php?metodo=registerApp`,
-  //       {
-  //         method: "POST",
-  //         body: formData,
-  //       }
-  //     );
-  //     let responseData = await response.json();
-  //     if (responseData.estatus === "ok") {
-  //       const data = [{ status: "Exito", msj: "Los datos se han registrado" }];
-  //       showAlertRegister(data);
-  //     } else {
-  //       const data = [
-  //         {
-  //           status: "Error",
-  //           msj: "Ha ocurrido un error al intentar registrar los datos",
-  //         },
-  //       ];
-  //       showAlertRegister(data);
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     alert("Ocurrió un error en el servidor");
-  //   }
-  // };
-
   const onSubmit = async (data) => {
-    //console.log(data);
+    console.log(data);
+    setLoading(true);
     if (data.passprev === data.passwordConfirmation) {
-      let passcyrpt = md5(data.passprev);
-      let pass = md5(API_TOKEN);
-      let credentials = `${API_AUTH}:${pass}`;
-      let encodedCredentials = btoa(credentials);
-      let auth = "Basic " + encodedCredentials;
-      const currentDate = new Date().toISOString().split("T")[0];
-      const currentTime = new Date().toISOString().split("T")[1].split(".")[0];
-      // Crear un objeto FormData
-      const formData = new FormData();
-      // Añadir el archivo a FormData
-      // formData.append("Archivo2", {
-      //   uri: data.Archivo2[0].uri,
-      //   type: "image/jpeg",
-      //   name: data.Archivo2[0].fileName,
-      // });
-
-      formData.append("Archivo3", {
-        uri: data.Archivo3[0].uri,
-        type: "image/jpeg",
-        name: data.Archivo3[0].fileName,
-      });
-
-      // formData.append("Archivo3", {
-      //   uri: data.Archivo3[0].uri,
-      //   type: "image/jpeg",
-      //   name: data.Archivo3[0].fileName,
-      // });
-      formData.append("nombre", data.nombre);
-      formData.append("Archivo2", data.Archivo2);
-      formData.append("apellido_p", data.apellido_p);
-      formData.append("apellido_m", data.apellido_m);
-      formData.append("nis", data.nis);
-      formData.append("celular", data.celular);
-      formData.append("correo", data.correo);
-      formData.append("id_tipo_cuenta", data.id_tipo_cuenta);
-      formData.append("fecha_registro", currentDate);
-      formData.append("hr_registro", currentTime);
-      formData.append("id_estatus_registro", "1");
-      formData.append("pass", passcyrpt);
-
-      console.log(data);
-
       try {
-        let response = await axios.post(
-          "https://hs.ac-labs.com.mx/copia_insumos/contenido/apis/api.php?metodo=registerApp",
-          data,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: auth,
-            },
+        let passcyrpt = md5(data.passprev);
+        let pass = md5(API_TOKEN);
+        let credentials = `${API_AUTH}:${pass}`;
+        let encodedCredentials = btoa(credentials);
+        let auth = "Basic " + encodedCredentials;
+        const currentDate = new Date().toISOString().split("T")[0];
+        const currentTime = new Date()
+          .toISOString()
+          .split("T")[1]
+          .split(".")[0];
+
+        // Crear un objeto FormData
+        const formData = new FormData();
+
+        if (data.Archivo1 != undefined) {
+          formData.append("archivo1", {
+            uri: data.Archivo1[0].uri,
+            type: "image/jpeg",
+            name: data.Archivo1[0].fileName,
+          });
+        }
+
+        if (data.Archivo2 != undefined) {
+          formData.append("archivo2", {
+            uri: data.Archivo2[0].uri,
+            type: "image/jpeg",
+            name: data.Archivo2[0].fileName,
+          });
+        }
+
+        if (data.Archivo3 != undefined) {
+          formData.append("archivo3", {
+            uri: data.Archivo3[0].uri,
+            type: "image/jpeg",
+            name: data.Archivo3[0].fileName,
+          });
+        }
+
+        if (data.Archivo4 != undefined) {
+          var formato = "";
+          var name = "";
+          var uri = "";
+          if (data.banF4 == "1") {
+            formato = "image/jpeg";
+            name = data.Archivo4[0].fileName;
+            uri = data.Archivo4[0].uri;
+          } else if (data.banD4 == "2") {
+            formato = "application/pdf";
+            name = data.Archivo4.assets[0].name;
+            uri = data.Archivo4.assets[0].uri;
           }
-        );
+          formData.append("archivo4", {
+            uri: uri,
+            type: formato,
+            name: name,
+          });
+        }
+
+        if (data.Archivo5 != undefined) {
+          var formato = "";
+          var name = "";
+          var uri = "";
+          if (data.banF5 == "1") {
+            formato = "image/jpeg";
+            name = data.Archivo5[0].fileName;
+            uri = data.Archivo5[0].uri;
+          } else if (data.banD5 == "2") {
+            formato = "application/pdf";
+            name = data.Archivo5.assets[0].name;
+            uri = data.Archivo5.assets[0].uri;
+          }
+          formData.append("archivo5", {
+            uri: uri,
+            type: formato,
+            name: name,
+          });
+        }
+
+        formData.append("nombre", data.nombre);
+        formData.append("apellido_p", data.apellido_p);
+        formData.append("apellido_m", data.apellido_m);
+        formData.append("nis", data.nis);
+        formData.append("celular", data.celular);
+        formData.append("correo", data.correo);
+        formData.append("id_tipo_cuenta", data.id_tipo_cuenta);
+        formData.append("fecha_registro", currentDate);
+        formData.append("hr_registro", currentTime);
+        formData.append("id_estatus_registro", "1");
+        formData.append("pass", passcyrpt);
+        console.log(formData);
+
+        // let response = await axios({
+        //   method: "POST",
+        //   url: `${API_URL}/api/registrar`,
+        //   headers: {
+        //     Authorization: auth,
+        //     "Content-Type": "multipart/form-data",
+        //   },
+        //   data: formData,
+        // });
+
+        // let response = await axios({
+        //   method: "post",
+        //   url: `https://hs.ac-labs.com.mx/copia_insumos/contenido/apis/api.php?metodo=registerApp`,
+        //   headers: { "Content-Type": "multipart/form-data" },
+        //   data: formData,
+        // });
 
         if (response.data.estatus === "ok") {
+          setLoading(false);
           const data = [
             { status: "Exito", msj: "Los datos se han registrado" },
           ];
           showAlertRegister(data);
         } else {
+          setLoading(false);
           const data = [
             {
               status: "Error",
@@ -146,10 +151,12 @@ export function useRegister() {
           showAlertRegister(data);
         }
       } catch (error) {
-        console.error("Error:", error);
+        setLoading(false);
+        //console.error(error);
         alert("Ocurrió un error en el servidor");
       }
     } else {
+      setLoading(false);
       const data = [
         { status: "Advertencia", msj: "Las contraseñas no coinciden" },
       ];
@@ -157,157 +164,36 @@ export function useRegister() {
     }
   };
 
-  //  const onSubmit = async (data) => {
-
-  //   //  const onSubmit = (data) => {
-  //   var json = data;
-  //   if (data.passprev == data.passwordConfirmation) {
-  //     //try {
-  //       let passcyrpt = md5(data.passprev);
-  //       let pass = md5(API_TOKEN);
-  //       let credentials = `${API_AUTH}:${pass}`;
-  //       let encodedCredentials = btoa(credentials);
-  //       let auth = "Basic " + encodedCredentials;
-  //       //Obtenemos el la fecha actual y la hora para el registro
-  //       const currentDate = new Date().toISOString().split("T")[0];
-  //       const currentTime = new Date()
-  //         .toISOString()
-  //         .split("T")[1]
-  //         .split(".")[0];
-  //         var formData = new FormData();
-  //         formData.append("Archivo2", {
-  //           uri: data.Archivo2[0].uri,
-  //           type: "image/jpeg",
-  //           name: data.Archivo2[0].fileName,
-  //         });
-
-  //       //console.log("A->"+data.Archivo2[0].fileName);
-  //       const additionalData = {
-  //         fecha_registro: currentDate,
-  //         hr_registro: currentTime,
-  //         id_estatus_registro: "1",
-  //         pass:passcyrpt,
-  //         //Archivo3:[formData],
-  //       };
-  //       //Esa informacion extra la metemos dentro del json body
-  //       const completeData = { ...data, ...additionalData };
-  //       let body = JSON.stringify(completeData);
-  //       console.log(body);
-  //       // let response = await axios({
-  //       //   method: "POST",
-  //       //   url: `${API_URL}/api/registrar`,
-  //       //   headers: { Authorization: auth, "Content-Type": "application/json" },
-  //       //   data: body,
-  //       // });
-  //       let response = await axios({
-  //         method: "post",
-  //         url: `https://hs.ac-labs.com.mx/copia_insumos/contenido/apis/api.php?metodo=registerApp`,
-  //         headers: {  "Content-Type": "application/json" },
-  //         data: json
-  //       });
-
-  //       if (response.data.estatus === "ok") {
-  //         const data = [
-  //           { status: "Exito", msj: "Los datos se han registrado" },
-  //         ];
-  //         showAlertRegister(data);
-  //       } else {
-  //         const data = [
-  //           {
-  //             status: "Error",
-  //             msj: "Ha ocurrido un error al intentar registrar los datos",
-  //           },
-  //         ];
-  //         showAlertRegister(data);
-  //       }
-  //     // } catch (error) {
-  //     //   console.error(error);
-  //     //   alert("Ocurrió un error en el servidor");
-  //     // }
-  //   } else {
-  //     const data = [
-  //       { status: "Advertencia", msj: "Las contraseñas no coinciden" },
-  //     ];
-  //     showAlertPasswordIncorrect(data);
-  //   }
-  // };
-
-  // const onSubmit = async (data) => {
-  //   var formData = new FormData();
-
-  //   // Agrega los datos adicionales al FormData
-  //   formData.append('document', 'NADA');
-  //   formData.append('nombre', data.nombre);
-  //   formData.append('apellido_p', data.apellido_p);
-  //   formData.append('apellido_m', data.apellido_m);
-  //   // Agrega otros campos según sea necesario
-
-  //   // Agrega el archivo físico al FormData
-  //   if (data.Archivo2 && data.Archivo2[0] && data.Archivo2[0].uri) {
-  //     formData.append('Archivo2', {
-  //       uri: data.Archivo2[0].uri,
-  //       type: 'image/jpeg',
-  //       name: data.Archivo2[0].fileName,
-  //     });
-  //   }
-
-  //   // Realiza una solicitud POST al servidor
-  //   try {
-  //     let passcyrpt = md5(data.passprev);
-  //     let pass = md5(API_TOKEN);
-  //     let credentials = `${API_AUTH}:${pass}`;
-  //     let encodedCredentials = btoa(credentials);
-  //     let auth = "Basic " + encodedCredentials;
-  //     //Obtenemos el la fecha actual y la hora para el registro
-  //     const currentDate = new Date().toISOString().split("T")[0];
-  //     const currentTime = new Date()
-  //       .toISOString()
-  //       .split("T")[1]
-  //       .split(".")[0];
-
-  //     // Agrega los datos adicionales al FormData
-  //     formData.append('fecha_registro', currentDate);
-  //     formData.append('hr_registro', currentTime);
-  //     formData.append('id_estatus_registro', "1");
-  //     formData.append('pass', passcyrpt);
-
-  //     console.log(formData);
-
-  //     // Realiza la solicitud al servidor
-  //     let response = await fetch(`https://hs.ac-labs.com.mx/copia_insumos/contenido/apis/api.php?metodo=registerApp`, {
-  //       method: 'POST',
-  //       body: formData,
-  //     });
-
-  //     // Maneja la respuesta del servidor
-  //     let responseData = await response.json();
-  //     if (responseData.estatus === "ok") {
-  //       const data = [
-  //         { status: "Exito", msj: "Los datos se han registrado" },
-  //       ];
-  //       showAlertRegister(data);
-  //     } else {
-  //       const data = [
-  //         {
-  //           status: "Error",
-  //           msj: "Ha ocurrido un error al intentar registrar los datos",
-  //         },
-  //       ];
-  //       showAlertRegister(data);
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     alert("Ocurrió un error en el servidor");
-  //   }
-  // };
-
   const handleClickLogin = (e) => {
     navigation.navigate("Login");
+  };
+
+  const handleConfirmPassword = (Text) => {
+    if (Text.trim() === "") {
+      setPasswordMatch(2);
+      setMessagePassword2("La contraseña no puede estar vacía");
+    } else if (newPassword !== Text) {
+      setPasswordMatch(2);
+      setMessagePassword2("Las contraseñas no coinciden");
+    } else {
+      setPasswordMatch(1);
+      setMessagePassword2("Las contraseñas coinciden");
+    }
+  };
+
+  const inputPassword = (Text) => {
+    setNewPassword(Text);
   };
 
   return {
     onSubmit,
     handleCheckPassword,
     handleClickLogin,
+    loading,
+    setLoading,
+    handleConfirmPassword,
+    passwordMatch,
+    messagePassword2,
+    inputPassword,
   };
 }

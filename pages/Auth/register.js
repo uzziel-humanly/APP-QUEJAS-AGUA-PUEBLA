@@ -12,6 +12,7 @@ import {
   Switch,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import { useRegister } from "../../hooks/useRegister";
 import { useForm, Controller } from "react-hook-form";
@@ -26,11 +27,28 @@ import * as FileSystem from "expo-file-system";
 import { Asset } from "expo-asset";
 import { WebView } from "react-native-webview";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { PDFIMP } from "../../assets/docPrueba.pdf";
+import { Feather } from "@expo/vector-icons";
 
 export default function Register() {
   //Boton para guardar el formulario
-  const { onSubmit } = useRegister();
+  const {
+    onSubmit,
+    loading,
+    setLoading,
+    handleConfirmPassword,
+    passwordMatch,
+    messagePassword2,
+    inputPassword,
+  } = useRegister();
+  const [disabledButtons, setDisabledButtons] = useState({
+    SELFIE: false,
+    PICINEFRONTAL: false,
+    PICINETRASERO: false,
+    PICRECIBO: false,
+    PICCDOM: false,
+    RECIBOPDF: false,
+    CDOMIPDF: false,
+  });
   //Formulario
   const {
     control,
@@ -46,14 +64,22 @@ export default function Register() {
 
   const handleDocumentPicker = async (setValue, option) => {
     try {
-      let result = await DocumentPicker.getDocumentAsync({});
+      let result = await DocumentPicker.getDocumentAsync({
+        type: ["application/pdf"],
+      });
       if (result.assets.length == 1) {
         if (option == "RECIBOPDF") {
-          setSelectedDocument(result.assets.name);
-          setValue("reciboPDF", result);
+          setDisabledButtons((prev) => ({ ...prev, [option]: true }));
+          setSelectedDocument(result.assets);
+          setValue("Archivo4", result);
+          setValue("banD4", "2");
+          setDisabledButtons((prev) => ({ ...prev, ["PICRECIBO"]: false }));
         } else if (option == "CDOMIPDF") {
-          setSelectedDocument(result.assets.name);
-          setValue("comprobantePDF", result);
+          setDisabledButtons((prev) => ({ ...prev, [option]: true }));
+          setSelectedDocument(result.assets);
+          setValue("Archivo5", result);
+          setValue("banD5", "2");
+          setDisabledButtons((prev) => ({ ...prev, ["PICCDOM"]: false }));
         }
       }
     } catch (err) {
@@ -74,7 +100,7 @@ export default function Register() {
     setValue("image", result);
     //console.log(result);
 
-    if (!result.cancelled) {
+    if (!result.canceled) {
       //setImage(result.uri);
     }
   };
@@ -84,28 +110,31 @@ export default function Register() {
       let result = await ImagePicker.launchCameraAsync({
         mediaType: "photo",
         allowsEditing: true,
-        quality: 1,
+        quality: 0.5,
       });
 
-      let dato = {
-        uri: result.assets[0].uri,
-        type: "image/jpeg",
-        name: result.assets[0].fileName,
-      };
-
       if (option == "PICINEFRONTAL") {
+        setDisabledButtons((prev) => ({ ...prev, [option]: true }));
         setImage(result.assets.name);
-        setValue("Archivo2", dato);
+        setValue("Archivo2", result.assets);
       } else if (option == "PICINETRASERO") {
+        setDisabledButtons((prev) => ({ ...prev, [option]: true }));
         setImage(result.assets.name);
         setValue("Archivo3", result.assets);
       } else if (option == "PICRECIBO") {
+        setDisabledButtons((prev) => ({ ...prev, [option]: true }));
         setImage(result.assets.name);
         setValue("Archivo4", result.assets);
+        setValue("banF4", "1");
+        setDisabledButtons((prev) => ({ ...prev, ["RECIBOPDF"]: false }));
       } else if (option == "PICCDOM") {
+        setDisabledButtons((prev) => ({ ...prev, [option]: true }));
         setImage(result.assets.name);
-        setValue("imageComprobante", result.assets);
+        setValue("Archivo5", result.assets);
+        setValue("banF5", "1");
+        setDisabledButtons((prev) => ({ ...prev, ["CDOMIPDF"]: false }));
       } else if (option == "SELFIE") {
+        setDisabledButtons((prev) => ({ ...prev, [option]: true }));
         setImage(result.assets.name);
         setValue("Archivo1", result.assets);
       }
@@ -118,120 +147,6 @@ export default function Register() {
     }
   };
 
-  // const takePhoto = async (option) => {
-  //   try {
-  //     let result = await ImagePicker.launchCameraAsync({
-  //       mediaType: "photo",
-  //       allowsEditing: true,
-  //       quality: 0.1,
-  //     });
-
-  //     if (!result.canceled) {
-  //       const photo = result.assets[0];
-  //       const response = await fetch(photo.uri);
-  //       const blob = await response.blob();
-
-  //       // Prepare the form data
-  //       const formData = new FormData();
-  //       // Append the blob to the FormData
-  //       formData.append("Archivo2", {
-  //         uri: photo.uri,
-  //         name: photo.fileName || "photo.jpg",
-  //         type: photo.type || "image/jpeg",
-  //         data: blob,
-  //       });
-
-  //       // Set the image and form data for the specific option
-  //       if (option === "PICINEFRONTAL") {
-  //         setImage(photo.uri);
-  //         setValue("Archivo2", formData._parts[0]);
-  //       } else if (option === "PICINETRASERO") {
-  //         setImage(photo.uri);
-  //         setValue("Archivo3", formData);
-  //       } else if (option === "PICRECIBO") {
-  //         setImage(photo.uri);
-  //         setValue("Archivo4", formData);
-  //       } else if (option === "PICCDOM") {
-  //         setImage(photo.uri);
-  //         setValue("imageComprobante", formData);
-  //       } else if (option === "SELFIE") {
-  //         setImage(photo.uri);
-  //         setValue("Archivo1", formData);
-  //       }
-  //     }
-  //   } catch (err) {
-  //     console.log("Error picking document: ", err);
-  //   }
-  // };
-
-  // const takePhoto = async (option) => {
-  //   try {
-  //     let result = await ImagePicker.launchCameraAsync({
-  //       mediaType: "photo",
-  //       allowsEditing: true,
-  //       quality: 0.1,
-  //     });
-
-  //     //console.log(result);
-
-  //     if (!result.canceled) {
-  //       const photo = result.assets[0];
-  //       const formData = new FormData();
-
-  //       formData.append("file", {
-  //         uri: photo.uri,
-  //         name: photo.fileName || "photo.jpg",
-  //         type: photo.type || "image/jpeg",
-  //       });
-
-  //       let keyName = "";
-  //       if (option === "PICINEFRONTAL") {
-  //         keyName = "Archivo2";
-  //         formData.append(keyName, {
-  //           uri: photo.uri,
-  //           name: photo.fileName || "photo.jpg",
-  //           type: photo.type || "image/jpeg",
-  //         });
-  //         console.log(formData._parts[1]);
-  //         setValue("Archivo2", formData._parts[1].uri);
-  //       } else if (option === "PICINETRASERO") {
-  //         keyName = "Archivo3";
-  //         formData.append(keyName, {
-  //           uri: photo.uri,
-  //           name: photo.fileName || "photo.jpg",
-  //           type: photo.type || "image/jpeg",
-  //         });
-  //         setValue("Archivo3", formData._parts[1].keyName);
-  //       } else if (option === "PICRECIBO") {
-  //         keyName = "Archivo4";
-  //         formData.append(keyName, {
-  //           uri: photo.uri,
-  //           name: photo.fileName || "photo.jpg",
-  //           type: photo.type || "image/jpeg",
-  //         });
-  //         setValue("Archivo4", formData._parts[1].keyName);
-  //       } else if (option === "PICCDOM") {
-  //         keyName = "imageComprobante";
-  //       } else if (option === "SELFIE") {
-  //         keyName = "Archivo1";
-  //         formData.append(keyName, {
-  //           uri: photo.uri,
-  //           name: photo.fileName || "photo.jpg",
-  //           type: photo.type || "image/jpeg",
-  //         });
-  //         setValue("Archivo4", formData._parts[1].keyName);
-  //       }
-
-  //       if (!result.canceled) {
-  //         setImage(result.uri);
-  //       }
-  //     }
-  //   } catch (err) {
-  //     console.log("Error picking document: ", err);
-  //   }
-  // };
-
-  // const [facing, setFacing] = useState("back");
   const [permission, requestPermission] = useCameraPermissions();
 
   if (!permission) {
@@ -427,7 +342,11 @@ export default function Register() {
                     <TextInput
                       style={styles.inputControl}
                       onBlur={onBlur}
-                      onChangeText={onChange}
+                      //onChangeText={onChange}
+                      onChangeText={(input) => {
+                        onChange(input);
+                        inputPassword(input);
+                      }}
                       value={value}
                       secureTextEntry={true}
                       placeholder="*********"
@@ -450,9 +369,14 @@ export default function Register() {
                   }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
+                      //onChangeText={handleChangeConfirmNewPassword}
                       style={styles.inputControl}
                       onBlur={onBlur}
-                      onChangeText={onChange}
+                      //onChangeText={onChange}
+                      onChangeText={(input) => {
+                        onChange(input);
+                        handleConfirmPassword(input);
+                      }}
                       value={value}
                       secureTextEntry={true}
                       placeholder="*********"
@@ -461,6 +385,16 @@ export default function Register() {
                   name="passwordConfirmation"
                   defaultValue=""
                 />
+                {passwordMatch === 1 && (
+                  <Text style={{ alignSelf: "flex-start", color: "green" }}>
+                    {messagePassword2} ✅
+                  </Text>
+                )}
+                {passwordMatch === 2 && (
+                  <Text style={{ alignSelf: "flex-start", color: "red" }}>
+                    {messagePassword2} ❌
+                  </Text>
+                )}
                 {errors.passwordConfirmation && (
                   <Text style={styles.error}>
                     {errors.passwordConfirmation.message}
@@ -505,7 +439,10 @@ export default function Register() {
               <Text style={styles.inputLabel}>INE (Por ambos lados):</Text>
               <View style={styles.containerBtn}>
                 <TouchableOpacity
-                  style={styles.button}
+                  style={[
+                    styles.button,
+                    disabledButtons.PICINEFRONTAL && styles.buttonDisabled,
+                  ]}
                   //onPress={takePhoto}
                   onPress={() => takePhoto("PICINEFRONTAL")}
                 >
@@ -517,7 +454,10 @@ export default function Register() {
                 )}
 
                 <TouchableOpacity
-                  style={styles.button}
+                  style={[
+                    styles.button,
+                    disabledButtons.PICINETRASERO && styles.buttonDisabled,
+                  ]}
                   //onPress={takePhoto}
                   onPress={() => takePhoto("PICINETRASERO")}
                 >
@@ -540,7 +480,10 @@ export default function Register() {
                   render={({ field: { onChange, value } }) => (
                     <View> */}
                 <TouchableOpacity
-                  style={styles.button}
+                  style={[
+                    styles.button,
+                    disabledButtons.RECIBOPDF && styles.buttonDisabled,
+                  ]}
                   onPress={() => handleDocumentPicker(setValue, "RECIBOPDF")}
                 >
                   <FontAwesome name="file-pdf-o" size={24} color="#FFFFFF" />
@@ -557,7 +500,10 @@ export default function Register() {
                 )} */}
 
                 <TouchableOpacity
-                  style={styles.button}
+                  style={[
+                    styles.button,
+                    disabledButtons.PICRECIBO && styles.buttonDisabled,
+                  ]}
                   //onPress={takePhoto}
                   onPress={() => takePhoto("PICRECIBO")}
                 >
@@ -580,7 +526,10 @@ export default function Register() {
                   render={({ field: { onChange, value } }) => (
                     <View> */}
                 <TouchableOpacity
-                  style={styles.button}
+                  style={[
+                    styles.button,
+                    disabledButtons.CDOMIPDF && styles.buttonDisabled,
+                  ]}
                   onPress={() => handleDocumentPicker(setValue, "CDOMIPDF")}
                 >
                   <FontAwesome name="file-pdf-o" size={24} color="#FFFFFF" />
@@ -597,7 +546,10 @@ export default function Register() {
                 )} */}
 
                 <TouchableOpacity
-                  style={styles.button}
+                  style={[
+                    styles.button,
+                    disabledButtons.PICCDOM && styles.buttonDisabled,
+                  ]}
                   //onPress={takePhoto}
                   onPress={() => takePhoto("PICCDOM")}
                 >
@@ -611,7 +563,11 @@ export default function Register() {
 
               <Text style={styles.inputLabel}>Fotografia (Selfie):</Text>
               <TouchableOpacity
-                style={styles.button}
+                //disabled={disabledButtons.SELFIE}
+                style={[
+                  styles.button,
+                  disabledButtons.SELFIE && styles.buttonDisabled,
+                ]}
                 //onPress={takePhoto}
                 onPress={() => takePhoto("SELFIE")}
               >
@@ -697,12 +653,53 @@ export default function Register() {
             </View>
 
             <View style={styles.formAction}>
-              <TouchableOpacity
-                style={styles.btn}
-                onPress={handleSubmit(onSubmit)}
-              >
-                <Text style={styles.btnTxt}>Registrar</Text>
-              </TouchableOpacity>
+              {loading ? (
+                // Si loading es true, se muestra el indicador de carga
+                <ActivityIndicator size="large" />
+              ) : (
+                !loading &&
+                // Si no está cargando y no hay errores, se muestra el botón de registrar
+                (Object.keys(errors).length === 0 ? (
+                  <TouchableOpacity
+                    style={styles.btn}
+                    onPress={handleSubmit(onSubmit)}
+                  >
+                    <Text style={styles.btnTxt}>Registrar</Text>
+                  </TouchableOpacity>
+                ) : (
+                  // Si no está cargando pero hay errores, se muestra el mensaje de alerta
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      padding: 10,
+                      width: 320,
+                      borderRadius: 10,
+                      backgroundColor: "#feba29",
+                    }}
+                  >
+                    <Feather
+                      style={{
+                        marginRight: 5,
+                        marginTop: 5,
+                      }}
+                      name="alert-triangle"
+                      size={24}
+                      color="white"
+                    />
+                    <Text
+                      style={{
+                        fontWeight: "600",
+                        color: "white",
+                        fontSize: 14,
+                        textAlign: "center",
+                      }}
+                    >
+                      Hay campos requeridos que necesitan ser completados.
+                      ¡Verifica!
+                    </Text>
+                  </View>
+                ))
+              )}
             </View>
           </View>
         </View>
@@ -885,5 +882,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     alignItems: "center",
     color: "blue",
+  },
+  buttonDisabled: {
+    backgroundColor: "#A9A9A9",
   },
 });
