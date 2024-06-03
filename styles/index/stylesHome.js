@@ -22,7 +22,7 @@ export const ButtonP = styled(TouchableOpacity)`
 `;
 
 export const ButtonPrimary = styled(TouchableOpacity)`
-  background-color: ${(props) => props.theme.Colors.ui.info};
+  background-color: ${(props) => props.theme.Colors.ui.secondary};
   padding-vertical: 15px;
   padding-horizontal: 10px;
   border-radius: 10px;
@@ -72,7 +72,7 @@ export const Title = styled.Text`
 `;
 
 export const NeutralButton = styled(TouchableOpacity)`
-  background-color: ${(props) => props.theme.Colors.ui.info};
+  background-color: ${(props) => props.theme.Colors.ui.secondary};
   padding-vertical: 15px;
   padding-horizontal: 10px;
   border-radius: 10px;

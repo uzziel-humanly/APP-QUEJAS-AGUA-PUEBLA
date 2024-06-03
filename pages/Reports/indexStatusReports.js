@@ -20,6 +20,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useReports } from "../../hooks/Reports/useReports";
 import ModalReports from "./modalReports";
 import { useFocusEffect } from "@react-navigation/native";
+import {Title1, ButtonP} from "../../styles/index/stylesHome"
 
 const getRandomColors = () => {
   const colorsList = [
@@ -140,7 +141,7 @@ export default function IndexStatusReports() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.container}>
-          <Text style={styles.title}>Historial de reportes</Text>
+          <Title1>Historial de reportes</Title1>
           <View style={styles.line} />
 
           <Image

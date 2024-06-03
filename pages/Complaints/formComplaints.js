@@ -9,14 +9,19 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useForm, Controller } from 'react-hook-form';
 import { RadioGroup } from 'react-native-radio-buttons-group';
 import SelectDropdown from 'react-native-select-dropdown';
+import {ButtonP, Title1} from '../../styles/index/stylesHome';
+import styled, {useTheme} from 'styled-components/native';
+import { theme } from '../../theme';
 
 export default function FormComplaints({ text, onOK }) {
   const {
     ref, webStyle, handleEmpty, handleClear, handleData, scrollEnabled, handleEnd, handleBegin,
     niss, handleSelectNiss, nisSelected, requests, inputValue, handleAddRequest, handleRemoveRequest, setInputValue,
     handleFileSelect, handleFileRemove, selectedFiles, handleNewComplaint, isFormVisible, handleSubmit, control, setValue, errors, onSubmit,
-    gender, handleSelectgender, idGender, nisComplaint, niss2,colony
+    gender, handleSelectgender, idGender, nisComplaint, niss2,colony, availableNiss
   } = useComplaints();
+
+  const theme = useTheme();
 
   const [filteredColonies, setFilteredColonies] = useState(colony);
 
@@ -45,7 +50,7 @@ export default function FormComplaints({ text, onOK }) {
           {!isFormVisible ? (
             <View style={styles.container}>
               <View style={styles.header}>
-                <Text style={styles.title}>QUEJAS</Text>
+                <Title1>QUEJAS</Title1>
                 <Text style={styles.subtitle}>Si deseas registrar una nueva queja, selecciona la opción de "Registrar una nueva queja" y contesta el formulario</Text>
                 <Image
                   source={require('../../assets/newComplaint.png')}
@@ -53,18 +58,17 @@ export default function FormComplaints({ text, onOK }) {
                 />
               </View>
               <View style={styles.formAction}>
-                <TouchableOpacity
+                <ButtonP
                   onPress={handleNewComplaint}
-                  style={styles.btn}
                 >
                   <Text style={styles.btnTxt}>Registrar nueva queja</Text>
-                </TouchableOpacity>
+                </ButtonP>
               </View>
             </View>
           ) : (
             <View style={styles.container}>
               <View style={styles.header}>
-                <Text style={styles.title}>Formulario de Quejas</Text>
+                <Title1>Formulario de quejas</Title1>
               </View>
 
 
@@ -73,7 +77,7 @@ export default function FormComplaints({ text, onOK }) {
 
 
               <View style={styles.input}>
-                <Text style={styles.inputLabel}>Nis de la queja</Text>
+                <Text style={styles.inputLabel}>NIS de la queja</Text>
                 <Controller
                   control={control}
                   name="nis"
@@ -123,7 +127,7 @@ export default function FormComplaints({ text, onOK }) {
                     rules={{ required: 'Selecciona al menos un NIS.' }}
                     render={({ field: { onChange, value } }) => (
                       <MultiSelect
-                        items={niss}
+                        items={availableNiss}
                         uniqueKey="id"
                         ref={(component) => { this.multiSelect = component }}
                         onSelectedItemsChange={onChange}
@@ -133,15 +137,15 @@ export default function FormComplaints({ text, onOK }) {
                         onChangeInput={(text) => console.log('pruebas ', text)}
                         altFontFamily="ProximaNova-Light"
                         tagRemoveIconColor="#fff"
-                        tagBorderColor="#000"
-                        tagContainerStyle={{ backgroundColor: '#000' }}
+                        tagBorderColor={theme.Colors.ui.primary}
+                        tagContainerStyle={{ backgroundColor: theme.Colors.ui.primary }}
                         tagTextColor="#fff"
                         selectedItemTextColor="#CCC"
                         selectedItemIconColor="#CCC"
                         itemTextColor="#000"
                         displayKey="name"
                         searchInputStyle={{ color: '#CCC' }}
-                        submitButtonColor="#000"
+                        submitButtonColor={theme.Colors.ui.secondary}
                         submitButtonText="Seleccionar NIS"
                       />
                     )}
@@ -306,7 +310,7 @@ export default function FormComplaints({ text, onOK }) {
                         <Button title="Agregar solicitud" onPress={() => {
                           handleAddRequest();
                           onChange([...requests, inputValue]);
-                        }} color={'#000'} />
+                        }} color={theme.Colors.ui.secondary} />
                       </>
                     )}
                   />
@@ -315,7 +319,7 @@ export default function FormComplaints({ text, onOK }) {
 
                 <View style={styles.input}>
                 <Text style={styles.inputLabel}>Archivos (Opcional)</Text>
-                <Button title="Seleccionar archivos" onPress={handleFileSelect} color={'#000'} />
+                <Button title="Seleccionar archivos" onPress={handleFileSelect} color={theme.Colors.ui.secondary} />
                 <View style={styles.filesContainer}>
                   {selectedFiles.map((file, index) => (
                     <View key={index} style={styles.fileBadge}>
@@ -363,11 +367,10 @@ export default function FormComplaints({ text, onOK }) {
                 </View>
 
                 <View style={styles.formAction}>
-                  <TouchableOpacity onPress={handleSubmit(onSubmit)}>
-                    <View style={styles.btn}>
+                  <ButtonP
+                   onPress={handleSubmit(onSubmit)}>
                       <Text style={styles.btnTxt}>Enviar queja</Text>
-                    </View>
-                  </TouchableOpacity>
+                  </ButtonP>
                 </View>
               </View>
             </View>
@@ -470,7 +473,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   requestBadge: {
-    backgroundColor: '#000',
+    backgroundColor: theme.Colors.ui.primary,
     borderRadius: 12,
     flexDirection: 'row',
     alignItems: 'center',
@@ -489,7 +492,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   fileBadge: {
-    backgroundColor: '#000',
+    backgroundColor: theme.Colors.ui.primary,
     borderRadius: 12,
     flexDirection: 'row',
     alignItems: 'center',
@@ -503,7 +506,7 @@ const styles = StyleSheet.create({
     marginRight: 4,
   },
   dropdownButtonStyle: {
-    width: 200,
+    width: '90%',
     height: 50,
     backgroundColor: '#E9ECEF',
     borderRadius: 12,
@@ -528,6 +531,7 @@ const styles = StyleSheet.create({
   dropdownMenuStyle: {
     backgroundColor: '#E9ECEF',
     borderRadius: 8,
+    width: '90%'
   },
   dropdownItemStyle: {
     width: '100%',

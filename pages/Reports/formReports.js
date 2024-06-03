@@ -25,6 +25,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import {Title1, ButtonP} from '../../styles/index/stylesHome'
 
 export default function FormReports() {
   const { handleRegisterReport } = useReports();
@@ -254,7 +255,7 @@ export default function FormReports() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.container}>
-          <Text style={styles.title}>Formulario de Reporte</Text>
+          <Title1>Formulario de Reporte</Title1>
           <View style={styles.line} />
           <Image
             source={require("../../assets/report3d.png")}
@@ -266,9 +267,9 @@ export default function FormReports() {
           </Text>
           {!showElement && (
             <View style={styles.formAction}>
-              <TouchableOpacity style={styles.btn} onPress={() => cleanForm()}>
+              <ButtonP onPress={() => cleanForm()}>
                 <Text style={styles.btnTxt}>Generar</Text>
-              </TouchableOpacity>
+              </ButtonP>
             </View>
           )}
           {showElement && (

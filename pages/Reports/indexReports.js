@@ -4,10 +4,14 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FormReports from "./formReports";
 import IndexStatusReports from "./indexStatusReports";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import styled, {useTheme} from "styled-components/native";
 
 const Tab = createBottomTabNavigator();
 
 export default function Reports() {
+
+  const theme = useTheme();
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -17,10 +21,9 @@ export default function Reports() {
       <Tab.Screen
         name="Mis reportes"
         component={IndexStatusReports}
-        color={"black"}
         options={{
-          tabBarInactiveTintColor: "gray",
-          tabBarActiveTintColor: "black",
+          tabBarInactiveTintColor: theme.Colors.ui.disabled,
+          tabBarActiveTintColor: theme.Colors.ui.primary,
           tabBarLabelStyle: {
             fontSize: 14,
           },
@@ -37,10 +40,9 @@ export default function Reports() {
       <Tab.Screen
         name="Nuevo reporte"
         component={FormReports}
-        color={"black"}
         options={{
-          tabBarInactiveTintColor: "gray",
-          tabBarActiveTintColor: "black",
+          tabBarInactiveTintColor: theme.Colors.ui.disabled,
+          tabBarActiveTintColor: theme.Colors.ui.primary,
           tabBarLabelStyle: {
             fontSize: 14,
           },
