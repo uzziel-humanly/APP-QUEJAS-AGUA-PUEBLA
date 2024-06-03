@@ -16,7 +16,9 @@ import {
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useReports } from "../../hooks/Reports/useReports";
 import { useState, useEffect } from "react";
-
+import * as FileSystem from "expo-file-system";
+import { Asset } from "expo-asset";
+import { WebView } from "react-native-webview";
 
 export default function ModalDocuments({
   modalVisible,
@@ -24,48 +26,33 @@ export default function ModalDocuments({
   idReporte,
   status,
 }) {
-  const [dataFiltrada, setDataFiltrada] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [pdfUri, setPdfUri] = useState(null);
 
   useEffect(() => {
-    getReportesInfo();
-  }, []);
+    const loadPdf = async () => {
+      try {
+        // Cargar el archivo PDF desde assets
+        const asset = Asset.fromModule(require("../../assets/pdfDemo.png"));
+        await asset.downloadAsync();
+        // Obtener la URI del archivo descargado
+        const fileUri = `${FileSystem.documentDirectory}banner.png`;
 
-  const getReportesInfo = async () => {
-    try {
-      let pass = md5(API_TOKEN);
-      let credentials = `${API_AUTH}:${pass}`;
-      let encodedCredentials = btoa(credentials);
-      let auth = "Basic " + encodedCredentials;
+        console.log(fileUri);
+        // Copiar el archivo a un directorio accesible
+        await FileSystem.copyAsync({
+          from: asset.localUri,
+          to: fileUri,
+        });
 
-      const data = {
-        id_usuario_app: "1",
-      };
-      let body = JSON.stringify(data);
-
-      let response = await axios({
-        method: "post",
-        url: `${API_URL}/api/getReportes`,
-        headers: { Authorization: auth, "Content-Type": "application/json" },
-        data: body,
-      });
-
-      if (response.data.estatus === "ok") {
-        let _data = response.data.mensaje;
-        const mensajeFiltrado = _data.find(
-          (mensaje) => mensaje.id === idReporte
-        );
-        setDataFiltrada(mensajeFiltrado);
-        setLoading(false);
-      } else {
-        //console.error("Error en la respuesta de la API");
+        setPdfUri(fileUri);
+      } catch (error) {
+        console.error("Error loading PDF:", error);
+      } finally {
       }
-    } catch (error) {
-      //console.error(error);
-      alert("Ocurrió un error en el servidor modal");
-    }
-  };
+    };
 
+    loadPdf();
+  }, []);
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -82,40 +69,23 @@ export default function ModalDocuments({
             <View style={styles.background}>
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                  <Text style={styles.title}>
-                    Detalles generales del reporte
-                  </Text>
+                  <Text style={styles.title}>Previsualización</Text>
 
-                  <View
-                    style={{
-                      alignSelf: "center",
-                      marginTop: 20,
-                      marginBottom: 30,
-                    }}
-                  >
-                    {loading ? (
-                      // Si loading es true, no se muestra nada
-                      <ActivityIndicator size="large" />
-                    ) : !loading && dataFiltrada ? (
-                      // Si loading es false y dataFiltrada tiene datos, se muestran los datos
-                      <View>
-                        <Text>Folio: {dataFiltrada.folio}</Text>
-                        <Text>Descripcion: {dataFiltrada.descripcion}</Text>
-                        <Text>Fecha: {dataFiltrada.fecha}</Text>
-                        <Text>Estatus: {status}</Text>
-                        <Text style={{ marginBottom: 10 }}>Evidencia:</Text>
-                        <Image
-                          source={{
-                            uri: `${dataFiltrada.evidencia}`,
-                          }}
-                          style={{ width: 200, height: 200 }}
-                        />
-                      </View>
-                    ) : (
-                      // Si loading es false pero dataFiltrada está vacío, mostrar el mensaje de error
-                      <Text>Ops, ¡Ha ocurrido un error!</Text>
-                    )}
-                  </View>
+                  <WebView
+                    originWhitelist={["*"]}
+                    //source={{ uri: pdfUri }}
+                    source={{ uri: pdfUri || undefined }}
+                    style={{ flex: 1, width: 330 }}
+                    onError={(error) =>
+                      console.error("Error en WebView:", error)
+                    }
+                    nestedScrollEnabled={true}
+                    //source={{ uri: `file:///${pdfUri}` }}
+                    //style={styles.pdf}
+                    //useWebKit={true}
+                    allowFileAccess={true}
+                    allowFileAccessFromFileURLs={true}
+                  />
 
                   <View>
                     <Pressable
@@ -142,17 +112,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    // alignItems: 'center',
-    marginTop: 22,
-  },
+
   modalView: {
-    margin: 20,
+    width: 350,
+    height: 700,
     backgroundColor: "white",
     borderRadius: 20,
-    padding: 35,
+    padding: 20,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
@@ -167,6 +133,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontSize: 20,
     textAlign: "center",
+    marginBottom:5
   },
   button: {
     borderRadius: 20,
@@ -175,10 +142,7 @@ const styles = StyleSheet.create({
   },
   buttonClose: {
     backgroundColor: "grey",
-    marginRight: 5,
-  },
-  buttonConfirm: {
-    backgroundColor: "black",
+    marginTop: 10,
   },
   textStyle: {
     color: "white",
@@ -189,27 +153,8 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "center",
   },
-  input: {
-    width: "100%",
-    marginBottom: 16,
-  },
-  inputLabel: {
-    fontSize: 17,
-    fontWeight: "600",
-    color: "#555",
-    marginBottom: 8,
-  },
-  inputControl: {
-    backgroundColor: "#fff",
-    height: 44,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    fontWeight: "500",
-    color: "#333",
-    borderWidth: 1,
-    borderColor: "#ddd",
-  },
-  form: {
+  pdf: {
+    flex: 1,
     width: "100%",
   },
 });
