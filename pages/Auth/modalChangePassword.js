@@ -61,7 +61,7 @@ export default function ModalChangePassword({ modalVisible, setModalVisible }) {
                                         <Pressable
                                             style={[styles.button, styles.buttonConfirm]}
                                             onPress={() => {
-                                                handleUpdatePassword();
+                                                handleUpdatePassword(1);
                                                 setModalVisible(false);
                                             }}
                                         >

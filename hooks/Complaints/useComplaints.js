@@ -1,12 +1,23 @@
 import * as DocumentPicker from "expo-document-picker";
-import { useRef, useEffect, useState, createRef, useCallback } from "react";
+import { useRef, useEffect, useState, useMemo, useCallback } from "react";
 import { useForm } from "react-hook-form";
-import MultiSelect from "react-native-multiple-select";
+import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
+import md5 from "js-md5";
+import {API_URL, API_TOKEN,API_AUTH} from "@env"
 
 
 export function useComplaints() {
+
+  // Complaints
+  const tableHead = ["Folio seguimiento", "Estatus"];
+  const [tableData, setTableData] = useState([]);
+  const [complaints, setComplaints] = useState([]);
+  const [statusComplaints, setStatusComplaints] = useState([]);
+
+  const [selectedComplaint, setSelectedComplaint] = useState(null);
+  const [modalComplaint, setModalComplaint] = useState(false);
 
   //New complaint
   const { control, handleSubmit, formState: { errors }, reset, setValue } = useForm();
@@ -16,10 +27,11 @@ export function useComplaints() {
   const [scrollEnabled, setScrollEnabled] = useState(true);
 
   const [niss, setNiss] = useState([]);
+  const [niss2, setNiss2] = useState([]);
   const [nisSelected, setNissSelected] = useState();
   const [nisComplaint, setNisComplaint] = useState([]);
 
-  
+  const [colony, setColony] = useState([]);
 
   const [requests, setRequests] = useState([]);
   const [inputValue, setInputValue] = useState('');
@@ -27,10 +39,7 @@ export function useComplaints() {
   const [selectedFiles, setSelectedFiles] = useState([]);
 
 
-  //Status complaints
-  const tableHead = ["Folio seguimiento", "Estatus"];
-  const [reportes, setReportes] = useState([]);
-  const tableData = reportes.map((item) => [item.id, item.tipo]);
+  
 
 
   const ref = useRef();
@@ -61,10 +70,30 @@ export function useComplaints() {
     margin: 5px;
     flex: 1;
     text-align: center;
-    cursor: pointer; /* Ensure buttons are clickable */
+    cursor: pointer; 
   }
   `;
   const [isFormVisible, setIsFormVisible] = useState(false);
+
+  const [idGender, setIdGender] = useState(0);
+
+
+  const gender = useMemo(() => ([
+    {
+      id:'F',
+      label:'F',
+      value:'F'
+    },
+    {
+      id:'M',
+      label:'M',
+      value: 'M'
+    }
+  ]))
+
+  const handleSelectgender = (id_gender) => {
+    setIdGender(id_gender);
+  }
 
   useFocusEffect(
     useCallback(() => {
@@ -93,10 +122,49 @@ export function useComplaints() {
     reset();
   };
 
+  const getColony = async () => {
+    try {
+      let pass = md5(API_TOKEN);
+      let credentials = `${API_AUTH}:${pass}`;
+      let encodedCredentials = btoa(credentials);
+      let auth = "Basic " + encodedCredentials;
+
+      let response = await axios({
+        method: "post",
+        url: `${API_URL}/api/getColonias`,
+        headers: { Authorization: auth, "Content-Type": "application/json" },
+      });
+
+      if (response.data.estatus === "ok") {
+        let _data = response.data.mensaje;
+        let _colony = [];
+
+          if(_data.length > 0)
+          {
+           _data.map((_c, _i) => {
+              _colony.push({
+                id: _c.id,
+                name: _c.nombre
+              })
+            })
+          }
+        setColony(_colony);
+      } else {
+        alert("Ocurrió un error en el servidor");
+      }
+    } catch (error) {
+      //console.error(error);
+      alert("Ocurrió un error en el servidor");
+    }
+  };
+
   const getNisAccount = async () => {
     let _niss = [];
+    let _nissComplaint = [];
     let _nis = await AsyncStorage.getItem('nis');
+    let _nis2 = await AsyncStorage.getItem('nis');
      _nis = JSON.parse(_nis);
+     _nis2 = JSON.parse(_nis2);
 
      if(_nis.length > 0)
       {
@@ -107,12 +175,30 @@ export function useComplaints() {
           })
         })
 
+       
+       
+        
         setNiss(_niss);
       } 
+
+
+      if(_nis2.length > 0)
+        {
+          _nis2.map((_nis, _i) => {
+            _nissComplaint.push({
+              title: _nis.nis
+            })
+          })
+
+
+          setNiss2(_nissComplaint);
+        }
+
     }
   
   useEffect(() => {
     getNisAccount();
+    getColony();
    }, []);
 
    
@@ -124,26 +210,27 @@ export function useComplaints() {
 
   const handleFileSelect = async () => {
     let _selectedFiles = [...selectedFiles];
-    let result = await DocumentPicker.getDocumentAsync({ multiple: true });
+    if(_selectedFiles.length < 1)
+      {
+        let result = await DocumentPicker.getDocumentAsync();
     
-    if (result.canceled === false) {
-          result.assets.map((_item, _index) => {
-            _selectedFiles.push(_item);
-          })
-
-     
-      setSelectedFiles(_selectedFiles);
-      setValue("file", _selectedFiles);
-    }
+        if (result.canceled === false) {
+              result.assets.map((_item, _index) => {
+                _selectedFiles.push(_item);
+              })
+    
+         
+          setSelectedFiles(_selectedFiles);
+          setValue("file", _selectedFiles);
+        }
+      }
   };
 
   const handleFileRemove = (index) => {
     setSelectedFiles(selectedFiles.filter((_, i) => i !== index));
   };
 
- const handleGetComplaints = async () => {
  
- }
   
 
   const handleEmpty = () => {
@@ -152,7 +239,7 @@ export function useComplaints() {
 
   const handleClear = () => {
     ref.current.clearSignature();
-    console.log("clear success!");
+    // console.log("clear success!");
   };
 
   const handleEnd = () => {
@@ -163,7 +250,6 @@ export function useComplaints() {
 
   const handleData = (data) => {
     handleShowModalSignature();
-    console.log('entro??????????');
   };
 
   const handleBegin = () => {
@@ -172,6 +258,8 @@ export function useComplaints() {
  
 
   const handleAddRequest = () => {
+    setValue('folio', 1)
+    setValue('id_clasificacion', 1)
     let _request = ([...requests]);
     if(_request.length < 6)
       {
@@ -180,7 +268,6 @@ export function useComplaints() {
           setInputValue('');
         }
       }
-    
   };
 
   const handleRemoveRequest = (index) => {
@@ -194,19 +281,187 @@ export function useComplaints() {
   );
 
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    let _id_user = await AsyncStorage.getItem('id');
+  
+    let today = new Date();
+    let year = today.getFullYear();
+    let month = String(today.getMonth() + 1).padStart(2, '0');
+    let day = String(today.getDate()).padStart(2, '0');
+  
+    let dateComplaint = `${year}-${month}-${day}`;
+  
+    let formData = new FormData();
+  
+    formData.append('id_usuario_app', _id_user);
+    formData.append('nis', data.nis.title);
+    formData.append('fecha', dateComplaint);
+    formData.append('folio', 'SOAPAP-Q-1');
+    formData.append('telefono', data.telefono);
+    formData.append('sexo', data.sexo);
+    formData.append('descripcion', data.descripcion);
+    formData.append('firma', data.firma);
+    formData.append('id_colonia', data.colonia[0]);
+    formData.append('id_clasificacion', 1);
+    formData.append('estado', 'PUEBLA') 
+    
+    data.nis_extra.forEach((item, index) => {
+      formData.append(`nis_extra[${index}]`, item);
+    });
+  
+    data.expresa.forEach((item, index) => {
+      formData.append(`expresa[${index}]`, item);
+    });
+
+
+    let _file = data.file;
+  
+
+    
+      
+      
+    
+  
+    let pass = md5(API_TOKEN);
+    let credentials = `${API_AUTH}:${pass}`;
+    let encodedCredentials = btoa(credentials);
+    let auth = "Basic " + encodedCredentials;
+  
+    try {
+      let response = await axios({
+        method: "POST",
+        url: `${API_URL}/api/setQUejas`,
+        headers: { Authorization: auth, "Content-Type": "multipart/form-data" },
+        data: formData,
+      });
+  
+      console.log(response);
+    } catch (error) {
+      console.error("Error al enviar la solicitud:", error);
+    }
   };
+  
+  
+  
+  
+
+//#REGION Complaints 
+
+const getEstatus = async () => {
+  try {
+    let pass = md5(API_TOKEN);
+    let credentials = `${API_AUTH}:${pass}`;
+    let encodedCredentials = btoa(credentials);
+    let auth = "Basic " + encodedCredentials;
+
+    const data = {
+      id_usuario_app: "1",
+    };
+    let body = JSON.stringify(data);
+
+    let response = await axios({
+      method: "post",
+      url: `${API_URL}/api/getEstatus`,
+      headers: { Authorization: auth, "Content-Type": "application/json" },
+      data: body,
+    });
+
+    if (response.data.estatus === "ok") {
+      let _data = response.data.mensaje;
+      setStatusComplaints(_data);
+      return _data;  
+    } else {
+      throw new Error("Failed to get status");
+    }
+  } catch (error) {
+    alert("Ocurrió un error en el servidor");
+    throw error;  
+  }
+};
+
+
+const viewDetailComplaint = (index) => {
+  setSelectedComplaint(complaints[index]);
+  setModalComplaint(true);
+}
+
+
+
+
+const toggleModalComplaint = () => {
+  setModalComplaint(false);
+  setSelectedComplaint(null);
+};
+
+
+const handleGetComplaints = async () => {
+  try {
+    let statusComplaints = await getEstatus();
+
+    let _id_user = await AsyncStorage.getItem('id');
+    let _body = [{
+      id_usuario_app: _id_user
+    }];
+
+    let pass = md5(API_TOKEN);
+    let credentials = `${API_AUTH}:${pass}`;
+    let encodedCredentials = btoa(credentials);
+    let auth = 'Basic ' + encodedCredentials;
+
+    let response = await axios({
+      method: 'post',
+      url: `${API_URL}/api/getQuejas`,
+      headers: { 'Authorization': auth, 'Content-Type': 'application/json' },
+      data: _body[0]
+    });
+
+    if (response.data.estatus === "ok") {
+      let _complaints = response.data.mensaje;
+      if (_complaints.length > 0) {
+        let updatedComplaints = _complaints.map((item) => {
+          let _statusComplaint = statusComplaints.find(x => x.id === item.estatus);
+          return {
+            ...item,
+            estatus: _statusComplaint ? _statusComplaint.estatus : "Desconocido"
+          };
+        });
+      
+        
+        _complaints = updatedComplaints;
+      }
+      
+
+      setComplaints(_complaints);
+
+      let _tableData = _complaints.length > 0 ? 
+        _complaints.map((item) => {
+          return [item.folio, item.estatus];
+        }) : [];
+      
+      setTableData(_tableData);
+    }
+  } catch (error) {
+    alert('Ocurrió un error en el servidor');
+  }
+};
+
+
+
+  useEffect(() => {
+      handleGetComplaints();
+    
+  }, []);
 
   return {
 
     //Complaints 
-    tableHead, tableData,
+    tableHead, complaints, handleGetComplaints, tableData,selectedComplaint, modalComplaint, viewDetailComplaint, toggleModalComplaint,setModalComplaint,
 
     //Create complaint
     ref, webStyle, handleEmpty, handleClear, handleEnd, handleData, scrollEnabled, handleBegin,
     niss, handleSelectNiss, nisSelected, handleAddRequest, handleRemoveRequest, requests, inputValue, setInputValue,
-    handleFileSelect, handleFileRemove, selectedFiles, isFormVisible, handleNewComplaint, setValue, handleSubmit, control, errors, onSubmit
+    handleFileSelect, handleFileRemove, selectedFiles, isFormVisible, handleNewComplaint, setValue, handleSubmit, control, errors, onSubmit, gender,
+    handleSelectgender, idGender, nisComplaint, niss2, colony
    
   };
 }

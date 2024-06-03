@@ -1,19 +1,13 @@
+import React from "react";
 import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  Image,
-} from "react-native";
+import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Table, Row, Rows } from "react-native-table-component";
+import { Table, Row } from "react-native-table-component";
 import { useComplaints } from "../../hooks/Complaints/useComplaints";
+import ModalDetailComplaint from "./modalDetailComplaint";
 
 export default function IndexStatusComplaints() {
-  const{
-    tableHead, tableData
-  } = useComplaints();
+  const { tableHead, tableData, viewDetailComplaint, modalComplaint, setModalComplaint, toggleModalComplaint, selectedComplaint } = useComplaints();
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -32,17 +26,22 @@ export default function IndexStatusComplaints() {
 
         <View style={styles.container2}>
           <Table borderStyle={styles.tableBorder}>
-            <Row
-              data={tableHead}
-              style={styles.head}
-              //textStyle={styles.text}
-            />
-            <Rows
-              data={tableData}
-              //textStyle={styles.text}
-            />
+            <Row data={tableHead} style={styles.head} />
+            {tableData.map((rowData, index) => (
+              <TouchableOpacity key={index} onPress={() => viewDetailComplaint(index)}>
+                <Row data={rowData} style={styles.row} />
+              </TouchableOpacity>
+            ))}
           </Table>
         </View>
+        {modalComplaint && (
+  <ModalDetailComplaint
+    modalVisible={modalComplaint}
+    toggleModalComplaint={toggleModalComplaint}
+    selectedComplaint={selectedComplaint}
+  />
+)}
+
       </ScrollView>
     </GestureHandlerRootView>
   );
@@ -67,16 +66,7 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
-    //justifyContent: "center",
-    //alignItems: "center",
-    // padding: 24
   },
-  // scrollContainer2: {
-  //   flexGrow: 1,
-  //   justifyContent: "center",
-  //   //alignItems: "center",
-  //   // padding: 24
-  // },
   line: {
     borderBottomColor: "black",
     borderBottomWidth: 1,
@@ -91,5 +81,5 @@ const styles = StyleSheet.create({
   },
   container2: { flex: 1, padding: 16, color: "#ffffff" },
   head: { height: 40, backgroundColor: "#fff", color: "white" },
-  text: { margin: 6, color:'#fff' },
+  row: { height: 40, backgroundColor: "#f1f1f1" },
 });

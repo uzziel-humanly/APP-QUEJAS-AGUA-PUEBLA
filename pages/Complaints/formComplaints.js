@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, forwardRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button, KeyboardAvoidingView, Platform, ScrollView, TextInput, TouchableOpacity, Keyboard, Image } from 'react-native';
 import { useComplaints } from '../../hooks/Complaints/useComplaints';
@@ -7,15 +7,23 @@ import SignatureScreen from 'react-native-signature-canvas';
 import MultiSelect from 'react-native-multiple-select';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useForm, Controller } from 'react-hook-form';
+import { RadioGroup } from 'react-native-radio-buttons-group';
+import SelectDropdown from 'react-native-select-dropdown';
 
 export default function FormComplaints({ text, onOK }) {
   const {
     ref, webStyle, handleEmpty, handleClear, handleData, scrollEnabled, handleEnd, handleBegin,
     niss, handleSelectNiss, nisSelected, requests, inputValue, handleAddRequest, handleRemoveRequest, setInputValue,
-    handleFileSelect, handleFileRemove, selectedFiles, handleNewComplaint, isFormVisible, handleSubmit, control, setValue, errors, onSubmit
+    handleFileSelect, handleFileRemove, selectedFiles, handleNewComplaint, isFormVisible, handleSubmit, control, setValue, errors, onSubmit,
+    gender, handleSelectgender, idGender, nisComplaint, niss2,colony
   } = useComplaints();
 
-  
+  const [filteredColonies, setFilteredColonies] = useState(colony);
+
+  const handleSearch = (text) => {
+    const filteredData = colony.filter(item => item.name.toLowerCase().includes(text.toLowerCase()));
+    setFilteredColonies(filteredData);
+  };
 
   const handleOK = (signature) => {
     if (onOK) {
@@ -58,12 +66,60 @@ export default function FormComplaints({ text, onOK }) {
               <View style={styles.header}>
                 <Text style={styles.title}>Formulario de Quejas</Text>
               </View>
+
+
+              <View style={styles.form}>
+              
+
+
+              <View style={styles.input}>
+                <Text style={styles.inputLabel}>Nis de la queja</Text>
+                <Controller
+                  control={control}
+                  name="nis"
+                  rules={{ required: 'Selecciona un NIS.' }}
+                  render={({ field: { onChange, value } }) => (
+                    <SelectDropdown
+                      data={niss2}
+                      onSelect={(selectedItem, index) => {
+                        onChange(selectedItem);
+                      }}
+                      renderButton={(selectedItem, isOpened) => {
+                        return (
+                          <View style={styles.dropdownButtonStyle}>
+                            <Text style={styles.dropdownButtonTxtStyle}>
+                              {(selectedItem && selectedItem.title) || 'Selecciona un NIS'}
+                            </Text>
+                          </View>
+                        );
+                      }}
+                      renderItem={(item, index, isSelected) => {
+                        return (
+                          <View style={{ ...styles.dropdownItemStyle, ...(isSelected && { backgroundColor: '#D2D9DF' }) }}>
+                            <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
+                          </View>
+                        );
+                      }}
+                      showsVerticalScrollIndicator={false}
+                      dropdownStyle={styles.dropdownMenuStyle}
+                    />
+                  )}
+                />
+                {errors.nis && <Text style={styles.errorText}>{errors.nis.message}</Text>}
+              </View>
+
+
+                    </View>
+
+
+
+
               <View style={styles.form}>
                 <View style={styles.input}>
                   <Text style={styles.inputLabel}>NIS asociados a la queja</Text>
                   <Controller
                     control={control}
-                    name="nis"
+                    name="nis_extra"
                     rules={{ required: 'Selecciona al menos un NIS.' }}
                     render={({ field: { onChange, value } }) => (
                       <MultiSelect
@@ -90,15 +146,36 @@ export default function FormComplaints({ text, onOK }) {
                       />
                     )}
                   />
-                  {errors.nis && <Text style={styles.errorText}>{errors.nis.message}</Text>}
+                  {errors.nis_extra && <Text style={styles.errorText}>{errors.nis_extra.message}</Text>}
                 </View>
 
+              
+
                 <View style={styles.input}>
-                  <Text style={styles.inputLabel}>Nombre</Text>
+                  <Text style={styles.inputLabel}>Sexo</Text>
+                  <Controller
+                  control={control}
+                  name='sexo'
+                  rules={{required: 'Selecciona tu sexo'}}
+                  render={({field: {onChange, onBlur, value} }) => (
+                    <RadioGroup
+                    radioButtons={gender}
+                    onPress={onChange}
+                    selectedId={value}
+                    containerStyle={{flexDirection:'row'}}
+                    />
+                  )}
+                  />
+                  {errors.sexo && <Text style={styles.errorText}>{errors.sexo.message}</Text>}
+                </View>
+
+
+                <View style={styles.input}>
+                  <Text style={styles.inputLabel}>Teléfono</Text>
                   <Controller
                     control={control}
-                    name="name"
-                    rules={{ required: 'El nombre no puede estar vacío.' }}
+                    name="telefono"
+                    rules={{ required: 'Introduce tu número de teléfono no puede estar vacío.' }}
                     render={({ field: { onChange, onBlur, value } }) => (
                       <TextInput
                         style={styles.inputControl}
@@ -106,17 +183,63 @@ export default function FormComplaints({ text, onOK }) {
                         onChangeText={onChange}
                         value={value}
                         onSubmitEditing={Keyboard.dismiss}
+                        keyboardType='numeric'
                       />
                     )}
                   />
-                  {errors.name && <Text style={styles.errorText}>{errors.name.message}</Text>}
+                  {errors.telefono && <Text style={styles.errorText}>{errors.telefono.message}</Text>}
                 </View>
+
+
+                <View style={styles.form}>
+      <View style={styles.input}>
+        <Text style={styles.inputLabel}>Colonia</Text>
+        <Controller
+          control={control}
+          name="colonia"
+          rules={{ required: 'Selecciona la colonia.' }}
+          render={({ field: { onChange, value } }) => (
+            <MultiSelect
+              items={filteredColonies}
+              uniqueKey="id"
+              ref={(component) => { this.multiSelect = component }}
+              onSelectedItemsChange={(selectedItems) => {
+                if (selectedItems.length > 1) {
+                  selectedItems = [selectedItems[selectedItems.length - 1]];
+                }
+                onChange(selectedItems);
+              }}
+              selectedItems={value}
+              single
+              selectText="Selecciona tu colonia"
+              searchInputPlaceholderText="Buscar Colonia..."
+              onChangeInput={handleSearch}
+              altFontFamily="ProximaNova-Light"
+              tagRemoveIconColor="#fff"
+              tagBorderColor="#000"
+              tagContainerStyle={{ backgroundColor: '#000' }}
+              tagTextColor="#fff"
+              selectedItemTextColor="#CCC"
+              selectedItemIconColor="#CCC"
+              itemTextColor="#000"
+              displayKey="name"
+              searchInputStyle={{ color: '#CCC' }}
+              submitButtonColor="#000"
+              submitButtonText="Seleccionar NIS"
+            />
+          )}
+        />
+        {errors.colonia && <Text style={styles.errorText}>{errors.colonia.message}</Text>}
+      </View>
+    </View>
+
+                
 
                 <View style={styles.input}>
                   <Text style={styles.inputLabel}>Domicilio</Text>
                   <Controller
                     control={control}
-                    name="address"
+                    name="domicilio"
                     rules={{ required: 'El domicilio no puede estar vacío.' }}
                     render={({ field: { onChange, onBlur, value } }) => (
                       <TextInput
@@ -128,14 +251,14 @@ export default function FormComplaints({ text, onOK }) {
                       />
                     )}
                   />
-                  {errors.address && <Text style={styles.errorText}>{errors.address.message}</Text>}
+                  {errors.domicilio && <Text style={styles.errorText}>{errors.domicilio.message}</Text>}
                 </View>
 
                 <View style={styles.input}>
                   <Text style={styles.inputLabel}>Descripción de la queja</Text>
                   <Controller
                     control={control}
-                    name="description"
+                    name="descripcion"
                     rules={{ required: 'La descripción no puede estar vacía.' }}
                     render={({ field: { onChange, onBlur, value } }) => (
                       <TextInput
@@ -149,14 +272,15 @@ export default function FormComplaints({ text, onOK }) {
                       />
                     )}
                   />
-                  {errors.description && <Text style={styles.errorText}>{errors.description.message}</Text>}
+                  {errors.descripcion && <Text style={styles.errorText}>{errors.descripcion.message}</Text>}
                 </View>
 
                 <View style={styles.input}>
                   <Text style={styles.inputLabel}>Solicitudes expresas (Máximo 6)</Text>
                   <Controller
                     control={control}
-                    name="requests"
+                    name="expresa"
+                    rules={{ required: 'Debe de escribir al menos una solicitud.' }}
                     render={({ field: { onChange, value } }) => (
                       <>
                         <View style={styles.requestsContainer}>
@@ -186,6 +310,7 @@ export default function FormComplaints({ text, onOK }) {
                       </>
                     )}
                   />
+                  {errors.expresa && <Text style={styles.errorText}>{errors.expresa.message}</Text>}
                 </View>
 
                 <View style={styles.input}>
@@ -203,31 +328,14 @@ export default function FormComplaints({ text, onOK }) {
                 </View>
               </View>
 
-                <View style={styles.input}>
-                  <Text style={styles.inputLabel}>Confirma tu nombre</Text>
-                  <Controller
-                    control={control}
-                    name="name_confirmed"
-                    rules={{ required: 'Confirma tu nombre.' }}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                      <TextInput
-                        style={styles.inputControl}
-                        onBlur={onBlur}
-                        onChangeText={onChange}
-                        value={value}
-                        onSubmitEditing={Keyboard.dismiss}
-                      />
-                    )}
-                  />
-                  {errors.name_confirmed && <Text style={styles.errorText}>{errors.name_confirmed.message}</Text>}
-                </View>
+                
 
-                <View style={styles.signatureContainer}>
+<View style={styles.signatureContainer}>
                   <Text style={styles.signatureLabel}>Firma</Text>
                   <Controller
                     control={control}
-                    name="signature"
-                    rules={{ required: 'La firma es obligatoria.' }}
+                    name="firma"
+                    // rules={{ required: 'La firma es obligatoria.' }}
                     render={({ field: { onChange } }) => (
                       <SignatureScreen
                         ref={ref}
@@ -246,7 +354,7 @@ export default function FormComplaints({ text, onOK }) {
                       />
                     )}
                   />
-                  {errors.signature && <Text style={styles.errorText}>{errors.signature.message}</Text>}
+                  {errors.firma && <Text style={styles.errorText}>{errors.firma.message}</Text>}
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 16 }}>
                     <TouchableOpacity onPress={handleClear}>
                       <Text>Repetir firma</Text>
@@ -394,8 +502,50 @@ const styles = StyleSheet.create({
     color: '#fff',
     marginRight: 4,
   },
-  errorText: {
-    color: 'red',
-    marginTop: 4,
+  dropdownButtonStyle: {
+    width: 200,
+    height: 50,
+    backgroundColor: '#E9ECEF',
+    borderRadius: 12,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 12,
   },
+  dropdownButtonTxtStyle: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#151E26',
+  },
+  dropdownButtonArrowStyle: {
+    fontSize: 28,
+  },
+  dropdownButtonIconStyle: {
+    fontSize: 28,
+    marginRight: 8,
+  },
+  dropdownMenuStyle: {
+    backgroundColor: '#E9ECEF',
+    borderRadius: 8,
+  },
+  dropdownItemStyle: {
+    width: '100%',
+    flexDirection: 'row',
+    paddingHorizontal: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  dropdownItemTxtStyle: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#151E26',
+  },
+  dropdownItemIconStyle: {
+    fontSize: 28,
+    marginRight: 8,
+  },
+  
 });
