@@ -1,8 +1,8 @@
 import React from "react";
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Platform } from "react-native";
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Platform, KeyboardAvoidingView } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useUserProfile } from "../../hooks/useUserProfile";
-
+import {ButtonP, Title1} from "../../styles/index/stylesHome"
 
 export default function IndexTemporalPassword()
 {
@@ -23,7 +23,7 @@ export default function IndexTemporalPassword()
 
        <View style={styles.container}>
             <View style={styles.header}>
-            <Text style={styles.title}>Tu contraseña está a punto de vencer</Text>
+            <Title1>Tu contraseña está a punto de vencer</Title1>
             <Text style={styles.subtitle}>Por favor, restablece la contraseña introduciendo una nueva y confirmándola</Text>
             </View>
 
@@ -64,12 +64,11 @@ export default function IndexTemporalPassword()
             </View>
 
 
-            <TouchableOpacity
-            style={styles.btn}
+            <ButtonP
             onPress={() => handleUpdatePassword(2)}
             >
                 <Text style={styles.btnTxt}>Cambiar contraseña</Text>
-            </TouchableOpacity>
+            </ButtonP>
 
             <View>
 

@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Alert } from "react-native";
 import Home from "../pages/indexHome";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import md5 from "js-md5";
 import axios from "axios";
 import { API_URL, API_TOKEN, API_AUTH } from "@env";
+
 
 export const useLogin = () => {
   const [loading, setLoading] = useState(false);
@@ -34,6 +35,14 @@ export const useLogin = () => {
   const handleForgetPassword = () => {
     navigation.navigate("Forget Password");
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(false);
+      setUsername('');
+      setPassword('');
+    }, [])
+  );
 
   const validateSession = async () => {
     //setLoading(true);
@@ -113,7 +122,7 @@ export const useLogin = () => {
 
 
                   
-                 if(_userdata.reset == 0 || monthDifference === 11)
+                 if(_userdata.reset == 1 || monthDifference === 11)
                   {
                       navigation.navigate('Inicio temporal')
                   }

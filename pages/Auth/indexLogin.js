@@ -12,8 +12,8 @@ import { useLogin } from "../../hooks/useLogin";
 import { ScrollView, Keyboard, Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardAvoidingView, ActivityIndicator } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
-import { useState, useEffect, useCallback } from "react";
+import {ButtonPrimary, Title} from '../../styles/login/stylesLogin'
+
 
 export default function Login() {
   const {
@@ -27,21 +27,12 @@ export default function Login() {
     failedLogin,
     handleForgetPassword,
     loading,
-    setLoading,
-    setUsername,
-    setPassword,
 
     //Sign Up
     handleCreateAccount,
   } = useLogin();
 
-  useFocusEffect(
-    useCallback(() => {
-      setLoading(false);
-      setUsername('');
-      setPassword('');
-    }, [])
-  );
+  
 
   return (
     <GestureHandlerRootView>
@@ -57,7 +48,7 @@ export default function Login() {
                 source={require("../../assets/tuSoapap.png")}
                 style={styles.headerImg}
               />
-              <Text style={styles.title}>Inicio de sesión</Text>
+              <Title>Inicio de sesión</Title>
               <Text style={styles.subtitle}>
                 Introduzca su usuario y contraseña
               </Text>
@@ -96,15 +87,12 @@ export default function Login() {
 
             <View style={styles.formAction}>
               {loading ? (
-                // Si loading es true, se muestra el indicador de carga
                 <ActivityIndicator size="large" />
               ) : (
                 !loading && (
-                  <TouchableOpacity onPress={() => validateSession()}>
-                    <View style={styles.btn}>
+                  <ButtonPrimary onPress={() => validateSession()}>
                       <Text style={styles.btnTxt}>Iniciar sesión</Text>
-                    </View>
-                  </TouchableOpacity>
+                  </ButtonPrimary>
                 )
               )}
 

@@ -73,93 +73,58 @@ const handleChangeEmail2 = (Text) => {
 
 const handleUpdatePassword = async (flag) => {
 
-      let _body = [];
-      let _email = '';
-      
+  let _body = [];
+  let _email = '';
 
-        if(flag === 1)
-        {
-            _email = await AsyncStorage.getItem('email');
-        }
-        else if (flag === 2)
-        {
-            _email = email2;
-        }
+  if (flag === 1) {
+      _email = await AsyncStorage.getItem('email');
+  } else if (flag === 2) {
+      _email = email2;
+  }
 
-        if((newPassword.trim() !== '' && confirmNewPassword.trim() !== '') &&  (newPassword === confirmNewPassword))
-        {
-          _body.push({
-            correo: _email,
-          pass:_newPassword
-          })
+  if ((newPassword.trim() !== '' && confirmNewPassword.trim() !== '') && (newPassword === confirmNewPassword)) {
+      _body.push({
+          correo: _email,
+          pass: md5(newPassword) 
+      })
 
-          let pass = md5(API_TOKEN);
+      let pass = md5(API_TOKEN);
       let credentials = `${API_AUTH}:${pass}`;
       let encodedCredentials = btoa(credentials);
       let auth = "Basic " + encodedCredentials;
 
       try {
-        let response = await axios({
-          method: "post",
-          url: `${API_URL}/api/setPasswd`,
-          headers: { Authorization: auth, "Content-Type": "application/json" },
-          data: _body[0],
-        });
-        console.log(response);
-        if (response.data.estatus === "ok") {
-          let _message = response.data.mensaje;
+          let response = await axios({
+              method: "post",
+              url: `${API_URL}/api/setPasswd`,
+              headers: { Authorization: auth, "Content-Type": "application/json" },
+              data: _body[0],
+          });
 
-          setRefreshKey((prevKey) => prevKey + 1);
+          if (response.data.estatus === "ok") {
+              let _message = response.data.mensaje;
 
 
+              alert(_message);
 
-            try {
-                let response = await axios({
-                    method: 'post',
-                    url: `${API_URL}/api/setPasswd`,
-                    headers: { 'Authorization': auth, 'Content-Type': 'application/json' },
-                    data: _body[0]
-                });
-
-                   if(response.data.estatus === "ok")
-                    {
-                        let _message = response.data.mensaje;
-                       
-
-                        
-                        
-                        alert(_message);
-
-
-                            if(flag === 1)
-                            {
-                                setRefreshKey(prevKey => prevKey + 1);
-                            }
-                            else if(flag === 2)
-                            {
-                             navigation.navigate('Login');
-                            }
-                        
-    
-                    }
-                    else
-                    {
-                        let _messageUpdatePassword = response.data.mensaje;
-                        setMessageUpatePassword(_messageUpdatePassword);
-                        alert(_messageUpdatePassword);
-                    }
-
-                }
-                catch
-                {
-                  alert('ocurrió un error en el servidor');
-                }
+              if (flag === 1) {
+                  setRefreshKey(prevKey => prevKey + 1);
+              } else if (flag === 2) {
+                  navigation.navigate('Login');
               }
-        
-
+              else {
+                let _messageUpdatePassword = response.data.mensaje;
+                setMessageUpatePassword(_messageUpdatePassword);
+                alert(_messageUpdatePassword);
+            }
+             
+          }
+      } catch (error) {
+          console.error(error);
       }
-    }
-    }
+  }
+}
+
       
 
       

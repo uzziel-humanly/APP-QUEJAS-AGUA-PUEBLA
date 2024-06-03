@@ -5,6 +5,22 @@ import styled from "styled-components/native";
 
 const screenWidth = Dimensions.get("window").width;
 
+export const Title1 = styled(Text)`
+  color: ${(props) => props.theme.Colors.ui.primary};
+  font-weight: 700;
+  font-size: 27px;
+  text-align: center;
+`;
+
+
+export const ButtonP = styled(TouchableOpacity)`
+  background-color: ${(props) => props.theme.Colors.ui.primary};
+  border-radius: 8px;
+  padding-vertical: 12px;
+  padding-horizontal: 24px;
+  margin-bottom: 16px;
+`;
+
 export const ButtonPrimary = styled(TouchableOpacity)`
   background-color: ${(props) => props.theme.Colors.ui.info};
   padding-vertical: 15px;

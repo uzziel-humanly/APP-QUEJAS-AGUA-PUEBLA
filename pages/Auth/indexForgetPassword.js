@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, Text, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useLogin } from "../../hooks/useLogin";
+import {ButtonP, Title1} from '../../styles/index/stylesHome'
 
 
 export default function ForgetPassword() {
@@ -21,7 +22,7 @@ export default function ForgetPassword() {
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
              <View style={styles.container}>
             <View  style={styles.header}>
-            <Text style={styles.title}>¿Olvidaste tu contraseña?</Text>
+            <Title1>¿Olvidaste tu contraseña?</Title1>
             <Text style={styles.subtitle}>Escribe el correo que registraste a tu cuenta y presiona el botón de "Generar nueva contraseña"
             para generar una nueva</Text>
             </View>
@@ -39,13 +40,12 @@ export default function ForgetPassword() {
                 />
             </View>
             <View style={styles.formAction}>
-                <TouchableOpacity
+                <ButtonP
                 onPress={() => handleRecoverPassword()}
                 >
-                    <View style={styles.btn}>
                         <Text style={styles.btnTxt}>Generar nueva contraseña</Text>
-                    </View>
-                </TouchableOpacity>
+
+                </ButtonP>
                 {
                     messageRecoverPassword !== '' ?
                     <Text style={{justifyContent:'center', alignContent:'center', textAlign:'center'}}>{messageRecoverPassword}</Text>
