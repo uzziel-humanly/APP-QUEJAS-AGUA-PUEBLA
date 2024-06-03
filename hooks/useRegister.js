@@ -9,51 +9,140 @@ import md5 from "js-md5";
 export function useRegister() {
   const { showAlertRegister, showAlertPasswordIncorrect } = AlertPrincipal();
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
+  const [passwordMatch, setPasswordMatch] = useState(0);
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [messagePassword, setMessagePassword] = useState("");
+  const [messagePassword2, setMessagePassword2] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
   //Validacion de contraseña ingresada
   const handleCheckPassword = (e) => {
     let password = e.target.value;
     //console.log(password);
   };
 
-  //* Acciones registro *//
   const onSubmit = async (data) => {
-    //  const onSubmit = (data) => {
-    var json = data;
-    if (data.pass == data.passwordConfirmation) {
+    console.log(data);
+    setLoading(true);
+    if (data.passprev === data.passwordConfirmation) {
       try {
+        let passcyrpt = md5(data.passprev);
         let pass = md5(API_TOKEN);
         let credentials = `${API_AUTH}:${pass}`;
         let encodedCredentials = btoa(credentials);
         let auth = "Basic " + encodedCredentials;
-        //Obtenemos el la fecha actual y la hora para el registro
         const currentDate = new Date().toISOString().split("T")[0];
         const currentTime = new Date()
           .toISOString()
           .split("T")[1]
           .split(".")[0];
 
-        const additionalData = {
-          fecha_registro: currentDate,
-          hr_registro: currentTime,
-          id_estatus_registro: "1",
-        };
-        //Esa informacion extra la metemos dentro del json body
-        const completeData = { ...data, ...additionalData };
-        let body = JSON.stringify(completeData);
+        // Crear un objeto FormData
+        const formData = new FormData();
 
-        let response = await axios({
-          method: "POST",
-          url: `${API_URL}/api/registrar`,
-          headers: { Authorization: auth, "Content-Type": "application/json" },
-          data: body,
-        });
+        if (data.Archivo1 != undefined) {
+          formData.append("archivo1", {
+            uri: data.Archivo1[0].uri,
+            type: "image/jpeg",
+            name: data.Archivo1[0].fileName,
+          });
+        }
+
+        if (data.Archivo2 != undefined) {
+          formData.append("archivo2", {
+            uri: data.Archivo2[0].uri,
+            type: "image/jpeg",
+            name: data.Archivo2[0].fileName,
+          });
+        }
+
+        if (data.Archivo3 != undefined) {
+          formData.append("archivo3", {
+            uri: data.Archivo3[0].uri,
+            type: "image/jpeg",
+            name: data.Archivo3[0].fileName,
+          });
+        }
+
+        if (data.Archivo4 != undefined) {
+          var formato = "";
+          var name = "";
+          var uri = "";
+          if (data.banF4 == "1") {
+            formato = "image/jpeg";
+            name = data.Archivo4[0].fileName;
+            uri = data.Archivo4[0].uri;
+          } else if (data.banD4 == "2") {
+            formato = "application/pdf";
+            name = data.Archivo4.assets[0].name;
+            uri = data.Archivo4.assets[0].uri;
+          }
+          formData.append("archivo4", {
+            uri: uri,
+            type: formato,
+            name: name,
+          });
+        }
+
+        if (data.Archivo5 != undefined) {
+          var formato = "";
+          var name = "";
+          var uri = "";
+          if (data.banF5 == "1") {
+            formato = "image/jpeg";
+            name = data.Archivo5[0].fileName;
+            uri = data.Archivo5[0].uri;
+          } else if (data.banD5 == "2") {
+            formato = "application/pdf";
+            name = data.Archivo5.assets[0].name;
+            uri = data.Archivo5.assets[0].uri;
+          }
+          formData.append("archivo5", {
+            uri: uri,
+            type: formato,
+            name: name,
+          });
+        }
+
+        formData.append("nombre", data.nombre);
+        formData.append("apellido_p", data.apellido_p);
+        formData.append("apellido_m", data.apellido_m);
+        formData.append("nis", data.nis);
+        formData.append("celular", data.celular);
+        formData.append("correo", data.correo);
+        formData.append("id_tipo_cuenta", data.id_tipo_cuenta);
+        formData.append("fecha_registro", currentDate);
+        formData.append("hr_registro", currentTime);
+        formData.append("id_estatus_registro", "1");
+        formData.append("pass", passcyrpt);
+        console.log(formData);
+
+        // let response = await axios({
+        //   method: "POST",
+        //   url: `${API_URL}/api/registrar`,
+        //   headers: {
+        //     Authorization: auth,
+        //     "Content-Type": "multipart/form-data",
+        //   },
+        //   data: formData,
+        // });
+
+        // let response = await axios({
+        //   method: "post",
+        //   url: `https://hs.ac-labs.com.mx/copia_insumos/contenido/apis/api.php?metodo=registerApp`,
+        //   headers: { "Content-Type": "multipart/form-data" },
+        //   data: formData,
+        // });
 
         if (response.data.estatus === "ok") {
+          setLoading(false);
           const data = [
             { status: "Exito", msj: "Los datos se han registrado" },
           ];
           showAlertRegister(data);
         } else {
+          setLoading(false);
           const data = [
             {
               status: "Error",
@@ -63,10 +152,12 @@ export function useRegister() {
           showAlertRegister(data);
         }
       } catch (error) {
-        console.error(error);
+        setLoading(false);
+        //console.error(error);
         alert("Ocurrió un error en el servidor");
       }
     } else {
+      setLoading(false);
       const data = [
         { status: "Advertencia", msj: "Las contraseñas no coinciden" },
       ];
@@ -78,9 +169,37 @@ export function useRegister() {
     navigation.navigate("Login");
   };
 
+  const handleConfirmPassword = (Text) => {
+    if (Text.trim() === "") {
+      setPasswordMatch(2);
+      setMessagePassword2("La contraseña no puede estar vacía");
+    } else if (newPassword !== Text) {
+      setPasswordMatch(2);
+      setMessagePassword2("Las contraseñas no coinciden");
+    } else {
+      setPasswordMatch(1);
+      setMessagePassword2("Las contraseñas coinciden");
+    }
+  };
+
+  const inputPassword = (Text) => {
+    setNewPassword(Text);
+  };
+
+  const handleModalDocuments = () => {
+    setModalVisible(!modalVisible);
+}
+
   return {
     onSubmit,
     handleCheckPassword,
     handleClickLogin,
+    loading,
+    setLoading,
+    handleConfirmPassword,
+    passwordMatch,
+    messagePassword2,
+    inputPassword,
+    modalVisible,setModalVisible,handleModalDocuments
   };
 }

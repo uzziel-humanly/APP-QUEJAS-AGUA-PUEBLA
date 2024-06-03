@@ -11,7 +11,8 @@ import {
   Button,
   Switch,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  ActivityIndicator,
 } from "react-native";
 import { useRegister } from "../../hooks/useRegister";
 import { useForm, Controller } from "react-hook-form";
@@ -26,10 +27,64 @@ import * as FileSystem from "expo-file-system";
 import { Asset } from "expo-asset";
 import { WebView } from "react-native-webview";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Feather } from "@expo/vector-icons";
+import * as OpenAnything from "react-native-openanything";
+import ModalDocuments from "./modalDocuments";
+//import PdfRendererView from 'react-native-pdf-renderer';
+//import PDFView from 'react-native-view-pdf/lib/index';
 
 export default function Register() {
+  const [pdfUri, setPdfUri] = useState(null);
+
+  useEffect(() => {
+    const loadPdf = async () => {
+      try {
+        // Cargar el archivo PDF desde assets
+        const asset = Asset.fromModule(require("../../assets/banner.png"));
+        await asset.downloadAsync();
+        // Obtener la URI del archivo descargado
+        const fileUri = `${FileSystem.documentDirectory}banner.png`;
+
+        console.log(fileUri);
+        // Copiar el archivo a un directorio accesible
+        await FileSystem.copyAsync({
+          from: asset.localUri,
+          to: fileUri,
+        });
+
+        setPdfUri(fileUri);
+      } catch (error) {
+        console.error("Error loading PDF:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadPdf();
+  }, []);
+
   //Boton para guardar el formulario
-  const { onSubmit } = useRegister();
+  const {
+    onSubmit,
+    loading,
+    setLoading,
+    handleConfirmPassword,
+    passwordMatch,
+    messagePassword2,
+    inputPassword,
+    modalVisible,
+    setModalVisible,
+    handleModalDocuments
+  } = useRegister();
+  const [disabledButtons, setDisabledButtons] = useState({
+    SELFIE: false,
+    PICINEFRONTAL: false,
+    PICINETRASERO: false,
+    PICRECIBO: false,
+    PICCDOM: false,
+    RECIBOPDF: false,
+    CDOMIPDF: false,
+  });
   //Formulario
   const {
     control,
@@ -45,14 +100,22 @@ export default function Register() {
 
   const handleDocumentPicker = async (setValue, option) => {
     try {
-      let result = await DocumentPicker.getDocumentAsync({});
+      let result = await DocumentPicker.getDocumentAsync({
+        type: ["application/pdf"],
+      });
       if (result.assets.length == 1) {
         if (option == "RECIBOPDF") {
-          setSelectedDocument(result.assets.name);
-          setValue("reciboPDF", result);
+          setDisabledButtons((prev) => ({ ...prev, [option]: true }));
+          setSelectedDocument(result.assets);
+          setValue("Archivo4", result);
+          setValue("banD4", "2");
+          setDisabledButtons((prev) => ({ ...prev, ["PICRECIBO"]: false }));
         } else if (option == "CDOMIPDF") {
-          setSelectedDocument(result.assets.name);
-          setValue("comprobantePDF", result);
+          setDisabledButtons((prev) => ({ ...prev, [option]: true }));
+          setSelectedDocument(result.assets);
+          setValue("Archivo5", result);
+          setValue("banD5", "2");
+          setDisabledButtons((prev) => ({ ...prev, ["PICCDOM"]: false }));
         }
       }
     } catch (err) {
@@ -73,7 +136,7 @@ export default function Register() {
     setValue("image", result);
     //console.log(result);
 
-    if (!result.cancelled) {
+    if (!result.canceled) {
       //setImage(result.uri);
     }
   };
@@ -81,28 +144,38 @@ export default function Register() {
   const takePhoto = async (option) => {
     try {
       let result = await ImagePicker.launchCameraAsync({
+        mediaType: "photo",
         allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
+        quality: 0.5,
       });
+
       if (option == "PICINEFRONTAL") {
+        setDisabledButtons((prev) => ({ ...prev, [option]: true }));
         setImage(result.assets.name);
-        setValue("imageIneFrontal", result);
+        setValue("Archivo2", result.assets);
       } else if (option == "PICINETRASERO") {
+        setDisabledButtons((prev) => ({ ...prev, [option]: true }));
         setImage(result.assets.name);
-        setValue("imageIneTrasero", result);
+        setValue("Archivo3", result.assets);
       } else if (option == "PICRECIBO") {
+        setDisabledButtons((prev) => ({ ...prev, [option]: true }));
         setImage(result.assets.name);
-        setValue("imageRecibo", result);
+        setValue("Archivo4", result.assets);
+        setValue("banF4", "1");
+        setDisabledButtons((prev) => ({ ...prev, ["RECIBOPDF"]: false }));
       } else if (option == "PICCDOM") {
+        setDisabledButtons((prev) => ({ ...prev, [option]: true }));
         setImage(result.assets.name);
-        setValue("imageComprobante", result);
+        setValue("Archivo5", result.assets);
+        setValue("banF5", "1");
+        setDisabledButtons((prev) => ({ ...prev, ["CDOMIPDF"]: false }));
       } else if (option == "SELFIE") {
+        setDisabledButtons((prev) => ({ ...prev, [option]: true }));
         setImage(result.assets.name);
-        setValue("selfie", result);
+        setValue("Archivo1", result.assets);
       }
 
-      if (!result.cancelled) {
+      if (!result.canceled) {
         setImage(result.uri);
       }
     } catch (err) {
@@ -110,7 +183,6 @@ export default function Register() {
     }
   };
 
-  // const [facing, setFacing] = useState("back");
   const [permission, requestPermission] = useCameraPermissions();
 
   if (!permission) {
@@ -306,17 +378,21 @@ export default function Register() {
                     <TextInput
                       style={styles.inputControl}
                       onBlur={onBlur}
-                      onChangeText={onChange}
+                      //onChangeText={onChange}
+                      onChangeText={(input) => {
+                        onChange(input);
+                        inputPassword(input);
+                      }}
                       value={value}
                       secureTextEntry={true}
                       placeholder="*********"
                     />
                   )}
-                  name="pass"
+                  name="passprev"
                   defaultValue=""
                 />
-                {errors.pass && (
-                  <Text style={styles.error}>{errors.pass.message}</Text>
+                {errors.passprev && (
+                  <Text style={styles.error}>{errors.passprev.message}</Text>
                 )}
               </View>
 
@@ -329,9 +405,14 @@ export default function Register() {
                   }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
+                      //onChangeText={handleChangeConfirmNewPassword}
                       style={styles.inputControl}
                       onBlur={onBlur}
-                      onChangeText={onChange}
+                      //onChangeText={onChange}
+                      onChangeText={(input) => {
+                        onChange(input);
+                        handleConfirmPassword(input);
+                      }}
                       value={value}
                       secureTextEntry={true}
                       placeholder="*********"
@@ -340,6 +421,16 @@ export default function Register() {
                   name="passwordConfirmation"
                   defaultValue=""
                 />
+                {passwordMatch === 1 && (
+                  <Text style={{ alignSelf: "flex-start", color: "green" }}>
+                    {messagePassword2} ✅
+                  </Text>
+                )}
+                {passwordMatch === 2 && (
+                  <Text style={{ alignSelf: "flex-start", color: "red" }}>
+                    {messagePassword2} ❌
+                  </Text>
+                )}
                 {errors.passwordConfirmation && (
                   <Text style={styles.error}>
                     {errors.passwordConfirmation.message}
@@ -384,7 +475,10 @@ export default function Register() {
               <Text style={styles.inputLabel}>INE (Por ambos lados):</Text>
               <View style={styles.containerBtn}>
                 <TouchableOpacity
-                  style={styles.button}
+                  style={[
+                    styles.button,
+                    disabledButtons.PICINEFRONTAL && styles.buttonDisabled,
+                  ]}
                   //onPress={takePhoto}
                   onPress={() => takePhoto("PICINEFRONTAL")}
                 >
@@ -396,7 +490,10 @@ export default function Register() {
                 )}
 
                 <TouchableOpacity
-                  style={styles.button}
+                  style={[
+                    styles.button,
+                    disabledButtons.PICINETRASERO && styles.buttonDisabled,
+                  ]}
                   //onPress={takePhoto}
                   onPress={() => takePhoto("PICINETRASERO")}
                 >
@@ -419,7 +516,10 @@ export default function Register() {
                   render={({ field: { onChange, value } }) => (
                     <View> */}
                 <TouchableOpacity
-                  style={styles.button}
+                  style={[
+                    styles.button,
+                    disabledButtons.RECIBOPDF && styles.buttonDisabled,
+                  ]}
                   onPress={() => handleDocumentPicker(setValue, "RECIBOPDF")}
                 >
                   <FontAwesome name="file-pdf-o" size={24} color="#FFFFFF" />
@@ -436,7 +536,10 @@ export default function Register() {
                 )} */}
 
                 <TouchableOpacity
-                  style={styles.button}
+                  style={[
+                    styles.button,
+                    disabledButtons.PICRECIBO && styles.buttonDisabled,
+                  ]}
                   //onPress={takePhoto}
                   onPress={() => takePhoto("PICRECIBO")}
                 >
@@ -459,7 +562,10 @@ export default function Register() {
                   render={({ field: { onChange, value } }) => (
                     <View> */}
                 <TouchableOpacity
-                  style={styles.button}
+                  style={[
+                    styles.button,
+                    disabledButtons.CDOMIPDF && styles.buttonDisabled,
+                  ]}
                   onPress={() => handleDocumentPicker(setValue, "CDOMIPDF")}
                 >
                   <FontAwesome name="file-pdf-o" size={24} color="#FFFFFF" />
@@ -476,7 +582,10 @@ export default function Register() {
                 )} */}
 
                 <TouchableOpacity
-                  style={styles.button}
+                  style={[
+                    styles.button,
+                    disabledButtons.PICCDOM && styles.buttonDisabled,
+                  ]}
                   //onPress={takePhoto}
                   onPress={() => takePhoto("PICCDOM")}
                 >
@@ -490,7 +599,11 @@ export default function Register() {
 
               <Text style={styles.inputLabel}>Fotografia (Selfie):</Text>
               <TouchableOpacity
-                style={styles.button}
+                //disabled={disabledButtons.SELFIE}
+                style={[
+                  styles.button,
+                  disabledButtons.SELFIE && styles.buttonDisabled,
+                ]}
                 //onPress={takePhoto}
                 onPress={() => takePhoto("SELFIE")}
               >
@@ -509,6 +622,11 @@ export default function Register() {
                   <TouchableOpacity
                     style={styles.btnContratos}
                     //onPress={handleSubmit(onSubmit)}
+                    onPress={() =>
+                      OpenAnything.Pdf(
+                        "https://publuu.com/flip-book/4712/9016/page/4"
+                      )
+                    }
                   >
                     <Text
                       style={{
@@ -543,7 +661,14 @@ export default function Register() {
                 <View style={{ marginRight: 40 }}>
                   <TouchableOpacity
                     style={styles.btnContratos}
-                    //onPress={handleSubmit(onSubmit)}
+                    // onPress={() =>
+                    //   OpenAnything.Pdf(
+                    //     "https://publuu.com/flip-book/4712/9016/page/4"
+                    //   )
+                    // }
+                    onPress={() =>
+                      handleModalDocuments()
+                    }
                   >
                     <Text
                       style={{
@@ -576,15 +701,93 @@ export default function Register() {
             </View>
 
             <View style={styles.formAction}>
-              <TouchableOpacity
-                style={styles.btn}
-                onPress={handleSubmit(onSubmit)}
-              >
-                <Text style={styles.btnTxt}>Registrar</Text>
-              </TouchableOpacity>
+              {loading ? (
+                // Si loading es true, se muestra el indicador de carga
+                <ActivityIndicator size="large" />
+              ) : (
+                !loading &&
+                // Si no está cargando y no hay errores, se muestra el botón de registrar
+                (Object.keys(errors).length === 0 ? (
+                  <TouchableOpacity
+                    style={styles.btn}
+                    onPress={handleSubmit(onSubmit)}
+                  >
+                    <Text style={styles.btnTxt}>Registrar</Text>
+                  </TouchableOpacity>
+                ) : (
+                  // Si no está cargando pero hay errores, se muestra el mensaje de alerta
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      padding: 10,
+                      width: 320,
+                      borderRadius: 10,
+                      backgroundColor: "#feba29",
+                    }}
+                  >
+                    <Feather
+                      style={{
+                        marginRight: 5,
+                        marginTop: 5,
+                      }}
+                      name="alert-triangle"
+                      size={24}
+                      color="white"
+                    />
+                    <Text
+                      style={{
+                        fontWeight: "600",
+                        color: "white",
+                        fontSize: 14,
+                        textAlign: "center",
+                      }}
+                    >
+                      Hay campos requeridos que necesitan ser completados.
+                      ¡Verifica!
+                    </Text>
+                  </View>
+                ))
+              )}
             </View>
+
+            {/* <View>
+          <Button title='pdf' onPress={() => OpenAnything.Pdf(pdfUri)}/>
+        </View> */}
+
+            {/* <PDFView
+            style={{backgroundColor: 'red'}}
+            source="file:///path/to/local/file.pdf"
+            distanceBetweenPages={16}
+            maxZoom={5}
+            onPageChange={(current, total) => {
+               console.log(current, total);
+            }}
+         /> */}
           </View>
         </View>
+
+        <WebView
+          originWhitelist={["*"]}
+          //source={{ uri: pdfUri }}
+          source={{ uri: pdfUri || undefined }}
+          style={{ height: 400, width: 350 }}
+          onError={(error) => console.error("Error en WebView:", error)}
+          //nestedScrollEnabled={true}
+          //source={{ uri: `file:///${pdfUri}` }}
+          //style={styles.pdf}
+          //useWebKit={true}
+          allowFileAccess={true}
+          allowFileAccessFromFileURLs={true}
+        />
+
+        {modalVisible && (
+          <ModalReports
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
+          />
+        )}
+
+        {/* <WebView style={{ height: 500, width: 350 }} nestedScrollEnabled={true} source={{ uri: 'https://drive.google.com/viewerng/viewer?embedded=true&url=http://faa.unse.edu.ar/apuntes/ccaunidad1.pdf' }} /> */}
       </ScrollView>
     </GestureHandlerRootView>
   );
@@ -764,5 +967,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     alignItems: "center",
     color: "blue",
+  },
+  buttonDisabled: {
+    backgroundColor: "#A9A9A9",
+  },
+  pdf: {
+    flex: 1,
+    width: "100%",
   },
 });

@@ -45,7 +45,7 @@ export default function Home() {
           style={{marginRight:5}}
             onPress={() => {
               Linking.openURL(
-                "https://www.aguapuebla.mx/index.php/aviso-de-privacidad-adp/"
+                "https://consultapublicamx.plataformadetransparencia.org.mx/vut-web/faces/view/consultaPublica.xhtml?idEntidad=MjE=&idSujetoObligado=NDIzNg==#inicio"
               );
             }}
           >

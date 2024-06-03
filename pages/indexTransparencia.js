@@ -79,11 +79,8 @@ export default function TransparenciaPagina() {
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <View style={styles.container}>
             <View style={styles.header}>
-              <Text style={styles.title}>Obras de Transparencia</Text>
-              <Text style={styles.subtitle}>
-                A continuación se muestra una breve descripción de las obras que
-                se tienen en proceso en la ciudad.
-              </Text>
+              <Text style={styles.title}>Transparencia</Text>
+              <Text style={styles.subtitle}>Obras</Text>
               {contenido.map((registro, index) => (
                 <LinearGradient
                   key={index}
@@ -105,9 +102,9 @@ export default function TransparenciaPagina() {
                       <Text style={{ color: "white" }}>{registro[i]}</Text>
                     </View>
                   ))}
-                  <View style={styles.iconContainer}>
+                  {/* <View style={styles.iconContainer}>
                     <FontAwesome name="gears" size={50} color="white" />
-                  </View>
+                  </View> */}
                 </LinearGradient>
               ))}
             </View>
