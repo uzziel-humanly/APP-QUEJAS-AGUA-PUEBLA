@@ -15,6 +15,7 @@ export function useRegister() {
   const [messagePassword, setMessagePassword] = useState("");
   const [messagePassword2, setMessagePassword2] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
   //Validacion de contraseña ingresada
   const handleCheckPassword = (e) => {
     let password = e.target.value;
@@ -185,6 +186,10 @@ export function useRegister() {
     setNewPassword(Text);
   };
 
+  const handleModalDocuments = () => {
+    setModalVisible(!modalVisible);
+}
+
   return {
     onSubmit,
     handleCheckPassword,
@@ -195,5 +200,6 @@ export function useRegister() {
     passwordMatch,
     messagePassword2,
     inputPassword,
+    modalVisible,setModalVisible,handleModalDocuments
   };
 }

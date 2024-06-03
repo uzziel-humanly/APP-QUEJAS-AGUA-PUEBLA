@@ -28,8 +28,41 @@ import { Asset } from "expo-asset";
 import { WebView } from "react-native-webview";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Feather } from "@expo/vector-icons";
+import * as OpenAnything from "react-native-openanything";
+import ModalDocuments from "./modalDocuments";
+//import PdfRendererView from 'react-native-pdf-renderer';
+//import PDFView from 'react-native-view-pdf/lib/index';
 
 export default function Register() {
+  const [pdfUri, setPdfUri] = useState(null);
+
+  useEffect(() => {
+    const loadPdf = async () => {
+      try {
+        // Cargar el archivo PDF desde assets
+        const asset = Asset.fromModule(require("../../assets/banner.png"));
+        await asset.downloadAsync();
+        // Obtener la URI del archivo descargado
+        const fileUri = `${FileSystem.documentDirectory}banner.png`;
+
+        console.log(fileUri);
+        // Copiar el archivo a un directorio accesible
+        await FileSystem.copyAsync({
+          from: asset.localUri,
+          to: fileUri,
+        });
+
+        setPdfUri(fileUri);
+      } catch (error) {
+        console.error("Error loading PDF:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadPdf();
+  }, []);
+
   //Boton para guardar el formulario
   const {
     onSubmit,
@@ -39,6 +72,9 @@ export default function Register() {
     passwordMatch,
     messagePassword2,
     inputPassword,
+    modalVisible,
+    setModalVisible,
+    handleModalDocuments
   } = useRegister();
   const [disabledButtons, setDisabledButtons] = useState({
     SELFIE: false,
@@ -586,6 +622,11 @@ export default function Register() {
                   <TouchableOpacity
                     style={styles.btnContratos}
                     //onPress={handleSubmit(onSubmit)}
+                    onPress={() =>
+                      OpenAnything.Pdf(
+                        "https://publuu.com/flip-book/4712/9016/page/4"
+                      )
+                    }
                   >
                     <Text
                       style={{
@@ -620,7 +661,14 @@ export default function Register() {
                 <View style={{ marginRight: 40 }}>
                   <TouchableOpacity
                     style={styles.btnContratos}
-                    //onPress={handleSubmit(onSubmit)}
+                    // onPress={() =>
+                    //   OpenAnything.Pdf(
+                    //     "https://publuu.com/flip-book/4712/9016/page/4"
+                    //   )
+                    // }
+                    onPress={() =>
+                      handleModalDocuments()
+                    }
                   >
                     <Text
                       style={{
@@ -701,8 +749,45 @@ export default function Register() {
                 ))
               )}
             </View>
+
+            {/* <View>
+          <Button title='pdf' onPress={() => OpenAnything.Pdf(pdfUri)}/>
+        </View> */}
+
+            {/* <PDFView
+            style={{backgroundColor: 'red'}}
+            source="file:///path/to/local/file.pdf"
+            distanceBetweenPages={16}
+            maxZoom={5}
+            onPageChange={(current, total) => {
+               console.log(current, total);
+            }}
+         /> */}
           </View>
         </View>
+
+        <WebView
+          originWhitelist={["*"]}
+          //source={{ uri: pdfUri }}
+          source={{ uri: pdfUri || undefined }}
+          style={{ height: 400, width: 350 }}
+          onError={(error) => console.error("Error en WebView:", error)}
+          //nestedScrollEnabled={true}
+          //source={{ uri: `file:///${pdfUri}` }}
+          //style={styles.pdf}
+          //useWebKit={true}
+          allowFileAccess={true}
+          allowFileAccessFromFileURLs={true}
+        />
+
+        {modalVisible && (
+          <ModalReports
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
+          />
+        )}
+
+        {/* <WebView style={{ height: 500, width: 350 }} nestedScrollEnabled={true} source={{ uri: 'https://drive.google.com/viewerng/viewer?embedded=true&url=http://faa.unse.edu.ar/apuntes/ccaunidad1.pdf' }} /> */}
       </ScrollView>
     </GestureHandlerRootView>
   );
@@ -885,5 +970,9 @@ const styles = StyleSheet.create({
   },
   buttonDisabled: {
     backgroundColor: "#A9A9A9",
+  },
+  pdf: {
+    flex: 1,
+    width: "100%",
   },
 });

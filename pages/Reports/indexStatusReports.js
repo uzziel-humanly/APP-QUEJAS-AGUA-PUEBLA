@@ -25,7 +25,7 @@ const getRandomColors = () => {
   const colorsList = [
     //["#fda400", "#fda400"],
     ["#00bf63", "#00bf63"],
-    //["#1bbac8", "#1bbac8"],
+    ["#1bbac8", "#1bbac8"],
     //["#72e128", "#72e128"],
     ["#26c6f9", "#26c6f9"],
     //["#dfdfe3", "#dfdfe3"],
@@ -169,7 +169,7 @@ export default function IndexStatusReports() {
                   let color;
 
                   if (reportes[1] === "ALTA") {
-                    color = "#fda400";
+                    color = "#1bbac8";
                   } else if (reportes[1] === "TRAMITE") {
                     color = "#00bf63";
                   } else if (reportes[1] === "CONCLUIDO") {
@@ -182,16 +182,16 @@ export default function IndexStatusReports() {
                         handleModalReport(reportes[0], reportes[1])
                       }
                     >
-                      <LinearGradient
+                      <View
                         //key={index}
                         style={{
                           width: 350,
                           marginTop: 10,
                           padding: 10,
-                          //backgroundColor: color,
+                          backgroundColor: color,
                           borderRadius: 20,
                         }}
-                        colors={getRandomColors()}
+                        //colors={getRandomColors()}
                       >
                         <View
                           style={{
@@ -215,7 +215,7 @@ export default function IndexStatusReports() {
                             {reportes[1]}
                           </Text>
                         </View>
-                      </LinearGradient>
+                      </View>
                     </TouchableOpacity>
                   );
                 })}

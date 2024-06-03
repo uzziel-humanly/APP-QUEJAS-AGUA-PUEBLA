@@ -16,11 +16,9 @@ import {
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useReports } from "../../hooks/Reports/useReports";
 import { useState, useEffect } from "react";
-import axios from "axios";
-import { API_URL, API_TOKEN, API_AUTH } from "@env";
-import md5 from "js-md5";
 
-export default function ModalReports({
+
+export default function ModalDocuments({
   modalVisible,
   setModalVisible,
   idReporte,
