@@ -14,57 +14,60 @@ import {
   Image,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useReports } from "../../hooks/Reports/useReports";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { API_URL, API_TOKEN, API_AUTH } from "@env";
 import md5 from "js-md5";
 
-export default function ModalReports({
+export default function ModalTransparencia({
   modalVisible,
   setModalVisible,
-  idReporte,
-  status,
+  idObra,
+  setIdObra,
 }) {
-  const [dataFiltrada, setDataFiltrada] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [cabeceras, setCabeceras] = useState([]);
+  const [contenido, setContenido] = useState([]);
 
   useEffect(() => {
-    getReportesInfo();
+    getTransparencia();
   }, []);
 
-  const getReportesInfo = async () => {
+  const getTransparencia = async () => {
     try {
       let pass = md5(API_TOKEN);
       let credentials = `${API_AUTH}:${pass}`;
       let encodedCredentials = btoa(credentials);
       let auth = "Basic " + encodedCredentials;
 
-      const data = {
-        id_usuario_app: "1",
-      };
-      let body = JSON.stringify(data);
-
       let response = await axios({
         method: "post",
-        url: `${API_URL}/api/getReportes`,
+        url: `${API_URL}/api/getTransparencia`,
         headers: { Authorization: auth, "Content-Type": "application/json" },
-        data: body,
       });
 
       if (response.data.estatus === "ok") {
-        let _data = response.data.mensaje;
-        const mensajeFiltrado = _data.find(
-          (mensaje) => mensaje.id === idReporte
+        let _data = response.data.mensaje[0];
+        //let _dataContent = response.data.mensaje;
+        let _dataContent = response.data.mensaje.slice(1);
+        //let _dataContent = response.data.mensaje.slice(1);
+        let _dataContentWithId = _dataContent.map((item, index) => {
+          return { ...item, id: index + 1 };
+        });
+        const mensajeFiltrado = _dataContentWithId.find(
+          (mensaje) => mensaje["id"] === idObra
         );
-        setDataFiltrada(mensajeFiltrado);
+        console.log(mensajeFiltrado);
+        setCabeceras(_data);
+        setContenido(mensajeFiltrado);
         setLoading(false);
       } else {
+        alert("Ocurrió un error en el servidor");
         //console.error("Error en la respuesta de la API");
       }
     } catch (error) {
       //console.error(error);
-      alert("Ocurrió un error en el servidor modal");
+      alert("Ocurrió un error en el servidor");
     }
   };
 
@@ -98,23 +101,27 @@ export default function ModalReports({
                     {loading ? (
                       // Si loading es true, no se muestra nada
                       <ActivityIndicator size="large" />
-                    ) : !loading && dataFiltrada ? (
-                      // Si loading es false y dataFiltrada tiene datos, se muestran los datos
+                    ) : !loading && contenido ? (
+                      // Si loading es false y cabecera tiene datos, se muestran los datos
                       <View>
-                        <Text>Folio: {dataFiltrada.folio}</Text>
-                        <Text>Descripcion: {dataFiltrada.descripcion}</Text>
-                        <Text>Fecha: {dataFiltrada.fecha}</Text>
-                        <Text>Estatus: {status}</Text>
-                        <Text style={{ marginBottom: 10 }}>Evidencia:</Text>
-                        <Image
-                          source={{
-                            uri: `${dataFiltrada.evidencia}`,
-                          }}
-                          style={{ width: 200, height: 200 }}
-                        />
+                        {cabeceras.map((cabecera, i) => (
+                          <View
+                            key={i}
+                            style={{
+                              justifyContent: "center",
+                            }}
+                          >
+                            <Text style={{ color: "black", fontWeight: "600" }}>
+                              {cabecera}:
+                            </Text>
+                            <Text style={{ color: "black" }}>
+                              {contenido[i.toString()]}
+                            </Text>
+                          </View>
+                        ))}
                       </View>
                     ) : (
-                      // Si loading es false pero dataFiltrada está vacío, mostrar el mensaje de error
+                      // Si loading es false pero cabecera está vacío, mostrar el mensaje de error
                       <Text>Ops, ¡Ha ocurrido un error!</Text>
                     )}
                   </View>
@@ -176,7 +183,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   buttonClose: {
-    backgroundColor: "grey"
+    backgroundColor: "grey",
   },
   buttonConfirm: {
     backgroundColor: "black",

@@ -23,9 +23,9 @@ import * as ImagePicker from "expo-image-picker";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
-import * as FileSystem from "expo-file-system";
-import { Asset } from "expo-asset";
-import { WebView } from "react-native-webview";
+// import * as FileSystem from "expo-file-system";
+// import { Asset } from "expo-asset";
+// import { WebView } from "react-native-webview";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Feather } from "@expo/vector-icons";
 import * as OpenAnything from "react-native-openanything";
@@ -34,34 +34,34 @@ import ModalDocuments from "./modalDocuments";
 //import PDFView from 'react-native-view-pdf/lib/index';
 
 export default function Register() {
-  const [pdfUri, setPdfUri] = useState(null);
+  // const [pdfUri, setPdfUri] = useState(null);
 
-  useEffect(() => {
-    const loadPdf = async () => {
-      try {
-        // Cargar el archivo PDF desde assets
-        const asset = Asset.fromModule(require("../../assets/banner.png"));
-        await asset.downloadAsync();
-        // Obtener la URI del archivo descargado
-        const fileUri = `${FileSystem.documentDirectory}banner.png`;
+  // useEffect(() => {
+  //   const loadPdf = async () => {
+  //     try {
+  //       // Cargar el archivo PDF desde assets
+  //       const asset = Asset.fromModule(require("../../assets/banner.png"));
+  //       await asset.downloadAsync();
+  //       // Obtener la URI del archivo descargado
+  //       const fileUri = `${FileSystem.documentDirectory}banner.png`;
 
-        console.log(fileUri);
-        // Copiar el archivo a un directorio accesible
-        await FileSystem.copyAsync({
-          from: asset.localUri,
-          to: fileUri,
-        });
+  //       console.log(fileUri);
+  //       // Copiar el archivo a un directorio accesible
+  //       await FileSystem.copyAsync({
+  //         from: asset.localUri,
+  //         to: fileUri,
+  //       });
 
-        setPdfUri(fileUri);
-      } catch (error) {
-        console.error("Error loading PDF:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  //       setPdfUri(fileUri);
+  //     } catch (error) {
+  //       console.error("Error loading PDF:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    loadPdf();
-  }, []);
+  //   loadPdf();
+  // }, []);
 
   //Boton para guardar el formulario
   const {
@@ -74,7 +74,7 @@ export default function Register() {
     inputPassword,
     modalVisible,
     setModalVisible,
-    handleModalDocuments
+    handleModalDocuments,
   } = useRegister();
   const [disabledButtons, setDisabledButtons] = useState({
     SELFIE: false,
@@ -622,11 +622,12 @@ export default function Register() {
                   <TouchableOpacity
                     style={styles.btnContratos}
                     //onPress={handleSubmit(onSubmit)}
-                    onPress={() =>
-                      OpenAnything.Pdf(
-                        "https://publuu.com/flip-book/4712/9016/page/4"
-                      )
-                    }
+                    // onPress={() =>
+                    //   OpenAnything.Pdf(
+                    //     "https://publuu.com/flip-book/4712/9016/page/4"
+                    //   )
+                    // }
+                    onPress={() => handleModalDocuments()}
                   >
                     <Text
                       style={{
@@ -666,9 +667,7 @@ export default function Register() {
                     //     "https://publuu.com/flip-book/4712/9016/page/4"
                     //   )
                     // }
-                    onPress={() =>
-                      handleModalDocuments()
-                    }
+                    onPress={() => handleModalDocuments()}
                   >
                     <Text
                       style={{
@@ -765,7 +764,7 @@ export default function Register() {
          /> */}
           </View>
         </View>
-
+        {/* 
         <WebView
           originWhitelist={["*"]}
           //source={{ uri: pdfUri }}
@@ -778,10 +777,10 @@ export default function Register() {
           //useWebKit={true}
           allowFileAccess={true}
           allowFileAccessFromFileURLs={true}
-        />
+        /> */}
 
         {modalVisible && (
-          <ModalReports
+          <ModalDocuments
             modalVisible={modalVisible}
             setModalVisible={setModalVisible}
           />
@@ -970,9 +969,5 @@ const styles = StyleSheet.create({
   },
   buttonDisabled: {
     backgroundColor: "#A9A9A9",
-  },
-  pdf: {
-    flex: 1,
-    width: "100%",
   },
 });
