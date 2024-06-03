@@ -22,6 +22,9 @@ export const useUserProfile = () => {
    const [messageUpdatePassword, setMessageUpatePassword] = useState('');
    const [refreshKey, setRefreshKey] = useState(0);
 
+   //Inicio temporal
+   const [email2, setEmail2] = useState('');
+
 
    const getInformationUser = async () => {
        let _name = await AsyncStorage.getItem('name');
@@ -50,9 +53,6 @@ export const useUserProfile = () => {
 }
 
 const handleChangeConfirmNewPassword = (Text) => {
-
-    console.log('entro? ', Text);
-    console.log('pass ', newPassword);
     setConfirmNewPassword(Text);
 
     if (Text.trim() === '') {
@@ -68,8 +68,25 @@ const handleChangeConfirmNewPassword = (Text) => {
 }
 
 
-const handleUpdatePassword = async () => {
-      let _email = await AsyncStorage.getItem('email');
+const handleChangeEmail2 = (Text) => {
+    setEmail2(Text);
+}
+
+
+const handleUpdatePassword = async (flag) => {
+
+      let _email = '';
+      
+
+        if(flag === 1)
+        {
+            _email = await AsyncStorage.getItem('email');
+        }
+        else if (flag === 2)
+        {
+            _email = email2;
+        }
+
         if((newPassword.trim() !== '' && confirmNewPassword.trim() !== '') &&  (newPassword === confirmNewPassword))
         {
 
@@ -100,9 +117,19 @@ const handleUpdatePassword = async () => {
                         let _message = response.data.mensaje;
                        
 
-                        setRefreshKey(prevKey => prevKey + 1);
+                        
                         
                         alert(_message);
+
+
+                            if(flag === 1)
+                            {
+                                setRefreshKey(prevKey => prevKey + 1);
+                            }
+                            else if(flag === 2)
+                            {
+                             navigation.navigate('Login');
+                            }
                         
     
                     }
@@ -134,6 +161,9 @@ const handleUpdatePassword = async () => {
        name, email, 
     
     //Change password
-       modalVisible, setModalVisible,  handleChangePassword, handleChangeNewPassword, handleChangeConfirmNewPassword, messagePassword, messagePassword2, passwordMatch, handleUpdatePassword
+       modalVisible, setModalVisible,  handleChangePassword, handleChangeNewPassword, handleChangeConfirmNewPassword, messagePassword, messagePassword2, passwordMatch, handleUpdatePassword,
+
+    //Inicio temporal
+      handleChangeEmail2
    }
 }

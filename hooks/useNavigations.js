@@ -33,6 +33,9 @@ import IndexBoarding3 from "../pages/indexBoarding3";
 import ForgetPassword from "../pages/Auth/indexForgetPassword";
 import NewPassword from "../pages/indexBoardingForgetPassword";
 import IndexUserProfile from "../pages/Auth/indexUserProfile";
+import IndexUserService from "../pages/user_service/indexUserService";
+import IndexTemporalPassword from "../pages/Auth/indexTemporalPassword";
+import styled, { useTheme } from "styled-components/native"; 
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -66,13 +69,15 @@ const MenuItems = ({ navigation }) => {
 };
 
 function MainStack() {
+  const theme = useTheme(); 
+
   return (
     <Drawer.Navigator
       initialRouteName="Home"
       drawerContent={(props) => <MenuItems {...props} />}
       screenOptions={({ navigation }) => ({
         headerStyle: {
-          backgroundColor: "#000",
+          backgroundColor: theme.Colors.ui.primary, 
         },
         headerTintColor: "#fff",
       })}
@@ -87,10 +92,6 @@ function MainStack() {
 export default function StackNavigation() {
   return (
     <NavigationContainer>
-      {/* <GestureHandlerRootView
-        contentContainerStyle={{ minHeight: "100%", overflow: "visible" }}
-        style={styles.container}
-      > */}
       <Stack.Navigator initialRouteName={"Login"}>
         <Stack.Screen
           name="Boarding"
@@ -140,7 +141,6 @@ export default function StackNavigation() {
         <Stack.Screen
           name="Regresar a reportes"
           component={BoardingScreenReport}
-          //options={{ headerShown: false }}
           options={{ headerTitle: false, headerBackTitle: false }}
         />
         <Stack.Screen
@@ -163,8 +163,17 @@ export default function StackNavigation() {
           component={TransparenciaPagina}
           options={{ headerTitle: false, headerBackTitle: false }}
         />
+        <Stack.Screen
+          name="Horarios de servicio"
+          component={IndexUserService}
+          options={{ headerTitle: false, headerBackTitle: false }}
+        />
+        <Stack.Screen
+          name="Inicio temporal"
+          component={IndexTemporalPassword}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
-      {/* </GestureHandlerRootView> */}
     </NavigationContainer>
   );
 }

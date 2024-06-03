@@ -61,9 +61,13 @@ export function useHome() {
         navigation.navigate('Transparencia');
     }
 
+    const handleUserService = () => {
+        navigation.navigate('Horarios de servicio');
+    }
+
  
 
     return {
-        username, email, welcomeMessage, viewProfile,getTransparencia
+        username, email, welcomeMessage, viewProfile,getTransparencia, handleUserService
     }
 }

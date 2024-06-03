@@ -46,7 +46,7 @@ export const useLogin = () => {
     let _username = username;
     let _password = password;
     if (_username.trim() === '' || _password.trim() === '') {
-        Alert.alert('Por favor, llena todos los campos');
+        Alert('Por favor, llena todos los campos');
     } else {
         let pass = md5(API_TOKEN);
 
@@ -67,10 +67,25 @@ export const useLogin = () => {
                 headers: { 'Authorization': auth, 'Content-Type': 'application/json' },
                 data: body
             });
-           // console.log(response);
+
             if(response.data.estatus === "ok")
                 {
+                    
+
+
                     let _userdata = response.data.mensaje[0];
+
+                    let today = new Date();
+                    let fechaPass = new Date(_userdata.fechaPass);
+
+
+                    function getMonthDifference(date1, date2) {
+                        let years = date2.getFullYear() - date1.getFullYear();
+                        let months = date2.getMonth() - date1.getMonth();
+                        return years * 12 + months;
+                    }
+
+                    let monthDifference = getMonthDifference(fechaPass, today);
 
                
                    
@@ -96,7 +111,7 @@ export const useLogin = () => {
 
               
                     AsyncStorage.setItem('username', _userdata.nombre)
-                    // AsyncStorage.setItem('id', _userdata.id)
+                    AsyncStorage.setItem('id', _userdata.id)
                     // AsyncStorage.setItem('numberphone', _userdata.cel)
                     AsyncStorage.setItem('email', _userdata.correo)
                     AsyncStorage.setItem('nis', JSON.stringify(_nis))
@@ -104,8 +119,15 @@ export const useLogin = () => {
 
 
                     
-                  
-                    navigation.navigate('IndexScreen')
+                   if(_userdata.reset == 0 || monthDifference === 11)
+                    {
+                        navigation.navigate('Inicio temporal')
+                    }
+                    else
+                    {
+                        navigation.navigate('IndexScreen')
+                    }
+                    
 
                 }
                 else
