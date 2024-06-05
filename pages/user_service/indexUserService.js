@@ -4,6 +4,7 @@ import { useHome } from "../../hooks/useHome";
 import { useTheme } from "styled-components";
 import { Title1 } from '../../styles/index/stylesHome';
 import Modal from 'react-native-modal';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function IndexUserService() {
     const { listNis, getUserService } = useHome();
@@ -39,19 +40,25 @@ export default function IndexUserService() {
             style={[styles.item, { backgroundColor: theme.Colors.ui.secondary }]}
             onPress={() => fetchData(item.nis)}
         >
-            <Text style={{ color: theme.Colors.ui.white }}>{item.nis}</Text>
+            <Text style={{ color: theme.Colors.ui.white, fontSize: 16, fontWeight: 'bold' }}>{item.nis}</Text>
         </TouchableOpacity>
     );
 
     return (
         <View style={{ flex: 1, marginTop: 30, margin: 20 }}>
-            <Title1 style={{ marginBottom: 40 }}>Selecciona el NIS del que quieres saber información</Title1>
+            <View style={styles.headerContainer}>
+                <MaterialCommunityIcons name="water-outline" size={100} color={theme.Colors.ui.secondary} style={styles.icon} />
+                <Title1 style={{ marginBottom: 10, textAlign: 'center' }}>Información de Servicios</Title1>
+                <Text style={{ marginBottom: 20, textAlign: 'center', color: 'gray' }}>
+                    Selecciona el NIS del que quieres saber información
+                </Text>
+            </View>
             <FlatList
                 data={listNis}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index.toString()}
-                numColumns={2} // Número de columnas en la cuadrícula
-                columnWrapperStyle={styles.row} // Estilo para las filas
+                numColumns={2}
+                columnWrapperStyle={styles.row} 
             />
             <Modal isVisible={isModalVisible}>
                 <View style={styles.modalContent}>
@@ -59,14 +66,14 @@ export default function IndexUserService() {
                     {serviceData && serviceData.length > 0 ? (
                         serviceData.map((service, index) => (
                             <View key={index} style={styles.serviceItem}>
-                                <Text>{service.day}</Text>
-                                <Text>{service.startTime} - {service.endTime}</Text>
+                                <Text style={styles.serviceText}>{service.day}</Text>
+                                <Text style={styles.serviceText}>{service.startTime} - {service.endTime}</Text>
                             </View>
                         ))
                     ) : (
-                        <Text>No hay servicios disponibles</Text>
+                        <Text style={styles.noServiceText}>No hay servicios disponibles</Text>
                     )}
-                    <Button title="Cerrar" onPress={() => setModalVisible(false)} />
+                    <Buttons title="Cerrar" onPress={() => setModalVisible(false)} />
                 </View>
             </Modal>
         </View>
@@ -74,6 +81,13 @@ export default function IndexUserService() {
 }
 
 const styles = StyleSheet.create({
+    headerContainer: {
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    icon: {
+        marginBottom: 10,
+    },
     row: {
         justifyContent: 'space-between',
         marginBottom: 20,
@@ -85,11 +99,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#ccc',
     },
     modalContent: {
         backgroundColor: 'white',
         padding: 20,
         borderRadius: 10,
+        alignItems: 'center',
     },
     modalTitle: {
         fontSize: 18,
@@ -98,5 +115,13 @@ const styles = StyleSheet.create({
     },
     serviceItem: {
         marginBottom: 10,
+        alignItems: 'center',
+    },
+    serviceText: {
+        fontSize: 16,
+    },
+    noServiceText: {
+        fontSize: 16,
+        color: 'gray',
     }
 });
