@@ -19,6 +19,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { API_URL, API_TOKEN, API_AUTH } from "@env";
 import md5 from "js-md5";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ModalReports({
   modalVisible,
@@ -34,6 +35,7 @@ export default function ModalReports({
   }, []);
 
   const getReportesInfo = async () => {
+    let _id_user = await AsyncStorage.getItem("id");
     try {
       let pass = md5(API_TOKEN);
       let credentials = `${API_AUTH}:${pass}`;
@@ -41,7 +43,7 @@ export default function ModalReports({
       let auth = "Basic " + encodedCredentials;
 
       const data = {
-        id_usuario_app: "1",
+        id_usuario_app: _id_user,
       };
       let body = JSON.stringify(data);
 
@@ -110,7 +112,7 @@ export default function ModalReports({
                           source={{
                             uri: `${dataFiltrada.evidencia}`,
                           }}
-                          style={{ width: 200, height: 200 }}
+                          style={{ alignSelf:"center",width: 200, height: 200 }}
                         />
                       </View>
                     ) : (

@@ -5,17 +5,21 @@ import axios from "axios";
 import { AlertPrincipal } from "../../pages/Components/alert";
 import { useNavigation } from "@react-navigation/native";
 import { useState, useEffect, useCallback } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const useReports = () => {
   const { showAlertReport } = AlertPrincipal();
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
-  const [idReporte, setIdReporte] = useState('');
-  const [status, setStatus] = useState('');
+  const [idReporte, setIdReporte] = useState("");
+  const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState(false);
 
   //* Acciones registro *//
   const handleRegisterReport = async (data) => {
+    let _id_user = await AsyncStorage.getItem("id");
     try {
+      setLoading(true);
       let pass = md5(API_TOKEN);
       let credentials = `${API_AUTH}:${pass}`;
       let encodedCredentials = btoa(credentials);
@@ -23,14 +27,15 @@ export const useReports = () => {
 
       const currentDate = new Date().toISOString().split("T")[0];
       const additionalData = {
-        id_usuario_app: "1",
-        folio: "SOAPAP1",
+        id_usuario_app: _id_user,
         fecha: currentDate,
+        nis: "3074856",
+        folio: "SOAPAP-2024--156-006",
       };
       //Esa informacion extra la metemos dentro del json body
       const completeData = { ...data, ...additionalData };
       let body = JSON.stringify(completeData);
-      console.log(body);
+      //console.log(body);
 
       let response = await axios({
         method: "POST",
@@ -40,9 +45,11 @@ export const useReports = () => {
       });
 
       if (response.data.estatus === "ok") {
+        setLoading(false);
         const data = [{ status: "Exito", msj: "Los datos se han registrado" }];
         showAlertReport(data);
       } else {
+        setLoading(false);
         const data = [
           {
             status: "Error",
@@ -52,6 +59,7 @@ export const useReports = () => {
         showAlertReport(data);
       }
     } catch (error) {
+      setLoading(false);
       //console.error(error);
       alert("Ocurrió un error en el servidor");
     }
@@ -61,20 +69,22 @@ export const useReports = () => {
     navigation.navigate("FormReports");
   };
 
-  
-  const handleModalReport = (id,estatus) => {
+  const handleModalReport = (id, estatus) => {
     setIdReporte(id);
     setStatus(estatus);
     setModalVisible(!modalVisible);
-  
-}
+  };
 
   return {
     handleRegisterReport,
     handleClickReport,
     handleModalReport,
-    modalVisible, setModalVisible,
-    idReporte,setIdReporte,status,setStatus
+    modalVisible,
+    setModalVisible,
+    idReporte,
+    setIdReporte,
+    status,
+    setStatus,
+    loading,setLoading
   };
-
 };

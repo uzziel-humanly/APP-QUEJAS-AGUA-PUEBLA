@@ -12,11 +12,23 @@ import {
 import { useHome } from "../hooks/useHome";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import styled from "styled-components/native";
-import {ButtonPrimary, ButtonSecondary, Title, TextNeutral, Header, NeutralButton} from "../styles/index/stylesHome"
-
+import {
+  ButtonPrimary,
+  ButtonSecondary,
+  Title,
+  TextNeutral,
+  Header,
+  NeutralButton,
+} from "../styles/index/stylesHome";
 
 export default function Home() {
-  const { username, welcomeMessage, viewProfile, getTransparencia, handleUserService } = useHome();
+  const {
+    username,
+    welcomeMessage,
+    viewProfile,
+    getTransparencia,
+    handleUserService,
+  } = useHome();
 
   return (
     <View style={styles.container}>
@@ -42,7 +54,7 @@ export default function Home() {
         <Title>Transparencia</Title>
         <View style={styles.groupButtons}>
           <ButtonPrimary
-          style={{marginRight:5}}
+            style={{ marginRight: 5 }}
             onPress={() => {
               Linking.openURL(
                 "https://consultapublicamx.plataformadetransparencia.org.mx/vut-web/faces/view/consultaPublica.xhtml?idEntidad=MjE=&idSujetoObligado=NDIzNg==#inicio"
@@ -59,8 +71,12 @@ export default function Home() {
 
       <View>
         <Title>Módulo comercial</Title>
-        <NeutralButton>
-          <TextNeutral>Mi servicio</TextNeutral>
+        <NeutralButton
+          onPress={() => {
+            Linking.openURL("https://www.aguapuebla.mx/");
+          }}
+        >
+          <TextNeutral>Transparencia SOAPAP</TextNeutral>
         </NeutralButton>
       </View>
     </View>

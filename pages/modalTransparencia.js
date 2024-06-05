@@ -40,33 +40,45 @@ export default function ModalTransparencia({
       let encodedCredentials = btoa(credentials);
       let auth = "Basic " + encodedCredentials;
 
+      var anio = new Date().getFullYear();
+      const year = {
+        anio: 2023,
+      };
+      let body = JSON.stringify(year);
+
       let response = await axios({
         method: "post",
         url: `${API_URL}/api/getTransparencia`,
         headers: { Authorization: auth, "Content-Type": "application/json" },
+        data: body,
       });
 
       if (response.data.estatus === "ok") {
-        let _data = response.data.mensaje[0];
-        //let _dataContent = response.data.mensaje;
-        let _dataContent = response.data.mensaje.slice(1);
-        //let _dataContent = response.data.mensaje.slice(1);
-        let _dataContentWithId = _dataContent.map((item, index) => {
-          return { ...item, id: index + 1 };
-        });
-        const mensajeFiltrado = _dataContentWithId.find(
-          (mensaje) => mensaje["id"] === idObra
-        );
-        console.log(mensajeFiltrado);
-        setCabeceras(_data);
-        setContenido(mensajeFiltrado);
-        setLoading(false);
+        if (response.data.mensaje === "Sin datos almacenados para mostrar.") {
+          //No se efectua nada por el momento
+        } else {
+          let _data = response.data.mensaje[0];
+          //let _dataContent = response.data.mensaje;
+          let _dataContent = response.data.mensaje.slice(1);
+          //let _dataContent = response.data.mensaje.slice(1);
+          let _dataContentWithId = _dataContent.map((item, index) => {
+            return { ...item, id: index + 1 };
+          });
+          const mensajeFiltrado = _dataContentWithId.find(
+            (mensaje) => mensaje["id"] === idObra
+          );
+          //console.log(mensajeFiltrado);
+          setCabeceras(_data);
+          setContenido(mensajeFiltrado);
+          setLoading(false);
+        }
       } else {
-        alert("Ocurrió un error en el servidor");
+        //alert("Ocurrió un error en el servidor");
         //console.error("Error en la respuesta de la API");
       }
     } catch (error) {
-      //console.error(error);
+      setLoading(false);
+      console.error(error);
       alert("Ocurrió un error en el servidor");
     }
   };

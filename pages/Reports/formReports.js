@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Switch,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { useReports } from "../../hooks/Reports/useReports";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -25,10 +26,10 @@ import { useFocusEffect } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import {Title1, ButtonP} from '../../styles/index/stylesHome'
+import { Title1, ButtonP } from "../../styles/index/stylesHome";
 
 export default function FormReports() {
-  const { handleRegisterReport } = useReports();
+  const { handleRegisterReport, loading } = useReports();
   //Formulario
   const {
     control,
@@ -547,15 +548,22 @@ export default function FormReports() {
               </View>
             </View>
           )}
-          {showElement && Object.keys(errors).length === 0 && (
-            <View style={styles.formAction}>
-              <TouchableOpacity
-                style={styles.btn}
-                onPress={handleSubmit(handleRegisterReport)}
-              >
-                <Text style={styles.btnTxt}>Registrar</Text>
-              </TouchableOpacity>
-            </View>
+
+          {loading ? (
+            <ActivityIndicator size="large" />
+          ) : (
+            !loading &&
+            showElement &&
+            Object.keys(errors).length === 0 && (
+              <View style={styles.formAction}>
+                <TouchableOpacity
+                  style={styles.btn}
+                  onPress={handleSubmit(handleRegisterReport)}
+                >
+                  <Text style={styles.btnTxt}>Registrar</Text>
+                </TouchableOpacity>
+              </View>
+            )
           )}
 
           {showElement && Object.keys(errors).length != 0 && (

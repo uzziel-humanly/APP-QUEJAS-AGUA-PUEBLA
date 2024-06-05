@@ -20,7 +20,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useReports } from "../../hooks/Reports/useReports";
 import ModalReports from "./modalReports";
 import { useFocusEffect } from "@react-navigation/native";
-import {Title1, ButtonP} from "../../styles/index/stylesHome"
+import { Title1, ButtonP } from "../../styles/index/stylesHome";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const getRandomColors = () => {
   const colorsList = [
@@ -65,6 +66,7 @@ export default function IndexStatusReports() {
   // }, []);
 
   const getReportes = async () => {
+    let _id_user = await AsyncStorage.getItem("id");
     try {
       let pass = md5(API_TOKEN);
       let credentials = `${API_AUTH}:${pass}`;
@@ -72,7 +74,7 @@ export default function IndexStatusReports() {
       let auth = "Basic " + encodedCredentials;
 
       const data = {
-        id_usuario_app: "1",
+        id_usuario_app: _id_user,
       };
       let body = JSON.stringify(data);
 
@@ -83,21 +85,27 @@ export default function IndexStatusReports() {
         data: body,
       });
 
+      console.log(response);
+
       if (response.data.estatus === "ok") {
         let _data = response.data.mensaje;
         //console.log(_data);
         setReportes(_data);
         setLoading(false);
       } else {
+        setLoading(false);
         //console.error("Error en la respuesta de la API");
       }
     } catch (error) {
+      setLoading(false);
+      //console.log("AAAAA");
       //console.error(error);
       alert("Ocurrió un error en el servidor");
     }
   };
 
   const getEstatus = async () => {
+    let _id_user = await AsyncStorage.getItem("id");
     try {
       let pass = md5(API_TOKEN);
       let credentials = `${API_AUTH}:${pass}`;
@@ -105,7 +113,7 @@ export default function IndexStatusReports() {
       let auth = "Basic " + encodedCredentials;
 
       const data = {
-        id_usuario_app: "1",
+        id_usuario_app: _id_user,
       };
       let body = JSON.stringify(data);
 
