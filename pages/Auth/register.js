@@ -28,8 +28,18 @@ import { FontAwesome } from "@expo/vector-icons";
 // import { WebView } from "react-native-webview";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Feather } from "@expo/vector-icons";
-import * as OpenAnything from "react-native-openanything";
 import ModalDocuments from "./modalDocuments";
+import styled from "styled-components/native";
+import {
+  ButtonPrimary,
+  ButtonSecondary,
+  TitleSecondary,
+  TextNeutral,
+  Header,
+  ButtonInfo,
+  ButtonDisabled,
+  ButtonStatusAlta,
+} from "../../styles/buttons/stylesButton";
 //import PdfRendererView from 'react-native-pdf-renderer';
 //import PDFView from 'react-native-view-pdf/lib/index';
 
@@ -212,7 +222,9 @@ export default function Register() {
                 source={require("../../assets/tuSoapap.png")}
                 style={styles.headerImg}
               />
-              <Text style={styles.title}>Formulario de Registro</Text>
+              <TitleSecondary style={styles.title}>
+                Formulario de Registro
+              </TitleSecondary>
               <Text style={styles.subtitle}>
                 A continuación ingrese cada uno de los datos solicitados sin
                 omitir campos.
@@ -474,7 +486,7 @@ export default function Register() {
 
               <Text style={styles.inputLabel}>INE (Por ambos lados):</Text>
               <View style={styles.containerBtn}>
-                <TouchableOpacity
+                <ButtonInfo
                   style={[
                     styles.button,
                     disabledButtons.PICINEFRONTAL && styles.buttonDisabled,
@@ -484,12 +496,12 @@ export default function Register() {
                 >
                   <AntDesign name="camera" size={24} color="#FFFFFF" />
                   <Text style={styles.buttonText}>Foto frontal</Text>
-                </TouchableOpacity>
+                </ButtonInfo>
                 {image && (
                   <Image source={{ uri: image }} style={styles.image} />
                 )}
 
-                <TouchableOpacity
+                <ButtonInfo
                   style={[
                     styles.button,
                     disabledButtons.PICINETRASERO && styles.buttonDisabled,
@@ -499,7 +511,7 @@ export default function Register() {
                 >
                   <AntDesign name="camera" size={24} color="#FFFFFF" />
                   <Text style={styles.buttonText}>Foto trasera</Text>
-                </TouchableOpacity>
+                </ButtonInfo>
                 {image && (
                   <Image source={{ uri: image }} style={styles.image} />
                 )}
@@ -515,7 +527,7 @@ export default function Register() {
                   //rules={{ required: true }}
                   render={({ field: { onChange, value } }) => (
                     <View> */}
-                <TouchableOpacity
+                <ButtonInfo
                   style={[
                     styles.button,
                     disabledButtons.RECIBOPDF && styles.buttonDisabled,
@@ -524,7 +536,7 @@ export default function Register() {
                 >
                   <FontAwesome name="file-pdf-o" size={24} color="#FFFFFF" />
                   <Text style={styles.buttonText}>Adjunta un pdf</Text>
-                </TouchableOpacity>
+                </ButtonInfo>
                 {/* {value && (
                         <Text style={styles.selectedText}>{value.name}</Text>
                       )}
@@ -535,7 +547,7 @@ export default function Register() {
                   <Text style={styles.error}>Este campo es obligatorio.</Text>
                 )} */}
 
-                <TouchableOpacity
+                <ButtonInfo
                   style={[
                     styles.button,
                     disabledButtons.PICRECIBO && styles.buttonDisabled,
@@ -545,7 +557,7 @@ export default function Register() {
                 >
                   <AntDesign name="camera" size={24} color="#FFFFFF" />
                   <Text style={styles.buttonText}>Toma una foto</Text>
-                </TouchableOpacity>
+                </ButtonInfo>
                 {image && (
                   <Image source={{ uri: image }} style={styles.image} />
                 )}
@@ -561,7 +573,7 @@ export default function Register() {
                   //rules={{ required: true }}
                   render={({ field: { onChange, value } }) => (
                     <View> */}
-                <TouchableOpacity
+                <ButtonInfo
                   style={[
                     styles.button,
                     disabledButtons.CDOMIPDF && styles.buttonDisabled,
@@ -570,7 +582,7 @@ export default function Register() {
                 >
                   <FontAwesome name="file-pdf-o" size={24} color="#FFFFFF" />
                   <Text style={styles.buttonText}>Adjunta un pdf</Text>
-                </TouchableOpacity>
+                </ButtonInfo>
                 {/* {value && (
                         <Text style={styles.selectedText}>{value.name}</Text>
                       )}
@@ -581,7 +593,7 @@ export default function Register() {
                   <Text style={styles.error}>Este campo es obligatorio.</Text>
                 )} */}
 
-                <TouchableOpacity
+                <ButtonInfo
                   style={[
                     styles.button,
                     disabledButtons.PICCDOM && styles.buttonDisabled,
@@ -591,14 +603,14 @@ export default function Register() {
                 >
                   <AntDesign name="camera" size={24} color="#FFFFFF" />
                   <Text style={styles.buttonText}>Toma una foto</Text>
-                </TouchableOpacity>
+                </ButtonInfo>
                 {image && (
                   <Image source={{ uri: image }} style={styles.image} />
                 )}
               </View>
 
               <Text style={styles.inputLabel}>Fotografia (Selfie):</Text>
-              <TouchableOpacity
+              <ButtonInfo
                 //disabled={disabledButtons.SELFIE}
                 style={[
                   styles.button,
@@ -609,7 +621,7 @@ export default function Register() {
               >
                 <AntDesign name="camera" size={24} color="#FFFFFF" />
                 <Text style={styles.buttonText}>Toma una foto</Text>
-              </TouchableOpacity>
+              </ButtonInfo>
               {image && <Image source={{ uri: image }} style={styles.image} />}
 
               <View style={styles.line} />
@@ -619,7 +631,7 @@ export default function Register() {
               </Text>
               <View style={styles.containerBtn}>
                 <View style={{ marginRight: 40 }}>
-                  <TouchableOpacity
+                  <ButtonStatusAlta
                     style={styles.btnContratos}
                     //onPress={handleSubmit(onSubmit)}
                     // onPress={() =>
@@ -638,7 +650,7 @@ export default function Register() {
                     >
                       Terminos y condiciones
                     </Text>
-                  </TouchableOpacity>
+                  </ButtonStatusAlta>
                 </View>
                 <Controller
                   control={control}
@@ -660,7 +672,7 @@ export default function Register() {
               {/* <Text style={styles.inputLabel}>Contrato de adhesión</Text> */}
               <View style={styles.containerBtn}>
                 <View style={{ marginRight: 40 }}>
-                  <TouchableOpacity
+                  <ButtonStatusAlta
                     style={styles.btnContratos}
                     // onPress={() =>
                     //   OpenAnything.Pdf(
@@ -678,7 +690,7 @@ export default function Register() {
                     >
                       Contrato de adhesión
                     </Text>
-                  </TouchableOpacity>
+                  </ButtonStatusAlta>
                 </View>
                 <Controller
                   control={control}
@@ -707,12 +719,12 @@ export default function Register() {
                 !loading &&
                 // Si no está cargando y no hay errores, se muestra el botón de registrar
                 (Object.keys(errors).length === 0 ? (
-                  <TouchableOpacity
+                  <ButtonPrimary
                     style={styles.btn}
                     onPress={handleSubmit(onSubmit)}
                   >
                     <Text style={styles.btnTxt}>Registrar</Text>
-                  </TouchableOpacity>
+                  </ButtonPrimary>
                 ) : (
                   // Si no está cargando pero hay errores, se muestra el mensaje de alerta
                   <View
@@ -909,7 +921,7 @@ const styles = StyleSheet.create({
     marginVertical: 24,
   },
   btn: {
-    backgroundColor: "#000",
+    //backgroundColor: "#000",
     borderRadius: 8,
     borderWidth: 1,
     flexDirection: "row",
@@ -920,7 +932,7 @@ const styles = StyleSheet.create({
   },
   btnContratos: {
     width: 200,
-    backgroundColor: "#1bbac8",
+    //backgroundColor: "#1bbac8",
     borderRadius: 8,
     flexDirection: "row",
     alignItems: "center",
@@ -951,7 +963,7 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#00bf63",
+    //backgroundColor: "#00bf63",
     padding: 10,
     borderRadius: 8,
     marginRight: 5,

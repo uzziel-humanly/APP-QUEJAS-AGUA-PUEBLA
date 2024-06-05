@@ -92,7 +92,7 @@ function MainStack() {
 export default function StackNavigation() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={"IndexScreen"}>
+      <Stack.Navigator initialRouteName={"Login"}>
         <Stack.Screen
           name="Boarding"
           component={IndexBoarding}

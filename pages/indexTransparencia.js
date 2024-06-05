@@ -2,12 +2,14 @@ import React from "react";
 import {
   View,
   Text,
+  Image,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   TextInput,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useState, useEffect, useCallback } from "react";
@@ -20,6 +22,22 @@ import ModalTransparencia from "./modalTransparencia";
 import { useTransparencia } from "../hooks/useTransparencia";
 import { Picker } from "@react-native-picker/picker";
 import { useForm, Controller } from "react-hook-form";
+import {
+  ButtonPrimary,
+  ButtonSecondary,
+  TitleSecondary,
+  TextNeutral,
+  Header,
+  ButtonInfo,
+  ButtonDisabled,
+  ButtonStatusAlta,
+  TitlePrimary,
+} from "../styles/buttons/stylesButton";
+import Svg, { Path } from "react-native-svg";
+import { useTheme } from "@react-navigation/native";
+import { Colors } from "../theme/colors";
+
+const { width } = Dimensions.get("window");
 
 const getRandomColors = () => {
   const colorsList = [
@@ -35,6 +53,8 @@ const getRandomColors = () => {
 };
 
 export default function TransparenciaPagina() {
+  const theme = useTheme();
+
   const { modalVisible, setModalVisible, handleModalObras, idObra } =
     useTransparencia();
   const [colors, setColors] = useState(getRandomColors());
@@ -71,11 +91,12 @@ export default function TransparenciaPagina() {
   const [contenido, setContenido] = useState([]);
   const [idSeleccionado, setIdSeleccionado] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [mensaje, setMensaje] = useState("");
 
   const handlePress = (id) => {
     handleModalObras(id);
-    // setIsExpanded(!isExpanded);
-    // setIdSeleccionado(id === idSeleccionado ? null : id); // Alterna la selección
+    //setIsExpanded(!isExpanded);
+    //setIdSeleccionado(id === idSeleccionado ? null : id); // Alterna la selección
   };
 
   const getTransparencia = async () => {
@@ -85,34 +106,96 @@ export default function TransparenciaPagina() {
       let encodedCredentials = btoa(credentials);
       let auth = "Basic " + encodedCredentials;
 
+      var anio = new Date().getFullYear();
+      const year = {
+        anio: 2023,
+      };
+      let body = JSON.stringify(year);
+
       let response = await axios({
         method: "post",
         url: `${API_URL}/api/getTransparencia`,
         headers: { Authorization: auth, "Content-Type": "application/json" },
+        data: body,
       });
 
       if (response.data.estatus === "ok") {
-        let _data = response.data.mensaje[0];
-        //let _dataContent = response.data.mensaje;
-        let _dataContent = response.data.mensaje.slice(1);
-        //let _dataContent = response.data.mensaje.slice(1);
-        let _dataContentWithId = _dataContent.map((item, index) => {
-          return { ...item, id: index + 1 };
-        });
-
-        setCabeceras(_data);
-        setContenido(_dataContentWithId);
+        if (response.data.mensaje === "Sin datos almacenados para mostrar.") {
+          setMensaje("Lo sentimos, no se han encontrado resultados");
+          //No se efectua nada por el momento
+        } else {
+          let _data = response.data.mensaje[0];
+          //let _dataContent = response.data.mensaje;
+          let _dataContent = response.data.mensaje.slice(1);
+          //let _dataContent = response.data.mensaje.slice(1);
+          let _dataContentWithId = _dataContent.map((item, index) => {
+            return { ...item, id: index + 1 };
+          });
+          setCabeceras(_data);
+          setContenido(_dataContentWithId);
+        }
+      } else if (
+        response.data.mensaje === "Sin datos almacenados para mostrar."
+      ) {
       } else {
         alert("Ocurrió un error en el servidor");
         //console.error("Error en la respuesta de la API");
       }
     } catch (error) {
-      //console.error(error);
+      setLoading(false);
+      console.error(error);
       alert("Ocurrió un error en el servidor");
     }
   };
 
-  const getObrasYear = async (year) => {};
+  const getObrasYear = async (anio) => {
+    try {
+      let pass = md5(API_TOKEN);
+      let credentials = `${API_AUTH}:${pass}`;
+      let encodedCredentials = btoa(credentials);
+      let auth = "Basic " + encodedCredentials;
+
+      const year = {
+        anio: anio,
+      };
+      let body = JSON.stringify(year);
+
+      let response = await axios({
+        method: "post",
+        url: `${API_URL}/api/getTransparencia`,
+        headers: { Authorization: auth, "Content-Type": "application/json" },
+        data: body,
+      });
+
+      if (response.data.estatus === "ok") {
+        console.log(response);
+        if (response.data.mensaje === "Sin datos almacenados para mostrar.") {
+          setMensaje("No se han encontrado resultados");
+          //No se efectua nada por el momento
+        } else {
+          let _data = response.data.mensaje[0];
+          //let _dataContent = response.data.mensaje;
+          let _dataContent = response.data.mensaje.slice(1);
+          //let _dataContent = response.data.mensaje.slice(1);
+          let _dataContentWithId = _dataContent.map((item, index) => {
+            return { ...item, id: index + 1 };
+          });
+          setCabeceras(_data);
+          setContenido(_dataContentWithId);
+        }
+      } else if (
+        response.data.mensaje === "Sin datos almacenados para mostrar."
+      ) {
+      } else {
+        alert("Ocurrió un error en el servidor");
+        //console.error("Error en la respuesta de la API");
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error(error);
+      alert("Ocurrió un error en el servidor");
+    }
+  };
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -122,8 +205,33 @@ export default function TransparenciaPagina() {
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
       >
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          <Svg
+            height="150"
+            width={width}
+            viewBox="0 0 35.28 2.17"
+            preserveAspectRatio="none"
+            style={{ backgroundColor: "#ffffff" }}
+          >
+            <Path
+              d="M0 .5c3.07.55 9.27-.42 16.14 0 6.88.4 13.75.57 19.14-.11V0H0z"
+              fill={Colors.ui.info}
+            />
+            <Path
+              d="M0 1c3.17.8 7.29-.38 10.04-.55 2.75-.17 9.25 1.47 12.67 1.3 3.43-.17 4.65-.84 7.05-.87 2.4-.02 5.52.88 5.52.88V0H0z"
+              opacity="0.5"
+              fill={Colors.ui.info}
+            />
+            <Path
+              d="M0 1.85c2.56-.83 7.68-.3 11.79-.42 4.1-.12 6.86-.61 9.58-.28 2.73.33 5.61 1.17 8.61 1 3-.19 4.73-.82 5.3-.84V.1H0z"
+              opacity="0.5"
+              fill={Colors.ui.info}
+            />
+          </Svg>
+
           <View style={styles.container}>
             <View style={styles.header}>
+              <TitlePrimary style={styles.title}>Transparencia</TitlePrimary>
+              <Text style={styles.subtitle}>Obras</Text>
               <View style={styles.form}>
                 <View style={styles.inputContainer}>
                   <Text style={styles.inputLabel}>Elige el año:</Text>
@@ -161,25 +269,63 @@ export default function TransparenciaPagina() {
                   />
                 </View>
               </View>
-              <Text style={styles.title}>Transparencia</Text>
-              <Text style={styles.subtitle}>Obras</Text>
+
+              {mensaje != "" && (
+                <View>
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      marginTop: 20,
+                      fontSize: 17,
+                      fontWeight: "600",
+                      padding: 5,
+                    }}
+                  >
+                    {mensaje}
+                  </Text>
+                  {/* <Image
+                    source={require("../assets/no_found.png")}
+                    style={styles.headerImg}
+                  /> */}
+                </View>
+              )}
+
               {contenido.map((registro) => (
-                <TouchableOpacity
+                <ButtonInfo
+                  style={{
+                    width: 350,
+                    // height:
+                    //   isExpanded && idSeleccionado === registro.id ? 500 : 70,
+                    marginTop: 10,
+                    padding: 10,
+                    //backgroundColor: "#fda400",
+                    borderRadius: 10,
+                    position: "relative",
+                    shadowColor: "#000",
+                    shadowOffset: {
+                      width: 0,
+                      height: 3,
+                    },
+                    shadowOpacity: 0.27,
+                    shadowRadius: 4.65,
+
+                    elevation: 6,
+                  }}
                   key={registro.id}
                   onPress={() => handlePress(registro.id)}
                 >
-                  <LinearGradient
-                    style={{
-                      width: 350,
-                      // height:
-                      //   isExpanded && idSeleccionado === registro.id ? 500 : 70,
-                      marginTop: 10,
-                      padding: 10,
-                      backgroundColor: "#fda400",
-                      borderRadius: 10,
-                      position: "relative",
-                    }}
-                    colors={getRandomColors()}
+                  <View
+                  // style={{
+                  //   width: 350,
+                  //   // height:
+                  //   //   isExpanded && idSeleccionado === registro.id ? 500 : 70,
+                  //   marginTop: 10,
+                  //   padding: 10,
+                  //   //backgroundColor: "#fda400",
+                  //   borderRadius: 10,
+                  //   position: "relative",
+                  // }}
+                  //colors={getRandomColors()}
                   >
                     <Text
                       style={{
@@ -205,8 +351,8 @@ export default function TransparenciaPagina() {
                         ))}
                       </View>
                     )}
-                  </LinearGradient>
-                </TouchableOpacity>
+                  </View>
+                </ButtonInfo>
               ))}
             </View>
 
@@ -228,7 +374,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 40,
+    backgroundColor: "#FFFFFF",
+    //paddingTop: 40,
   },
   header: {
     marginBottom: 36,
@@ -239,7 +386,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontSize: 27,
     textAlign: "center",
-    color: "#333",
     marginBottom: 20,
   },
   input: {
@@ -312,5 +458,11 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     width: 300,
     alignItems: "center",
+  },
+  headerImg: {
+    width: 150,
+    height: 150,
+    resizeMode: "center",
+    alignSelf: "center",
   },
 });

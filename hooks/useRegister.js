@@ -118,15 +118,15 @@ export function useRegister() {
         formData.append("pass", passcyrpt);
         console.log(formData);
 
-        // let response = await axios({
-        //   method: "POST",
-        //   url: `${API_URL}/api/registrar`,
-        //   headers: {
-        //     Authorization: auth,
-        //     "Content-Type": "multipart/form-data",
-        //   },
-        //   data: formData,
-        // });
+        let response = await axios({
+          method: "POST",
+          url: `${API_URL}/api/registrar`,
+          headers: {
+            Authorization: auth,
+            "Content-Type": "multipart/form-data",
+          },
+          data: formData,
+        });
 
         // let response = await axios({
         //   method: "post",
@@ -153,7 +153,7 @@ export function useRegister() {
         }
       } catch (error) {
         setLoading(false);
-        //console.error(error);
+       //console.error(error);
         alert("Ocurrió un error en el servidor");
       }
     } else {
