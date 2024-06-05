@@ -1,19 +1,41 @@
 import React from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, ActivityIndicator } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Table, Row } from "react-native-table-component";
 import { useComplaints } from "../../hooks/Complaints/useComplaints";
 import ModalDetailComplaint from "./modalDetailComplaint";
+import {Title1} from "../../styles/index/stylesHome";
+import styled, {useTheme} from "styled-components";
+
+const getRowStyle = (status) => {
+
+  const theme = useTheme();
+  switch (status) {
+    case "ALTA":
+      return { backgroundColor: theme.Colors.status.alta }; 
+    case "TRAMITE":
+      return { backgroundColor: theme.Colors.status.tramite }; 
+    case "CONCLUIDO":
+      return { backgroundColor: theme.Colors.status.concluido }; 
+    case "Desconocido":
+    default:
+      return { backgroundColor: "#808080" }; 
+  }
+};
 
 export default function IndexStatusComplaints() {
-  const { tableHead, tableData, viewDetailComplaint, modalComplaint, setModalComplaint, toggleModalComplaint, selectedComplaint } = useComplaints();
+
+  const theme = useTheme();
+  const { tableHead, tableData, viewDetailComplaint, modalComplaint, setModalComplaint, toggleModalComplaint, selectedComplaint,
+    loadingComplaints
+   } = useComplaints();
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.container}>
-          <Text style={styles.title}>Historial de quejas</Text>
+          <Title1>Historial de quejas</Title1>
           <View style={styles.line} />
 
           <Image
@@ -25,23 +47,34 @@ export default function IndexStatusComplaints() {
         </View>
 
         <View style={styles.container2}>
-          <Table borderStyle={styles.tableBorder}>
-            <Row data={tableHead} style={styles.head} />
-            {tableData.map((rowData, index) => (
-              <TouchableOpacity key={index} onPress={() => viewDetailComplaint(index)}>
-                <Row data={rowData} style={styles.row} />
-              </TouchableOpacity>
-            ))}
-          </Table>
+         {loadingComplaints === true ? 
+        <ActivityIndicator size="large" />
+        :
+        <Table borderStyle={styles.tableBorder}>
+        <Row 
+            data={tableHead} 
+            style={[styles.head, {backgroundColor: theme.Colors.ui.primary}]} 
+            textStyle={styles.headerText} 
+          />
+          {tableData.map((rowData, index) => (
+            <TouchableOpacity key={index} onPress={() => viewDetailComplaint(index)}>
+              <Row
+                data={rowData}
+                style={[styles.row, getRowStyle(rowData[1])]}
+                textStyle={styles.rowText}
+              />
+            </TouchableOpacity>
+          ))}
+        </Table> 
+        }
         </View>
         {modalComplaint && (
-  <ModalDetailComplaint
-    modalVisible={modalComplaint}
-    toggleModalComplaint={toggleModalComplaint}
-    selectedComplaint={selectedComplaint}
-  />
-)}
-
+          <ModalDetailComplaint
+            modalVisible={modalComplaint}
+            toggleModalComplaint={toggleModalComplaint}
+            selectedComplaint={selectedComplaint}
+          />
+        )}
       </ScrollView>
     </GestureHandlerRootView>
   );
@@ -80,6 +113,22 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   container2: { flex: 1, padding: 16, color: "#ffffff" },
-  head: { height: 40, backgroundColor: "#fff", color: "white" },
-  row: { height: 40, backgroundColor: "#f1f1f1" },
+  head: { height: 40, color: "white", marginBottom: 12 },
+  headerText: { color: "#fff", fontWeight: "bold" },
+  row: {
+    height: 40,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 10,
+    marginBottom: 5,
+    borderRadius: 6
+    // Add margin between rows
+  },
+  rowText: {
+    color: "#fff", // White text
+    fontSize: 13,
+  },
+
 });
+
