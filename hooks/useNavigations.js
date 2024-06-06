@@ -35,7 +35,10 @@ import NewPassword from "../pages/indexBoardingForgetPassword";
 import IndexUserProfile from "../pages/Auth/indexUserProfile";
 import IndexUserService from "../pages/user_service/indexUserService";
 import IndexTemporalPassword from "../pages/Auth/indexTemporalPassword";
-import styled, { useTheme } from "styled-components/native"; 
+import IndexBoardingComplaints from "../pages/Complaints/indexBoardingComplaints";
+import { ThemeProvider } from "styled-components/native";
+import { theme } from "../theme";
+import styled, { useTheme } from "styled-components/native";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -49,9 +52,11 @@ const MenuButtonItem = ({ text, onPress }) => {
 };
 
 const MenuItems = ({ navigation }) => {
+  const theme = useTheme(); 
+
   return (
     <DrawerContentScrollView style={styles.container}>
-      <Text style={styles.title}>Menú</Text>
+      <Text style={[styles.title, {color: theme.Colors.ui.primary}]}>Menú</Text>
       <MenuButtonItem
         text={"Inicio"}
         onPress={() => navigation.navigate("Inicio")}
@@ -72,109 +77,120 @@ function MainStack() {
   const theme = useTheme(); 
 
   return (
-    <Drawer.Navigator
-      initialRouteName="Home"
-      drawerContent={(props) => <MenuItems {...props} />}
-      screenOptions={({ navigation }) => ({
-        headerStyle: {
-          backgroundColor: theme.Colors.ui.primary, 
-        },
-        headerTintColor: "#fff",
-      })}
-    >
-      <Drawer.Screen name="Inicio" component={Home} />
-      <Drawer.Screen name="Quejas" component={Complaints} />
-      <Drawer.Screen name="Reportes" component={Reports} />
-    </Drawer.Navigator>
+    <ThemeProvider theme={theme}>
+      <Drawer.Navigator
+        initialRouteName="Home"
+        drawerContent={(props) => <MenuItems {...props} />}
+        screenOptions={({ navigation }) => ({
+          headerStyle: {
+            backgroundColor: theme.Colors.ui.primary, 
+          },
+          headerTintColor: "#fff",
+        })}
+      >
+        <Drawer.Screen name="Inicio" component={Home} />
+        <Drawer.Screen name="Quejas" component={Complaints} />
+        <Drawer.Screen name="Reportes" component={Reports} />
+      </Drawer.Navigator>
+    </ThemeProvider>
   );
 }
 
 export default function StackNavigation() {
+  const theme = useTheme(); 
+
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName={"Login"}>
-        <Stack.Screen
-          name="Boarding"
-          component={IndexBoarding}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Boarding2"
-          component={IndexBoarding2}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Boarding3"
-          component={IndexBoarding3}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="IndexScreen"
-          component={MainStack}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Login"
-          component={Login}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Forget Password"
-          component={ForgetPassword}
-          options={{ title: false }}
-        />
-        <Stack.Screen
-          name="New Password"
-          component={NewPassword}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Register"
-          component={Register}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="BoardingScreen"
-          component={BoardingScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Regresar a reportes"
-          component={BoardingScreenReport}
-          options={{ headerTitle: false, headerBackTitle: false }}
-        />
-        <Stack.Screen
-          name="FormReports"
-          component={FormReports}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Mi perfil"
-          component={IndexUserProfile}
-          options={{ headerTitle: false, headerBackTitle: false }}
-        />
-        <Stack.Screen
-          name="IndexStatusReports"
-          component={IndexStatusReports}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Transparencia"
-          component={TransparenciaPagina}
-          options={{ headerTitle: false, headerBackTitle: false }}
-        />
-        <Stack.Screen
-          name="Horarios de servicio"
-          component={IndexUserService}
-          options={{ headerTitle: false, headerBackTitle: false }}
-        />
-        <Stack.Screen
-          name="Inicio temporal"
-          component={IndexTemporalPassword}
-          options={{ headerShown: false }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <ThemeProvider theme={theme}>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName={"Login"}>
+          <Stack.Screen
+            name="Boarding"
+            component={IndexBoarding}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Boarding2"
+            component={IndexBoarding2}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Boarding3"
+            component={IndexBoarding3}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="IndexScreen"
+            component={MainStack}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Forget Password"
+            component={ForgetPassword}
+            options={{ title: false }}
+          />
+          <Stack.Screen
+            name="New Password"
+            component={NewPassword}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Register"
+            component={Register}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="BoardingScreen"
+            component={BoardingScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Regresar a reportes"
+            component={BoardingScreenReport}
+            options={{ headerTitle: false, headerBackTitle: false }}
+          />
+          <Stack.Screen
+            name="FormReports"
+            component={FormReports}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Mi perfil"
+            component={IndexUserProfile}
+            options={{ headerTitle: false, headerBackTitle: false }}
+          />
+          <Stack.Screen
+            name="IndexStatusReports"
+            component={IndexStatusReports}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Transparencia"
+            component={TransparenciaPagina}
+            options={{ headerTitle: false, headerBackTitle: false }}
+          />
+          <Stack.Screen
+            name="Horarios de servicio"
+            component={IndexUserService}
+            options={{ headerTitle: false, headerBackTitle: false }}
+          />
+          <Stack.Screen
+            name="Inicio temporal"
+            component={IndexTemporalPassword}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Queja finalizada"
+            component={IndexBoardingComplaints}
+            options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </ThemeProvider>
   );
 }
 
@@ -186,7 +202,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 40,
     marginBottom: 20,
-    color: "#000",
   },
   buttonContainer: {
     backgroundColor: "#d9d9d9",

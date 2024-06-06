@@ -10,15 +10,14 @@ import { useForm, Controller } from 'react-hook-form';
 import { RadioGroup } from 'react-native-radio-buttons-group';
 import SelectDropdown from 'react-native-select-dropdown';
 import {ButtonP, Title1} from '../../styles/index/stylesHome';
-import styled, {useTheme} from 'styled-components/native';
-import { theme } from '../../theme';
+import styled, {useTheme} from 'styled-components';
 
 export default function FormComplaints({ text, onOK }) {
   const {
     ref, webStyle, handleEmpty, handleClear, handleData, scrollEnabled, handleEnd, handleBegin,
     niss, handleSelectNiss, nisSelected, requests, inputValue, handleAddRequest, handleRemoveRequest, setInputValue,
     handleFileSelect, handleFileRemove, selectedFiles, handleNewComplaint, isFormVisible, handleSubmit, control, setValue, errors, onSubmit,
-    gender, handleSelectgender, idGender, nisComplaint, niss2,colony, availableNiss
+    gender, handleSelectgender, idGender, nisComplaint, niss2,colony,getNisAccount
   } = useComplaints();
 
   const theme = useTheme();
@@ -37,7 +36,10 @@ export default function FormComplaints({ text, onOK }) {
     setValue("signature", signature);  
   };
 
-  
+  const [selectedNIS, setSelectedNIS] = useState(null);
+
+  const filteredNiss = niss.filter(item => item.id !== (selectedNIS ? selectedNIS.title : null));
+
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -77,82 +79,71 @@ export default function FormComplaints({ text, onOK }) {
 
 
               <View style={styles.input}>
-                <Text style={styles.inputLabel}>NIS de la queja</Text>
-                <Controller
-                  control={control}
-                  name="nis"
-                  rules={{ required: 'Selecciona un NIS.' }}
-                  render={({ field: { onChange, value } }) => (
-                    <SelectDropdown
-                      data={niss2}
-                      onSelect={(selectedItem, index) => {
-                        onChange(selectedItem);
-                      }}
-                      renderButton={(selectedItem, isOpened) => {
-                        return (
-                          <View style={styles.dropdownButtonStyle}>
-                            <Text style={styles.dropdownButtonTxtStyle}>
-                              {(selectedItem && selectedItem.title) || 'Selecciona un NIS'}
-                            </Text>
-                          </View>
-                        );
-                      }}
-                      renderItem={(item, index, isSelected) => {
-                        return (
-                          <View style={{ ...styles.dropdownItemStyle, ...(isSelected && { backgroundColor: '#D2D9DF' }) }}>
-                            <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
-                          </View>
-                        );
-                      }}
-                      showsVerticalScrollIndicator={false}
-                      dropdownStyle={styles.dropdownMenuStyle}
-                    />
-                  )}
-                />
-                {errors.nis && <Text style={styles.errorText}>{errors.nis.message}</Text>}
-              </View>
-
-
-                    </View>
-
-
-
-
-              <View style={styles.form}>
-                <View style={styles.input}>
-                  <Text style={styles.inputLabel}>NIS asociados a la queja</Text>
-                  <Controller
-                    control={control}
-                    name="nis_extra"
-                    rules={{ required: 'Selecciona al menos un NIS.' }}
-                    render={({ field: { onChange, value } }) => (
-                      <MultiSelect
-                        items={availableNiss}
-                        uniqueKey="id"
-                        ref={(component) => { this.multiSelect = component }}
-                        onSelectedItemsChange={onChange}
-                        selectedItems={value}
-                        selectText="Selecciona los NIS asociados a la queja"
-                        searchInputPlaceholderText="Buscar NIS..."
-                        onChangeInput={(text) => console.log('pruebas ', text)}
-                        altFontFamily="ProximaNova-Light"
-                        tagRemoveIconColor="#fff"
-                        tagBorderColor={theme.Colors.ui.primary}
-                        tagContainerStyle={{ backgroundColor: theme.Colors.ui.primary }}
-                        tagTextColor="#fff"
-                        selectedItemTextColor="#CCC"
-                        selectedItemIconColor="#CCC"
-                        itemTextColor="#000"
-                        displayKey="name"
-                        searchInputStyle={{ color: '#CCC' }}
-                        submitButtonColor={theme.Colors.ui.secondary}
-                        submitButtonText="Seleccionar NIS"
-                      />
-                    )}
-                  />
-                  {errors.nis_extra && <Text style={styles.errorText}>{errors.nis_extra.message}</Text>}
+        <Text style={styles.inputLabel}>NIS de la queja</Text>
+        <Controller
+          control={control}
+          name="nis"
+          rules={{ required: 'Selecciona un NIS.' }}
+          render={({ field: { onChange, value } }) => (
+            <SelectDropdown
+              data={niss2}
+              onSelect={(selectedItem, index) => {
+                onChange(selectedItem);
+                setSelectedNIS(selectedItem);
+              }}
+              renderButton={(selectedItem, isOpened) => (
+                <View style={styles.dropdownButtonStyle}>
+                  <Text style={styles.dropdownButtonTxtStyle}>
+                    {(selectedItem && selectedItem.title) || 'Selecciona un NIS'}
+                  </Text>
                 </View>
+              )}
+              renderItem={(item, index, isSelected) => (
+                <View style={{ ...styles.dropdownItemStyle, ...(isSelected && { backgroundColor: '#D2D9DF' }) }}>
+                  <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
+                </View>
+              )}
+              showsVerticalScrollIndicator={false}
+              dropdownStyle={styles.dropdownMenuStyle}
+            />
+          )}
+        />
+        {errors.nis && <Text style={styles.errorText}>{errors.nis.message}</Text>}
+      </View>
 
+      <View style={styles.input}>
+        <Text style={styles.inputLabel}>NIS asociados a la queja</Text>
+        <Controller
+          control={control}
+          name="nis_extra"
+          rules={{ required: 'Selecciona al menos un NIS.' }}
+          render={({ field: { onChange, value } }) => (
+            <MultiSelect
+              items={filteredNiss}
+              uniqueKey="id"
+              ref={(component) => { this.multiSelect = component }}
+              onSelectedItemsChange={onChange}
+              selectedItems={value}
+              selectText="Selecciona los NIS asociados a la queja"
+              searchInputPlaceholderText="Buscar NIS..."
+              onChangeInput={(text) => console.log('pruebas ', text)}
+              altFontFamily="ProximaNova-Light"
+              tagRemoveIconColor="#fff"
+              tagBorderColor={theme.Colors.ui.primary}
+              tagContainerStyle={{backgroundColor:theme.Colors.ui.primary}}
+              tagTextColor="#fff"
+              selectedItemTextColor={theme.Colors.ui.primary}
+              selectedItemIconColor="#CCC"
+              itemTextColor="#000"
+              displayKey="name"
+              searchInputStyle={{ color: '#CCC' }}
+              submitButtonColor={theme.Colors.ui.primary}
+              submitButtonText="Seleccionar NIS"
+            />
+          )}
+        />
+        {errors.nis_extra && <Text style={styles.errorText}>{errors.nis_extra.message}</Text>}
+      </View>
               
 
                 <View style={styles.input}>
@@ -289,7 +280,7 @@ export default function FormComplaints({ text, onOK }) {
                       <>
                         <View style={styles.requestsContainer}>
                           {requests.map((request, index) => (
-                            <View key={index} style={styles.requestBadge}>
+                            <View key={index} style={[styles.requestBadge, {backgroundColor: theme.Colors.ui.primary}]}>
                               <Text style={styles.requestText}>{request}</Text>
                               <TouchableOpacity onPress={() => handleRemoveRequest(index)}>
                                 <MaterialIcons name="close" size={16} color="#fff" />
@@ -322,7 +313,7 @@ export default function FormComplaints({ text, onOK }) {
                 <Button title="Seleccionar archivos" onPress={handleFileSelect} color={theme.Colors.ui.secondary} />
                 <View style={styles.filesContainer}>
                   {selectedFiles.map((file, index) => (
-                    <View key={index} style={styles.fileBadge}>
+                    <View key={index} style={[styles.fileBadge, {backgroundColor:theme.Colors.ui.primary}]}>
                       <Text style={styles.fileText}>{file.name}</Text>
                       <TouchableOpacity onPress={() => handleFileRemove(index)}>
                         <MaterialIcons name="close" size={16} color="#fff" />
@@ -473,7 +464,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   requestBadge: {
-    backgroundColor: theme.Colors.ui.primary,
     borderRadius: 12,
     flexDirection: 'row',
     alignItems: 'center',
@@ -492,7 +482,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   fileBadge: {
-    backgroundColor: theme.Colors.ui.primary,
     borderRadius: 12,
     flexDirection: 'row',
     alignItems: 'center',

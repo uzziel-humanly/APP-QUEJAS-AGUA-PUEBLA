@@ -30,7 +30,7 @@ export const useReports = () => {
         id_usuario_app: _id_user,
         fecha: currentDate,
         nis: "3074856",
-        folio: "SOAPAP-2024--156-006",
+        folio: "",
       };
       //Esa informacion extra la metemos dentro del json body
       const completeData = { ...data, ...additionalData };
@@ -85,6 +85,7 @@ export const useReports = () => {
     setIdReporte,
     status,
     setStatus,
-    loading,setLoading
+    loading,
+    setLoading,
   };
 };

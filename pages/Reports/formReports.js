@@ -466,6 +466,58 @@ export default function FormReports() {
               </View>
 
               <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>Entre calle 1</Text>
+                <Controller
+                  control={control}
+                  // rules={{
+                  //   required: "La calle es obligatoria",
+                  // }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      style={styles.inputControl}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      placeholder="Calle"
+                    />
+                  )}
+                  name="entrecalle_1"
+                  defaultValue=""
+                />
+                {errors.entrecalle_1 && (
+                  <Text style={styles.error}>
+                    {errors.entrecalle_1.message}
+                  </Text>
+                )}
+              </View>
+
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>Entre calle 2</Text>
+                <Controller
+                  control={control}
+                  // rules={{
+                  //   required: "La calle es obligatoria",
+                  // }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      style={styles.inputControl}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      placeholder="Calle"
+                    />
+                  )}
+                  name="entrecalle_2"
+                  defaultValue=""
+                />
+                {errors.entrecalle_2 && (
+                  <Text style={styles.error}>
+                    {errors.entrecalle_2.message}
+                  </Text>
+                )}
+              </View>
+
+              <View style={styles.inputContainer}>
                 <Text style={styles.inputLabel}>Número exterior</Text>
                 <Controller
                   control={control}
