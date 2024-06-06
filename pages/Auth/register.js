@@ -80,12 +80,19 @@ export default function Register() {
     setLoading,
     handleConfirmPassword,
     passwordMatch,
+    emailMatch,
     messagePassword2,
     inputPassword,
     modalVisible,
     setModalVisible,
     handleModalDocuments,
+    messageEmail,
+    validaCorreo,
+    validaCelular,
+    messageCelular,
+    celularMatch,
   } = useRegister();
+
   const [disabledButtons, setDisabledButtons] = useState({
     SELFIE: false,
     PICINEFRONTAL: false,
@@ -94,6 +101,7 @@ export default function Register() {
     PICCDOM: false,
     RECIBOPDF: false,
     CDOMIPDF: false,
+    BOLETA: false,
   });
   //Formulario
   const {
@@ -105,6 +113,8 @@ export default function Register() {
   //Select normal
   const [selectedValue, setSelectedValue] = useState("");
   const [selectedDocument, setSelectedDocument] = useState("");
+  const [boleta, setBoleta] = useState(false);
+  const [boletaSt, setBoletaSt] = useState(false);
 
   setValue("document", "NADA");
 
@@ -126,6 +136,12 @@ export default function Register() {
           setValue("Archivo5", result);
           setValue("banD5", "2");
           setDisabledButtons((prev) => ({ ...prev, ["PICCDOM"]: false }));
+        } else if (option == "BOLETA") {
+          setDisabledButtons((prev) => ({ ...prev, [option]: true }));
+          setSelectedDocument(result.assets);
+          setValue("Archivo6", result);
+          setValue("banD6", "2");
+          setBoletaSt(false);
         }
       }
     } catch (err) {
@@ -211,6 +227,16 @@ export default function Register() {
       </View>
     );
   }
+
+  const validaSelector = async (value) => {
+    if (value == 1) {
+      setBoleta(true);
+      setBoletaSt(true);
+    } else {
+      setBoleta(false);
+      setBoletaSt(false);
+    }
+  };
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -340,7 +366,11 @@ export default function Register() {
                     <TextInput
                       style={styles.inputControl}
                       onBlur={onBlur}
-                      onChangeText={onChange}
+                      //onChangeText={onChange}
+                      onChangeText={(input) => {
+                        onChange(input);
+                        validaCelular(input);
+                      }}
                       value={value}
                       keyboardType="numeric"
                       placeholder="221-222-2222"
@@ -352,6 +382,17 @@ export default function Register() {
                 />
                 {errors.celular && (
                   <Text style={styles.error}>{errors.celular.message}</Text>
+                )}
+
+                {celularMatch === 1 && (
+                  <Text style={{ alignSelf: "flex-start", color: "green" }}>
+                    {messageCelular} ✅
+                  </Text>
+                )}
+                {celularMatch === 2 && (
+                  <Text style={{ alignSelf: "flex-start", color: "red" }}>
+                    {messageCelular} ❌
+                  </Text>
                 )}
               </View>
 
@@ -366,7 +407,11 @@ export default function Register() {
                     <TextInput
                       style={styles.inputControl}
                       onBlur={onBlur}
-                      onChangeText={onChange}
+                      //onChangeText={onChange}
+                      onChangeText={(input) => {
+                        onChange(input);
+                        validaCorreo(input);
+                      }}
                       value={value}
                       placeholder="usuario@ejemplo.com"
                     />
@@ -376,6 +421,17 @@ export default function Register() {
                 />
                 {errors.correo && (
                   <Text style={styles.error}>{errors.correo.message}</Text>
+                )}
+
+                {emailMatch === 1 && (
+                  <Text style={{ alignSelf: "flex-start", color: "green" }}>
+                    {messageEmail} ✅
+                  </Text>
+                )}
+                {emailMatch === 2 && (
+                  <Text style={{ alignSelf: "flex-start", color: "red" }}>
+                    {messageEmail} ❌
+                  </Text>
                 )}
               </View>
 
@@ -390,6 +446,7 @@ export default function Register() {
                     <TextInput
                       style={styles.inputControl}
                       onBlur={onBlur}
+                      minValue={10}
                       //onChangeText={onChange}
                       onChangeText={(input) => {
                         onChange(input);
@@ -463,6 +520,7 @@ export default function Register() {
                         onValueChange={(itemValue) => {
                           onChange(itemValue);
                           setSelectedValue(itemValue);
+                          validaSelector(itemValue);
                         }}
                       >
                         <Picker.Item label="Selecciona una opción" value="" />
@@ -569,29 +627,26 @@ export default function Register() {
               <View style={styles.containerBtn}>
                 {/* <Controller
                   control={control}
-                  name="document"
+                  name="Archivo5"
                   //rules={{ required: true }}
-                  render={({ field: { onChange, value } }) => (
-                    <View> */}
-                <ButtonInfo
-                  style={[
-                    styles.button,
-                    disabledButtons.CDOMIPDF && styles.buttonDisabled,
-                  ]}
-                  onPress={() => handleDocumentPicker(setValue, "CDOMIPDF")}
-                >
-                  <FontAwesome name="file-pdf-o" size={24} color="#FFFFFF" />
-                  <Text style={styles.buttonText}>Adjunta un pdf</Text>
-                </ButtonInfo>
-                {/* {value && (
+                  render={({ field: { onChange, value } }) => ( */}
+                <View>
+                  <ButtonInfo
+                    style={[
+                      styles.button,
+                      disabledButtons.CDOMIPDF && styles.buttonDisabled,
+                    ]}
+                    onPress={() => handleDocumentPicker(setValue, "CDOMIPDF")}
+                  >
+                    <FontAwesome name="file-pdf-o" size={24} color="#FFFFFF" />
+                    <Text style={styles.buttonText}>Adjunta un pdf</Text>
+                  </ButtonInfo>
+                  {/* {value && (
                         <Text style={styles.selectedText}>{value.name}</Text>
-                      )}
-                    </View>
-                  )}
-                />
-                {errors.document && (
-                  <Text style={styles.error}>Este campo es obligatorio.</Text>
-                )} */}
+                      )} */}
+                </View>
+                {/* )}
+                /> */}
 
                 <ButtonInfo
                   style={[
@@ -604,10 +659,36 @@ export default function Register() {
                   <AntDesign name="camera" size={24} color="#FFFFFF" />
                   <Text style={styles.buttonText}>Toma una foto</Text>
                 </ButtonInfo>
-                {image && (
-                  <Image source={{ uri: image }} style={styles.image} />
-                )}
               </View>
+
+              {errors.Archivo5 && (
+                <Text style={styles.error}>
+                  El comprobante de domicilio es requerido.
+                </Text>
+              )}
+
+              {boleta && (
+                <View style={{ marginBottom: 10 }}>
+                  <Text style={styles.inputLabel}>Boleta Predial:</Text>
+                  <ButtonInfo
+                    //disabled={disabledButtons.SELFIE}
+                    style={[
+                      styles.button,
+                      disabledButtons.BOLETA && styles.buttonDisabled,
+                    ]}
+                    //onPress={takePhoto}
+                    onPress={() => handleDocumentPicker(setValue, "BOLETA")}
+                  >
+                    <FontAwesome name="file-pdf-o" size={24} color="#FFFFFF" />
+                    <Text style={styles.buttonText}>Adjunta un pdf</Text>
+                  </ButtonInfo>
+                  {boletaSt && (
+                    <Text style={styles.error}>
+                      Debes adjuntar tu documento de predial
+                    </Text>
+                  )}
+                </View>
+              )}
 
               <Text style={styles.inputLabel}>Fotografia (Selfie):</Text>
               <ButtonInfo
@@ -622,7 +703,6 @@ export default function Register() {
                 <AntDesign name="camera" size={24} color="#FFFFFF" />
                 <Text style={styles.buttonText}>Toma una foto</Text>
               </ButtonInfo>
-              {image && <Image source={{ uri: image }} style={styles.image} />}
 
               <View style={styles.line} />
               {/* ESTA ES LA PARTE DE TERMINOS Y CONDICIONES */}
@@ -718,7 +798,11 @@ export default function Register() {
               ) : (
                 !loading &&
                 // Si no está cargando y no hay errores, se muestra el botón de registrar
-                (Object.keys(errors).length === 0 ? (
+                (!boletaSt &&
+                celularMatch != 2 &&
+                emailMatch != 2 &&
+                passwordMatch != 2 &&
+                Object.keys(errors).length === 0 ? (
                   <ButtonPrimary
                     style={styles.btn}
                     onPress={handleSubmit(onSubmit)}
@@ -753,8 +837,8 @@ export default function Register() {
                         textAlign: "center",
                       }}
                     >
-                      Hay campos requeridos que necesitan ser completados.
-                      ¡Verifica!
+                      Hay campos requeridos que necesitan ser completados o
+                      corregidos. ¡Verifica!
                     </Text>
                   </View>
                 ))

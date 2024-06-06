@@ -102,7 +102,7 @@ export default function StackNavigation() {
   return (
     <ThemeProvider theme={theme}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={"IndexScreen"}>
+        <Stack.Navigator initialRouteName={"Login"}>
           <Stack.Screen
             name="Boarding"
             component={IndexBoarding}

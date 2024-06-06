@@ -12,8 +12,7 @@ import { useLogin } from "../../hooks/useLogin";
 import { ScrollView, Keyboard, Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardAvoidingView, ActivityIndicator } from "react-native";
-import {ButtonPrimary, Title} from '../../styles/login/stylesLogin'
-
+import { ButtonPrimary, Title } from "../../styles/login/stylesLogin";
 
 export default function Login() {
   const {
@@ -31,8 +30,6 @@ export default function Login() {
     //Sign Up
     handleCreateAccount,
   } = useLogin();
-
-  
 
   return (
     <GestureHandlerRootView>
@@ -91,7 +88,7 @@ export default function Login() {
               ) : (
                 !loading && (
                   <ButtonPrimary onPress={() => validateSession()}>
-                      <Text style={styles.btnTxt}>Iniciar sesión</Text>
+                    <Text style={styles.btnTxt}>Iniciar sesión</Text>
                   </ButtonPrimary>
                 )
               )}
