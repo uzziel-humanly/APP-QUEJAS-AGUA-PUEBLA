@@ -13,6 +13,6 @@ export const Colors = {
     status:{
         alta: "#1bbac8",
         tramite: "#00bf63",
-        concluido: ""
+        concluido: "#80D39B"
     }
 }

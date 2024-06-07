@@ -21,8 +21,10 @@ export function useComplaints() {
 
   const [loadingComplaints, setLoadingComplaints] = useState(false);
 
+
+  const [modules, setModules] = useState([]);
   //New complaint
-  const { control, handleSubmit, formState: { errors }, reset, setValue } = useForm();
+  const { control, handleSubmit, formState: { errors }, reset, setValue,watch } = useForm();
   const [enabledForm, setEnabledForm] = useState(false);
   
 
@@ -93,6 +95,19 @@ export function useComplaints() {
     }
   ]))
 
+  const [telefonoError, setTelefonoError] = useState('');
+  const telefonoValue = watch('telefono');
+
+  useEffect(() => {
+    if (!telefonoValue) {
+      setTelefonoError('');
+    } else if (!/^\d{10}$/.test(telefonoValue)) {
+      setTelefonoError('El número de teléfono debe tener exactamente 10 dígitos.');
+    } else {
+      setTelefonoError('');
+    }
+  }, [telefonoValue]);
+
   const handleSelectgender = (id_gender) => {
     setIdGender(id_gender);
   }
@@ -160,6 +175,44 @@ export function useComplaints() {
     }
   };
 
+
+  const getModules = async() => {
+
+    try {
+      let pass = md5(API_TOKEN);
+      let credentials = `${API_AUTH}:${pass}`;
+      let encodedCredentials = btoa(credentials);
+      let auth = "Basic " + encodedCredentials;
+
+      let response = await axios({
+        method: "post",
+        url: `${API_URL}/api/getModulos`,
+        headers: { Authorization: auth, "Content-Type": "application/json" },
+      });
+
+      if (response.data.estatus === "ok") {
+        let _data = response.data.mensaje;
+        let _modules = [];
+
+          if(_data.length > 0)
+          {
+           _data.map((_m, _i) => {
+              _modules.push({
+                id: _m.id,
+                title: _m.modulo
+              })
+            })
+          }
+        setModules(_modules);
+      } else {
+        alert("Ocurrió un error en el servidor");
+      }
+    } catch (error) {
+      //console.error(error);
+      alert("Ocurrió un error en el servidor");
+    }
+  }
+
   const getNisAccount = async () => {
     let _niss = [];
     let _nissComplaint = [];
@@ -199,6 +252,7 @@ export function useComplaints() {
     }
   
   useEffect(() => {
+    getModules();
     getNisAccount();
     getColony();
    }, []);
@@ -306,6 +360,9 @@ export function useComplaints() {
     formData.append('domicilio', data.domicilio);
     formData.append('id_colonia', data.colonia[0]);
     formData.append('id_clasificacion', 1);
+    formData.append('id_modulo', data.modulo.id);
+    formData.append('atendio', data.atendio);
+    formData.append('archivo', data.file[0]);
     formData.append('estado', 'PUEBLA') 
     
     data.nis_extra.forEach((item, index) => {
@@ -479,7 +536,7 @@ const handleGetComplaints = async () => {
     ref, webStyle, handleEmpty, handleClear, handleEnd, handleData, scrollEnabled, handleBegin,
     niss, handleSelectNiss, nisSelected, handleAddRequest, handleRemoveRequest, requests, inputValue, setInputValue,
     handleFileSelect, handleFileRemove, selectedFiles, isFormVisible, handleNewComplaint, setValue, handleSubmit, control, errors, onSubmit, gender,
-    handleSelectgender, idGender, nisComplaint, niss2, colony,getNisAccount
+    handleSelectgender, idGender, nisComplaint, niss2, colony,getNisAccount, telefonoError, modules
    
   };
 }
