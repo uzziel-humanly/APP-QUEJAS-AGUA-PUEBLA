@@ -51,16 +51,16 @@ export function useHome() {
         };
     
         try {
-            console.log(_body);
             let response = await axios({
                 method: "POST",
                 url: `${API_URL}/api/getHorarios`,
                 headers: { Authorization: auth, "Content-Type": "application/json" },
                 data: _body,
             });
+
+            console.log(response);
     
-            console.log(response.data);
-            return response.data.mensaje[0];
+            return response;
         } catch (error) {
             console.error(error);
             alert('Error en el servidor');

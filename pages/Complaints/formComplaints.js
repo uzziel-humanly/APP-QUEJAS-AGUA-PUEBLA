@@ -17,7 +17,7 @@ export default function FormComplaints({ text, onOK }) {
     ref, webStyle, handleEmpty, handleClear, handleData, scrollEnabled, handleEnd, handleBegin,
     niss, handleSelectNiss, nisSelected, requests, inputValue, handleAddRequest, handleRemoveRequest, setInputValue,
     handleFileSelect, handleFileRemove, selectedFiles, handleNewComplaint, isFormVisible, handleSubmit, control, setValue, errors, onSubmit,
-    gender, handleSelectgender, idGender, nisComplaint, niss2,colony,getNisAccount
+    gender, handleSelectgender, idGender, nisComplaint, niss2,colony,getNisAccount, telefonoError, modules
   } = useComplaints();
 
   const theme = useTheme();
@@ -86,26 +86,29 @@ export default function FormComplaints({ text, onOK }) {
           rules={{ required: 'Selecciona un NIS.' }}
           render={({ field: { onChange, value } }) => (
             <SelectDropdown
-              data={niss2}
-              onSelect={(selectedItem, index) => {
-                onChange(selectedItem);
-                setSelectedNIS(selectedItem);
-              }}
-              renderButton={(selectedItem, isOpened) => (
-                <View style={styles.dropdownButtonStyle}>
-                  <Text style={styles.dropdownButtonTxtStyle}>
-                    {(selectedItem && selectedItem.title) || 'Selecciona un NIS'}
-                  </Text>
-                </View>
-              )}
-              renderItem={(item, index, isSelected) => (
-                <View style={{ ...styles.dropdownItemStyle, ...(isSelected && { backgroundColor: '#D2D9DF' }) }}>
-                  <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
-                </View>
-              )}
-              showsVerticalScrollIndicator={false}
-              dropdownStyle={styles.dropdownMenuStyle}
-            />
+  data={niss2}
+  onSelect={(selectedItem, index) => {
+    onChange(selectedItem);
+    setSelectedNIS(selectedItem);
+  }}
+  renderButton={(selectedItem, isOpened) => (
+    <View style={styles.dropdownButtonStyle}>
+      <Text style={styles.dropdownButtonTxtStyle}>
+        {(selectedItem && selectedItem.title) || 'Selecciona un NIS'}
+      </Text>
+    </View>
+  )}
+  renderItem={(item, index, isSelected) => (
+    <View style={{ ...styles.dropdownItemStyle, ...(isSelected && { backgroundColor: '#D2D9DF' }) }}>
+      <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
+    </View>
+  )}
+  showsVerticalScrollIndicator={false}
+  dropdownStyle={styles.dropdownMenuStyle}
+  buttonStyle={styles.dropdownButton}
+  rowStyle={styles.dropdownRow}
+/>
+
           )}
         />
         {errors.nis && <Text style={styles.errorText}>{errors.nis.message}</Text>}
@@ -166,24 +169,32 @@ export default function FormComplaints({ text, onOK }) {
 
 
                 <View style={styles.input}>
-                  <Text style={styles.inputLabel}>Teléfono</Text>
-                  <Controller
-                    control={control}
-                    name="telefono"
-                    rules={{ required: 'Introduce tu número de teléfono no puede estar vacío.' }}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                      <TextInput
-                        style={styles.inputControl}
-                        onBlur={onBlur}
-                        onChangeText={onChange}
-                        value={value}
-                        onSubmitEditing={Keyboard.dismiss}
-                        keyboardType='numeric'
-                      />
-                    )}
-                  />
-                  {errors.telefono && <Text style={styles.errorText}>{errors.telefono.message}</Text>}
-                </View>
+  <Text style={styles.inputLabel}>Teléfono</Text>
+  <Controller
+    control={control}
+    name="telefono"
+    rules={{
+      required: 'Introduce tu número de teléfono, no puede estar vacío.',
+      pattern: {
+        value: /^\d{10}$/,
+        message: '',
+      },
+    }}
+    render={({ field: { onChange, onBlur, value } }) => (
+      <TextInput
+        style={styles.inputControl}
+        onBlur={onBlur}
+        onChangeText={onChange}
+        value={value}
+        onSubmitEditing={Keyboard.dismiss}
+        keyboardType='numeric'
+      />
+    )}
+  />
+  {errors.telefono && <Text style={styles.errorText}>{errors.telefono.message}</Text>}
+  {telefonoError && <Text style={styles.errorText}>{telefonoError}</Text>}
+</View>
+
 
 
                 <View style={styles.form}>
@@ -322,6 +333,61 @@ export default function FormComplaints({ text, onOK }) {
                   ))}
                 </View>
               </View>
+
+              <View style={styles.input}>
+        <Text style={styles.inputLabel}>Módulo de atención</Text>
+        <Controller
+          control={control}
+          name="modulo"
+          rules={{ required: 'Selecciona un módulo.' }}
+          render={({ field: { onChange, value } }) => (
+            <SelectDropdown
+  data={modules}
+  onSelect={(selectedItem, index) => {
+    onChange(selectedItem);
+    setSelectedNIS(selectedItem);
+  }}
+  renderButton={(selectedItem, isOpened) => (
+    <View style={styles.dropdownButtonStyle}>
+      <Text style={styles.dropdownButtonTxtStyle}>
+        {(selectedItem && selectedItem.title) || 'Selecciona un Módulo'}
+      </Text>
+    </View>
+  )}
+  renderItem={(item, index, isSelected) => (
+    <View style={{ ...styles.dropdownItemStyle, ...(isSelected && { backgroundColor: '#D2D9DF' }) }}>
+      <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
+    </View>
+  )}
+  showsVerticalScrollIndicator={false}
+  dropdownStyle={styles.dropdownMenuStyle}
+  buttonStyle={styles.dropdownButton}
+  rowStyle={styles.dropdownRow}
+/>
+
+          )}
+        />
+        {errors.modulo && <Text style={styles.errorText}>{errors.modulo.message}</Text>}
+      </View>
+
+              <View style={styles.input}>
+                  <Text style={styles.inputLabel}>Nombre de la persona que atendió</Text>
+                  <Controller
+                    control={control}
+                    name="atendio"
+                    rules={{ required: 'Debes escribir el nombre de la persona que atendió.' }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <TextInput
+                        style={styles.inputControl}
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                        onSubmitEditing={Keyboard.dismiss}
+                      />
+                    )}
+                  />
+                  {errors.atendio && <Text style={styles.errorText}>{errors.atendio.message}</Text>}
+                </View>
 
                 
 

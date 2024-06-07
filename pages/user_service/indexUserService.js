@@ -22,6 +22,7 @@ export default function IndexUserService() {
     };
 
     const filterServiceData = (data) => {
+        console.log('Que pasa por aqui???', data);
         let services = [];
         for (let i = 1; i <= 6; i++) {
             if (data[`serv_${i}`] && !data[`serv_${i}`].includes("SIN SERVICIO") && data[`serv_${i}`] !== "N/A") {

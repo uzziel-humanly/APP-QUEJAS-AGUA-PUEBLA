@@ -1,7 +1,7 @@
 export const Colors = {
     ui :{
-        primary: "#00bf63",
-        secondary: "#3C56FF",
+        primary: "#333333",
+        secondary: "#808080",
         info: "#99B2DD",
         dark: "#020402",
         white: "#F5EDF0",
