@@ -15,6 +15,15 @@ export const AlertPrincipal = () => {
         },
         { text: "OK", onPress: () => navigation.navigate("BoardingScreen") },
       ]);
+    } else if (data[0].status == "Advertencia") {
+      Alert.alert(data[0].status, data[0].msj, [
+        {
+          text: "Cancelar",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        { text: "OK", onPress: () => console.log("OK Pressed") },
+      ]);
     } else if (data[0].status == "Error") {
       Alert.alert(data[0].status, data[0].msj, [
         {
