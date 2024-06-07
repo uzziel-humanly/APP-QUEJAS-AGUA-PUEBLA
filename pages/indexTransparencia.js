@@ -92,6 +92,7 @@ export default function TransparenciaPagina() {
   const [idSeleccionado, setIdSeleccionado] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const [mensaje, setMensaje] = useState("");
+  const [cardsShow, setCardsShow] = useState(false);
 
   const handlePress = (id) => {
     handleModalObras(id);
@@ -122,6 +123,7 @@ export default function TransparenciaPagina() {
       if (response.data.estatus === "ok") {
         if (response.data.mensaje === "Sin datos almacenados para mostrar.") {
           setMensaje("Lo sentimos, no se han encontrado resultados");
+          setCardsShow(false);
           //No se efectua nada por el momento
         } else {
           let _data = response.data.mensaje[0];
@@ -133,6 +135,7 @@ export default function TransparenciaPagina() {
           });
           setCabeceras(_data);
           setContenido(_dataContentWithId);
+          setCardsShow(true);
         }
       } else if (
         response.data.mensaje === "Sin datos almacenados para mostrar."
@@ -168,9 +171,10 @@ export default function TransparenciaPagina() {
       });
 
       if (response.data.estatus === "ok") {
-        console.log(response);
         if (response.data.mensaje === "Sin datos almacenados para mostrar.") {
           setMensaje("No se han encontrado resultados");
+          setContenido([""]);
+          setCardsShow(false);
           //No se efectua nada por el momento
         } else {
           let _data = response.data.mensaje[0];
@@ -182,6 +186,8 @@ export default function TransparenciaPagina() {
           });
           setCabeceras(_data);
           setContenido(_dataContentWithId);
+          setMensaje("");
+          setCardsShow(true);
         }
       } else if (
         response.data.mensaje === "Sin datos almacenados para mostrar."
@@ -289,71 +295,76 @@ export default function TransparenciaPagina() {
                   /> */}
                 </View>
               )}
-
-              {contenido.map((registro) => (
-                <ButtonInfo
-                  style={{
-                    width: 350,
-                    // height:
-                    //   isExpanded && idSeleccionado === registro.id ? 500 : 70,
-                    marginTop: 10,
-                    padding: 10,
-                    //backgroundColor: "#fda400",
-                    borderRadius: 10,
-                    position: "relative",
-                    shadowColor: "#000",
-                    shadowOffset: {
-                      width: 0,
-                      height: 3,
-                    },
-                    shadowOpacity: 0.27,
-                    shadowRadius: 4.65,
-
-                    elevation: 6,
-                  }}
-                  key={registro.id}
-                  onPress={() => handlePress(registro.id)}
-                >
-                  <View
-                  // style={{
-                  //   width: 350,
-                  //   // height:
-                  //   //   isExpanded && idSeleccionado === registro.id ? 500 : 70,
-                  //   marginTop: 10,
-                  //   padding: 10,
-                  //   //backgroundColor: "#fda400",
-                  //   borderRadius: 10,
-                  //   position: "relative",
-                  // }}
-                  //colors={getRandomColors()}
-                  >
-                    <Text
+              {cardsShow && (
+                <View>
+                  {contenido.map((registro) => (
+                    <ButtonInfo
                       style={{
-                        color: "white",
-                        textAlign: "center",
-                        alignItems: "center",
-                        padding: 5,
+                        width: 350,
+                        // height:
+                        //   isExpanded && idSeleccionado === registro.id ? 500 : 70,
+                        marginTop: 10,
+                        padding: 10,
+                        //backgroundColor: "#fda400",
+                        borderRadius: 10,
+                        position: "relative",
+                        shadowColor: "#000",
+                        shadowOffset: {
+                          width: 0,
+                          height: 3,
+                        },
+                        shadowOpacity: 0.27,
+                        shadowRadius: 4.65,
+
+                        elevation: 6,
                       }}
+                      key={registro.id}
+                      onPress={() => handlePress(registro.id)}
                     >
-                      {registro[1]} {/* Mostrar título */}
-                    </Text>
-                    {idSeleccionado === registro.id && (
-                      <View>
-                        {cabeceras.map((cabecera, i) => (
-                          <View key={i} style={styles.row}>
-                            <Text style={{ color: "white", fontWeight: "600" }}>
-                              {cabecera}:
-                            </Text>
-                            <Text style={{ color: "white" }}>
-                              {registro[i]}
-                            </Text>
+                      <View
+                      // style={{
+                      //   width: 350,
+                      //   // height:
+                      //   //   isExpanded && idSeleccionado === registro.id ? 500 : 70,
+                      //   marginTop: 10,
+                      //   padding: 10,
+                      //   //backgroundColor: "#fda400",
+                      //   borderRadius: 10,
+                      //   position: "relative",
+                      // }}
+                      //colors={getRandomColors()}
+                      >
+                        <Text
+                          style={{
+                            color: "white",
+                            textAlign: "center",
+                            alignItems: "center",
+                            padding: 5,
+                          }}
+                        >
+                          {registro[1]} {/* Mostrar título */}
+                        </Text>
+                        {idSeleccionado === registro.id && (
+                          <View>
+                            {cabeceras.map((cabecera, i) => (
+                              <View key={i} style={styles.row}>
+                                <Text
+                                  style={{ color: "white", fontWeight: "600" }}
+                                >
+                                  {cabecera}:
+                                </Text>
+                                <Text style={{ color: "white" }}>
+                                  {registro[i]}
+                                </Text>
+                              </View>
+                            ))}
                           </View>
-                        ))}
+                        )}
                       </View>
-                    )}
-                  </View>
-                </ButtonInfo>
-              ))}
+                    </ButtonInfo>
+                  ))}
+                </View>
+              )}
             </View>
 
             {modalVisible && (

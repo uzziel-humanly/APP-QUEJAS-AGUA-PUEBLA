@@ -30,6 +30,9 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Feather } from "@expo/vector-icons";
 import ModalDocuments from "./modalDocuments";
 import styled from "styled-components/native";
+import axios from "axios";
+import { API_URL, API_TOKEN, API_AUTH } from "@env";
+import md5 from "js-md5";
 import {
   ButtonPrimary,
   ButtonSecondary,
@@ -40,10 +43,40 @@ import {
   ButtonDisabled,
   ButtonStatusAlta,
 } from "../../styles/buttons/stylesButton";
-//import PdfRendererView from 'react-native-pdf-renderer';
-//import PDFView from 'react-native-view-pdf/lib/index';
+import { Colors } from "../../theme/colors";
 
 export default function Register() {
+  const [tipoCuenta, setTipoCuenta] = useState([]);
+
+  const getTipoCuenta = async () => {
+    try {
+      let pass = md5(API_TOKEN);
+      let credentials = `${API_AUTH}:${pass}`;
+      let encodedCredentials = btoa(credentials);
+      let auth = "Basic " + encodedCredentials;
+
+      let response = await axios({
+        method: "post",
+        url: `${API_URL}/api/getTipoCuenta`,
+        headers: { Authorization: auth, "Content-Type": "application/json" },
+      });
+
+      if (response.data.estatus === "ok") {
+        let _data = response.data.mensaje;
+        setTipoCuenta(_data);
+      } else {
+        //console.error("Error en la respuesta de la API");
+        alert("Ocurrió un error en el servidor");
+      }
+    } catch (error) {
+      //console.error(error);
+      alert("Ocurrió un error en el servidor");
+    }
+  };
+
+  // useEffect(() => {
+  //   getTipoCuenta();
+  // }, []);
   // const [pdfUri, setPdfUri] = useState(null);
 
   // useEffect(() => {
@@ -102,6 +135,7 @@ export default function Register() {
     RECIBOPDF: false,
     CDOMIPDF: false,
     BOLETA: false,
+    PICBOLETA: false,
   });
   //Formulario
   const {
@@ -142,6 +176,7 @@ export default function Register() {
           setValue("Archivo6", result);
           setValue("banD6", "2");
           setBoletaSt(false);
+          setDisabledButtons((prev) => ({ ...prev, ["PICBOLETA"]: false }));
         }
       }
     } catch (err) {
@@ -150,22 +185,6 @@ export default function Register() {
   };
 
   const [image, setImage] = useState(null);
-
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-    setImage(result.assets.name);
-    setValue("image", result);
-    //console.log(result);
-
-    if (!result.canceled) {
-      //setImage(result.uri);
-    }
-  };
 
   const takePhoto = async (option) => {
     try {
@@ -199,6 +218,13 @@ export default function Register() {
         setDisabledButtons((prev) => ({ ...prev, [option]: true }));
         setImage(result.assets.name);
         setValue("Archivo1", result.assets);
+      } else if (option == "PICBOLETA") {
+        setDisabledButtons((prev) => ({ ...prev, [option]: true }));
+        setImage(result.assets.name);
+        setValue("Archivo6", result.assets);
+        setValue("banF6", "1");
+        setDisabledButtons((prev) => ({ ...prev, ["BOLETA"]: false }));
+        setBoletaSt(false);
       }
 
       if (!result.canceled) {
@@ -515,17 +541,26 @@ export default function Register() {
                   render={({ field: { onChange, value } }) => (
                     <View style={styles.pickerContainer}>
                       <Picker
+                        onPress={getTipoCuenta()}
                         selectedValue={value}
                         style={styles.picker}
                         onValueChange={(itemValue) => {
+                         
                           onChange(itemValue);
                           setSelectedValue(itemValue);
                           validaSelector(itemValue);
+                          
                         }}
                       >
                         <Picker.Item label="Selecciona una opción" value="" />
-                        <Picker.Item label="Cliente Titular" value="1" />
-                        <Picker.Item label="Gestor Autorizado" value="2" />
+                        
+                        {tipoCuenta.map((item) => (
+                          <Picker.Item
+                            label={item.tipo.toUpperCase()}
+                            value={item.id}
+                            key={item.id}
+                          />
+                        ))}
                       </Picker>
                     </View>
                   )}
@@ -669,7 +704,7 @@ export default function Register() {
 
               {boleta && (
                 <View style={{ marginBottom: 10 }}>
-                  <Text style={styles.inputLabel}>Boleta Predial:</Text>
+                  {/* <Text style={styles.inputLabel}>Boleta Predial:</Text>
                   <ButtonInfo
                     //disabled={disabledButtons.SELFIE}
                     style={[
@@ -686,7 +721,48 @@ export default function Register() {
                     <Text style={styles.error}>
                       Debes adjuntar tu documento de predial
                     </Text>
-                  )}
+                  )} */}
+                  <Text style={styles.inputLabel}>Predial:</Text>
+                  <View style={styles.containerBtn}>
+                    {/* <Controller
+                  control={control}
+                  name="Archivo5"
+                  //rules={{ required: true }}
+                  render={({ field: { onChange, value } }) => ( */}
+                    <View>
+                      <ButtonInfo
+                        style={[
+                          styles.button,
+                          disabledButtons.BOLETA && styles.buttonDisabled,
+                        ]}
+                        onPress={() => handleDocumentPicker(setValue, "BOLETA")}
+                      >
+                        <FontAwesome
+                          name="file-pdf-o"
+                          size={24}
+                          color="#FFFFFF"
+                        />
+                        <Text style={styles.buttonText}>Adjunta un pdf</Text>
+                      </ButtonInfo>
+                      {/* {value && (
+                        <Text style={styles.selectedText}>{value.name}</Text>
+                      )} */}
+                    </View>
+                    {/* )}
+                /> */}
+
+                    <ButtonInfo
+                      style={[
+                        styles.button,
+                        disabledButtons.PICBOLETA && styles.buttonDisabled,
+                      ]}
+                      //onPress={takePhoto}
+                      onPress={() => takePhoto("PICBOLETA")}
+                    >
+                      <AntDesign name="camera" size={24} color="#FFFFFF" />
+                      <Text style={styles.buttonText}>Toma una foto</Text>
+                    </ButtonInfo>
+                  </View>
                 </View>
               )}
 
@@ -738,7 +814,16 @@ export default function Register() {
                     required: "Debe aceptar los términos y condiciones",
                   }}
                   render={({ field: { onChange, value } }) => (
-                    <Switch value={value} onValueChange={onChange} />
+                    <Switch
+                      value={value}
+                      onValueChange={onChange}
+                      // trackColor={{false: '#767577', true: '#81b0ff'}}
+                      trackColor={{ true: Colors.pastel.french }}
+                      thumbColor={
+                        onChange ? Colors.pastel.french : Colors.pastel.french
+                      }
+                      ios_backgroundColor={Colors.pastel.french}
+                    />
                   )}
                   name="acceptTerms"
                   defaultValue={false}
@@ -778,7 +863,16 @@ export default function Register() {
                     required: "Debe aceptar el contrato de adhesión",
                   }}
                   render={({ field: { onChange, value } }) => (
-                    <Switch value={value} onValueChange={onChange} />
+                    <Switch
+                      value={value}
+                      onValueChange={onChange}
+                      // trackColor={{false: '#767577', true: '#81b0ff'}}
+                      trackColor={{ true: Colors.pastel.french }}
+                      thumbColor={
+                        onChange ? Colors.pastel.french : Colors.pastel.french
+                      }
+                      ios_backgroundColor={Colors.pastel.french}
+                    />
                   )}
                   name="acceptContract"
                   defaultValue={false}
@@ -949,7 +1043,7 @@ const styles = StyleSheet.create({
     height: 44,
     width: "105%",
     alignSelf: "center",
-    marginBottom: 20,
+    //marginBottom: 20,
   },
   picker: {
     height: 50,
@@ -969,6 +1063,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     width: "100%",
     alignItems: "center",
+    marginBottom: 20,
   },
   inputLabel: {
     fontSize: 17,
@@ -994,7 +1089,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     fontWeight: "500",
     color: "#222",
-    marginBottom: 16,
   },
   error: {
     color: "red",
