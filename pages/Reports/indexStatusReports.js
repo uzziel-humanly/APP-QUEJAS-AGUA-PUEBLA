@@ -85,7 +85,7 @@ export default function IndexStatusReports() {
         data: body,
       });
 
-      console.log(response);
+      //console.log(response);
 
       if (response.data.estatus === "ok") {
         let _data = response.data.mensaje;
@@ -137,7 +137,7 @@ export default function IndexStatusReports() {
   };
 
   const tableData = reportes.map((item) => {
-    const status = estatus.find((status) => status.id === item.tipo);
+    const status = estatus.find((status) => status.id === item.estatus);
     return [item.id, status ? status.estatus : "Desconocido"];
   });
 
@@ -170,7 +170,7 @@ export default function IndexStatusReports() {
                 <Row
                   data={tableHead}
                   style={styles.head}
-                  textStyle={{ textAlign: "center", color: "white" }}
+                  textStyle={styles.textRow}
                 />
 
                 {/* <Rows data={tableData} textStyle={{ textAlign: "center" }} /> */}
@@ -180,9 +180,11 @@ export default function IndexStatusReports() {
                   if (reportes[1] === "ALTA") {
                     color = "#1bbac8";
                   } else if (reportes[1] === "TRAMITE") {
-                    color = "#00bf63";
+                    color = "#020402";
                   } else if (reportes[1] === "CONCLUIDO") {
-                    color = "#1bbac8";
+                    color = "#00bf63";
+                  }else if(reportes[1] === "Desconocido"){
+                    color = "#D1CCDC";
                   }
 
                   return (
@@ -287,6 +289,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   container2: { flex: 1, padding: 16, color: "#ffffff" },
-  head: { height: 40, backgroundColor: "#000000", color: "#FFFFFF" },
+  head: { height: 40, backgroundColor: "#000000", color: "#fff52w" },
   text: { margin: 6 },
+  textRow: { 
+    textAlign: 'center', 
+    color: 'white' 
+  }
 });

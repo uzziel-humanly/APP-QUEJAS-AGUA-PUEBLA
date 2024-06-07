@@ -127,10 +127,10 @@ export function useRegister() {
                 var formato = "";
                 var name = "";
                 var uri = "";
-                if (data.banF5 == "1") {
+                if (data.banF6 == "1") {
                   formato = "image/jpeg";
-                  name = data.Archivo5[0].fileName;
-                  uri = data.Archivo5[0].uri;
+                  name = data.Archivo6[0].fileName;
+                  uri = data.Archivo6[0].uri;
                 } else if (data.banD6 == "2") {
                   formato = "application/pdf";
                   name = data.Archivo6.assets[0].name;
