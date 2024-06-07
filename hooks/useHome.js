@@ -58,9 +58,9 @@ export function useHome() {
                 data: _body,
             });
 
-            console.log(response.data.mensaje);
+            console.log(response);
     
-            return response.data.mensaje;
+            return response;
         } catch (error) {
             console.error(error);
             alert('Error en el servidor');
