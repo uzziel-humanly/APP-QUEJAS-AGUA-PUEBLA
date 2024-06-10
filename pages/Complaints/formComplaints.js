@@ -174,6 +174,7 @@ export default function FormComplaints({ text, onOK }) {
   <Controller
     control={control}
     name="telefono"
+
     rules={{
       required: 'Introduce tu número de teléfono, no puede estar vacío.',
       pattern: {
@@ -189,6 +190,7 @@ export default function FormComplaints({ text, onOK }) {
         value={value}
         onSubmitEditing={Keyboard.dismiss}
         keyboardType='numeric'
+        maxLength={10}
       />
     )}
   />
