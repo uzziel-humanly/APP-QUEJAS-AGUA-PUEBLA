@@ -45,7 +45,6 @@ export const useLogin = () => {
   );
 
   const validateSession = async () => {
-    //setLoading(true);
     let _username = username;
     let _password = password;
     if (_username.trim() === "" || _password.trim() === "") {
@@ -54,17 +53,17 @@ export const useLogin = () => {
     } else {
       setLoading(true);
       let pass = md5(API_TOKEN);
-
+  
       let credentials = `${API_AUTH}:${pass}`;
       let encodedCredentials = btoa(credentials);
       let auth = "Basic " + encodedCredentials;
-
+  
       let _body = {
         correo: _username,
         pass: md5(_password),
       };
       let body = JSON.stringify(_body);
-
+  
       try {
         let response = await axios({
           method: "post",
@@ -72,82 +71,61 @@ export const useLogin = () => {
           headers: { Authorization: auth, "Content-Type": "application/json" },
           data: body,
         });
-            if(response.data.estatus === "ok")
-                {
-                    
-
-
-                    let _userdata = response.data.mensaje[0];
-
-                    let today = new Date();
-                    let fechaPass = new Date(_userdata.fechaPass);
-
-
-                    function getMonthDifference(date1, date2) {
-                        let years = date2.getFullYear() - date1.getFullYear();
-                        let months = date2.getMonth() - date1.getMonth();
-                        return years * 12 + months;
-                    }
-
-                    let monthDifference = getMonthDifference(fechaPass, today);
-
-               
-                   
-                    let nis = _userdata.nis;
-                    let _nis = [];
-
-                    nis.map((item, index) => {
-                      _nis.push({
-                          nis: item.nis,
-                          direction: item.direccion,
-                          colony: item.colonia,
-                          account_number: item.cuenta,
-                          account_status: item.estado_cuenta,
-                          manager: item.gestor,
-                          line: item.giro
-
-                      })
-
-                  })
-
-                  // console.log(_nis);
-
-            
-                  AsyncStorage.setItem('username', _userdata.nombre)
-                  AsyncStorage.setItem('id', _userdata.id)
-                  // AsyncStorage.setItem('numberphone', _userdata.cel)
-                  AsyncStorage.setItem('email', _userdata.correo)
-                  AsyncStorage.setItem('nis', JSON.stringify(_nis))
-                  AsyncStorage.setItem('name', _userdata.nombre + ' ' + _userdata.ap + ' ' + _userdata.am)
-
-
-                  
-                 if(_userdata.reset == 1 || monthDifference === 11)
-                  {
-                      navigation.navigate('Inicio temporal')
-                  }
-                  else
-                  {
-                      navigation.navigate('IndexScreen')
-                  }
-                  
-
-              }
-              else
-              {
-                 setLoading(false);
-                  let _messageError = response.data.mensaje;
-                  setMessageError(_messageError);
-                  setFailedLogin(1);
-                  
-              }
-              }          
-         catch (error) {
-            console.error(error);
-            Alert.alert('Ocurrió un error en el servidor');;
-        } 
+  
+        if (response.data.estatus === "ok") {
+          let _userdata = response.data.mensaje[0];
+  
+          let today = new Date();
+          let fechaPass = new Date(_userdata.fechaPass);
+  
+          function getMonthDifference(date1, date2) {
+            let years = date2.getFullYear() - date1.getFullYear();
+            let months = date2.getMonth() - date1.getMonth();
+            return years * 12 + months;
+          }
+  
+          let monthDifference = getMonthDifference(fechaPass, today);
+  
+          let nis = _userdata.nis;
+          let _nis = [];
+  
+          nis.map((item, index) => {
+            _nis.push({
+              nis: item.nis,
+              direction: item.direccion,
+              colony: item.colonia,
+              account_number: item.cuenta,
+              account_status: item.estado_cuenta,
+              manager: item.gestor,
+              line: item.giro
+            });
+          });
+  
+          await AsyncStorage.setItem('username', _userdata.nombre);
+          await AsyncStorage.setItem('id', _userdata.id);
+          await AsyncStorage.setItem('email', _userdata.correo);
+          await AsyncStorage.setItem('nis', JSON.stringify(_nis));
+          await AsyncStorage.setItem('name', _userdata.nombre + ' ' + _userdata.ap + ' ' + _userdata.am);
+  
+          if (_userdata.reset == 1 || monthDifference === 11) {
+            navigation.navigate('Inicio temporal');
+          } else {
+            navigation.navigate('IndexScreen');
+          }
+  
+        } else {
+          setLoading(false);
+          let _messageError = response.data.mensaje;
+          setMessageError(_messageError);
+          setFailedLogin(1);
+        }
+      } catch (error) {
+        console.error(error);
+        Alert.alert('Ocurrió un error en el servidor');
+      }
     }
   }
+  
   
 
   //#REGION SIGN UP

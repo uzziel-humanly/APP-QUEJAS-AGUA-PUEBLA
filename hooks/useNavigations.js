@@ -121,7 +121,7 @@ export default function StackNavigation() {
           <Stack.Screen
             name="IndexScreen"
             component={MainStack}
-            options={{ headerShown: false }}
+            options={{ headerShown: false, gestureEnabled: false }}
           />
           <Stack.Screen
             name="Login"
