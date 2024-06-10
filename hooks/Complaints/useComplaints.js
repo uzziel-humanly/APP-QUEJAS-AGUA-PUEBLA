@@ -317,6 +317,7 @@ export function useComplaints() {
   );
 
   const onSubmit = async (data) => {
+    
 
     let _id_user = await AsyncStorage.getItem("id");
 
@@ -340,8 +341,13 @@ export function useComplaints() {
     formData.append("domicilio", data.domicilio);
     formData.append("id_colonia", data.colonia[0]);
     formData.append("id_clasificacion", 1);
-    formData.append("id_modulo", (data.modulo.id !== null && data.modulo.id !== undefined && data.modulo.id > 0) ? data.modulo.id : "");
-    formData.append("atendio", data.atendio ? data.atendio : "");
+
+    if (data.hasOwnProperty("modulo") == true) {
+      formData.append("id_modulo", "");
+    }else{
+      formData.append("id_modulo", data.modulo.id);
+    }
+    formData.append("atendio", data.atendio == undefined ? data.atendio : "");
     if(data.file !== null && data.file !== undefined)
       {
         formData.append("archivo", {
@@ -352,12 +358,12 @@ export function useComplaints() {
       }
       else
       {
-        formData.append("archivo", "");
+        formData.append("archivo", []);
       }
     //formData.append('archivo', data.file[0]);
     formData.append("estado", "PUEBLA");
 
-    if(data.nis_extra !== null && data.nis_extra !== undefined)
+    if(data.hasOwnProperty("nis_extra"))
       {
         data.nis_extra.forEach((item, index) => {
           formData.append(`nis_extra[${index}]`, item);
@@ -365,15 +371,18 @@ export function useComplaints() {
       }
       else
       {
-        formData.append(`nis_extra`, "");
+        //["nis_extra[0]", "3074856"]
+        formData.append('nis_extra[0]', "NA");
       }
+
+
 
     data.expresa.forEach((item, index) => {
       formData.append(`expresa[${index}]`, item);
     });
 
   
-
+console.log(formData);
 
     let pass = md5(API_TOKEN);
     let credentials = `${API_AUTH}:${pass}`;
