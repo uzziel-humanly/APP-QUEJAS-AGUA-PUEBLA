@@ -518,6 +518,7 @@ export function useComplaints() {
     loadingComplaints,
 
     //Create complaint
+    processComplaint,
     ref,
     webStyle,
     handleEmpty,
