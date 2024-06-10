@@ -144,6 +144,7 @@ export const useLogin = () => {
               }          
          catch (error) {
             console.error(error);
+            setLoading(false);
             Alert.alert('Ocurrió un error en el servidor');;
         } 
     }

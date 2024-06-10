@@ -10,6 +10,8 @@ import {
   TextInput,
   TouchableOpacity,
   Dimensions,
+  ActivityIndicator,
+  ImageBackground,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useState, useEffect, useCallback } from "react";
@@ -23,16 +25,21 @@ import { useTransparencia } from "../hooks/useTransparencia";
 import { Picker } from "@react-native-picker/picker";
 import { useForm, Controller } from "react-hook-form";
 import {
-  ButtonPrimary,
-  ButtonSecondary,
-  TitleSecondary,
-  TextNeutral,
-  Header,
   ButtonInfo,
-  ButtonDisabled,
-  ButtonStatusAlta,
+  ButtonMandys,
+  ButtonRomantic,
+  ButtonSandy,
+  ButtonPolar,
+  ButtonFrench,
+  ButtonMine,
+} from "../styles/resources/stylesButton";
+import {
   TitlePrimary,
-} from "../styles/buttons/stylesButton";
+  TitleSecondary,
+  TitleInfo,
+  TitleMine,
+  TitleGray,
+} from "../styles/resources/styleTitles";
 import Svg, { Path } from "react-native-svg";
 import { useTheme } from "@react-navigation/native";
 import { Colors } from "../theme/colors";
@@ -55,8 +62,14 @@ const getRandomColors = () => {
 export default function TransparenciaPagina() {
   const theme = useTheme();
 
-  const { modalVisible, setModalVisible, handleModalObras, idObra } =
-    useTransparencia();
+  const {
+    modalVisible,
+    setModalVisible,
+    handleModalObras,
+    idObra,
+    loading,
+    setLoading,
+  } = useTransparencia();
   const [colors, setColors] = useState(getRandomColors());
 
   const {
@@ -101,6 +114,7 @@ export default function TransparenciaPagina() {
   };
 
   const getTransparencia = async () => {
+    setLoading(true);
     try {
       let pass = md5(API_TOKEN);
       let credentials = `${API_AUTH}:${pass}`;
@@ -136,11 +150,13 @@ export default function TransparenciaPagina() {
           setCabeceras(_data);
           setContenido(_dataContentWithId);
           setCardsShow(true);
+          setLoading(false);
         }
       } else if (
         response.data.mensaje === "Sin datos almacenados para mostrar."
       ) {
       } else {
+        setLoading(false);
         alert("Ocurrió un error en el servidor");
         //console.error("Error en la respuesta de la API");
       }
@@ -211,30 +227,30 @@ export default function TransparenciaPagina() {
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
       >
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-          <Svg
-            height="150"
-            width={width}
-            viewBox="0 0 35.28 2.17"
-            preserveAspectRatio="none"
-            style={{ backgroundColor: "#ffffff" }}
-          >
-            <Path
-              d="M0 .5c3.07.55 9.27-.42 16.14 0 6.88.4 13.75.57 19.14-.11V0H0z"
-              fill={Colors.ui.info}
-            />
-            <Path
-              d="M0 1c3.17.8 7.29-.38 10.04-.55 2.75-.17 9.25 1.47 12.67 1.3 3.43-.17 4.65-.84 7.05-.87 2.4-.02 5.52.88 5.52.88V0H0z"
-              opacity="0.5"
-              fill={Colors.ui.info}
-            />
-            <Path
-              d="M0 1.85c2.56-.83 7.68-.3 11.79-.42 4.1-.12 6.86-.61 9.58-.28 2.73.33 5.61 1.17 8.61 1 3-.19 4.73-.82 5.3-.84V.1H0z"
-              opacity="0.5"
-              fill={Colors.ui.info}
-            />
-          </Svg>
-
           <View style={styles.container}>
+            <Svg
+              height="150"
+              width={width}
+              viewBox="0 0 35.28 2.17"
+              preserveAspectRatio="none"
+              style={{ backgroundColor: "#f2f2f2" }}
+            >
+              <Path
+                d="M0 .5c3.07.55 9.27-.42 16.14 0 6.88.4 13.75.57 19.14-.11V0H0z"
+                fill={Colors.bandw.gray}
+              />
+              <Path
+                d="M0 1c3.17.8 7.29-.38 10.04-.55 2.75-.17 9.25 1.47 12.67 1.3 3.43-.17 4.65-.84 7.05-.87 2.4-.02 5.52.88 5.52.88V0H0z"
+                opacity="0.5"
+                fill={Colors.bandw.gray}
+              />
+              <Path
+                d="M0 1.85c2.56-.83 7.68-.3 11.79-.42 4.1-.12 6.86-.61 9.58-.28 2.73.33 5.61 1.17 8.61 1 3-.19 4.73-.82 5.3-.84V.1H0z"
+                opacity="0.5"
+                fill={Colors.bandw.gray}
+              />
+            </Svg>
+
             <View style={styles.header}>
               <TitlePrimary style={styles.title}>Transparencia</TitlePrimary>
               <Text style={styles.subtitle}>Obras</Text>
@@ -295,75 +311,84 @@ export default function TransparenciaPagina() {
                   /> */}
                 </View>
               )}
-              {cardsShow && (
-                <View>
-                  {contenido.map((registro) => (
-                    <ButtonInfo
-                      style={{
-                        width: 350,
-                        // height:
-                        //   isExpanded && idSeleccionado === registro.id ? 500 : 70,
-                        marginTop: 10,
-                        padding: 10,
-                        //backgroundColor: "#fda400",
-                        borderRadius: 10,
-                        position: "relative",
-                        shadowColor: "#000",
-                        shadowOffset: {
-                          width: 0,
-                          height: 3,
-                        },
-                        shadowOpacity: 0.27,
-                        shadowRadius: 4.65,
 
-                        elevation: 6,
-                      }}
-                      key={registro.id}
-                      onPress={() => handlePress(registro.id)}
-                    >
-                      <View
-                      // style={{
-                      //   width: 350,
-                      //   // height:
-                      //   //   isExpanded && idSeleccionado === registro.id ? 500 : 70,
-                      //   marginTop: 10,
-                      //   padding: 10,
-                      //   //backgroundColor: "#fda400",
-                      //   borderRadius: 10,
-                      //   position: "relative",
-                      // }}
-                      //colors={getRandomColors()}
+              {loading ? (
+                <ActivityIndicator size="large" />
+              ) : (
+                cardsShow && (
+                  <View>
+                    {contenido.map((registro) => (
+                      <ButtonMine
+                        style={{
+                          width: 350,
+                          opacity: 1,
+                          // height:
+                          //   isExpanded && idSeleccionado === registro.id ? 500 : 70,
+                          marginTop: 10,
+                          padding: 10,
+                          //backgroundColor: "#fda400",
+                          borderRadius: 10,
+                          position: "relative",
+                          shadowColor: "#000",
+                          shadowOffset: {
+                            width: 0,
+                            height: 3,
+                          },
+                          shadowOpacity: 0.27,
+                          shadowRadius: 4.65,
+
+                          elevation: 6,
+                        }}
+                        key={registro.id}
+                        onPress={() => handlePress(registro.id)}
                       >
-                        <Text
-                          style={{
-                            color: "white",
-                            textAlign: "center",
-                            alignItems: "center",
-                            padding: 5,
-                          }}
+                        <View
+                        // style={{
+                        //   width: 350,
+                        //   // height:
+                        //   //   isExpanded && idSeleccionado === registro.id ? 500 : 70,
+                        //   marginTop: 10,
+                        //   padding: 10,
+                        //   //backgroundColor: "#fda400",
+                        //   borderRadius: 10,
+                        //   position: "relative",
+                        // }}
+                        //colors={getRandomColors()}
                         >
-                          {registro[1]} {/* Mostrar título */}
-                        </Text>
-                        {idSeleccionado === registro.id && (
-                          <View>
-                            {cabeceras.map((cabecera, i) => (
-                              <View key={i} style={styles.row}>
-                                <Text
-                                  style={{ color: "white", fontWeight: "600" }}
-                                >
-                                  {cabecera}:
-                                </Text>
-                                <Text style={{ color: "white" }}>
-                                  {registro[i]}
-                                </Text>
-                              </View>
-                            ))}
-                          </View>
-                        )}
-                      </View>
-                    </ButtonInfo>
-                  ))}
-                </View>
+                          <Text
+                            style={{
+                              color: "white",
+                              textAlign: "center",
+                              alignItems: "center",
+                              padding: 5,
+                            }}
+                          >
+                            {registro[1]} {/* Mostrar título */}
+                          </Text>
+                          {idSeleccionado === registro.id && (
+                            <View>
+                              {cabeceras.map((cabecera, i) => (
+                                <View key={i} style={styles.row}>
+                                  <Text
+                                    style={{
+                                      color: "white",
+                                      fontWeight: "600",
+                                    }}
+                                  >
+                                    {cabecera}:
+                                  </Text>
+                                  <Text style={{ color: "white" }}>
+                                    {registro[i]}
+                                  </Text>
+                                </View>
+                              ))}
+                            </View>
+                          )}
+                        </View>
+                      </ButtonMine>
+                    ))}
+                  </View>
+                )
               )}
             </View>
 
@@ -384,8 +409,7 @@ export default function TransparenciaPagina() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#f2f2f2",
     //paddingTop: 40,
   },
   header: {
@@ -452,7 +476,7 @@ const styles = StyleSheet.create({
   },
   pickerContainer: {
     borderWidth: 1,
-    borderColor: "white",
+    borderColor: "gray",
     borderRadius: 8,
     overflow: "hidden",
     backgroundColor: "#FFFFFF",

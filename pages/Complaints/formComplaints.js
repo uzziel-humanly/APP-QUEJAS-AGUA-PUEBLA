@@ -49,6 +49,7 @@ export default function FormComplaints({ text, onOK }) {
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
       >
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} scrollEnabled={scrollEnabled}>
+        <StatusBar style="auto" />
           {!isFormVisible ? (
             <View style={styles.container}>
               <View style={styles.header}>
@@ -173,6 +174,7 @@ export default function FormComplaints({ text, onOK }) {
   <Controller
     control={control}
     name="telefono"
+
     rules={{
       required: 'Introduce tu número de teléfono, no puede estar vacío.',
       pattern: {
@@ -188,6 +190,7 @@ export default function FormComplaints({ text, onOK }) {
         value={value}
         onSubmitEditing={Keyboard.dismiss}
         keyboardType='numeric'
+        maxLength={10}
       />
     )}
   />

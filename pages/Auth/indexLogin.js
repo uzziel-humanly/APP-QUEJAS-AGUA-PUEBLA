@@ -6,13 +6,14 @@ import {
   StyleSheet,
   SafeAreaView,
   TextInput,
-  TouchableOpacity,
+  TouchableOpacity
 } from "react-native";
 import { useLogin } from "../../hooks/useLogin";
 import { ScrollView, Keyboard, Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardAvoidingView, ActivityIndicator } from "react-native";
 import { ButtonPrimary, Title } from "../../styles/login/stylesLogin";
+import { StatusBar } from 'expo-status-bar';
 
 export default function Login() {
   const {
@@ -39,6 +40,7 @@ export default function Login() {
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
       >
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <StatusBar style="auto" />
           <View style={styles.container}>
             <View style={styles.header}>
               <Image

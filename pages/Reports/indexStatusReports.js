@@ -1,4 +1,3 @@
-import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
   Text,
@@ -22,6 +21,7 @@ import ModalReports from "./modalReports";
 import { useFocusEffect } from "@react-navigation/native";
 import { Title1, ButtonP } from "../../styles/index/stylesHome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StatusBar } from 'expo-status-bar';
 
 const getRandomColors = () => {
   const colorsList = [
@@ -148,6 +148,7 @@ export default function IndexStatusReports() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <StatusBar style="auto" />
         <View style={styles.container}>
           <Title1>Historial de reportes</Title1>
           <View style={styles.line} />

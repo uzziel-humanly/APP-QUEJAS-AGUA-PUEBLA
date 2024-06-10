@@ -76,13 +76,14 @@ const handleChangeEmail2 = (Text) => {
 
 const handleUpdatePassword = async (flag) => {
 
+
   let _body = [];
   let _email = '';
 
   // if (flag === 1) {
   //     _email = await AsyncStorage.getItem('email');
   // } else if (flag === 2) {
-      _email = email2;
+      _email = email;
  // }
 
   if ((newPassword.trim() !== '' && confirmNewPassword.trim() !== '') && (newPassword === confirmNewPassword) && newPassword.length >= 8) {
@@ -99,14 +100,16 @@ const handleUpdatePassword = async (flag) => {
       setLoadingPass(true);
 
       try {
+        
           let response = await axios({
               method: "post",
               url: `${API_URL}/api/setPasswd`,
               headers: { Authorization: auth, "Content-Type": "application/json" },
               data: _body[0],
           });
-
+          console.log(response);
           if (response.data.estatus === "ok") {
+            console.log("SUCCESS2")
               let _message = response.data.mensaje;
 
               setLoadingPass(false);
@@ -126,6 +129,9 @@ const handleUpdatePassword = async (flag) => {
              
           }
       } catch (error) {
+        console.log("ERROR");
+        setLoadingPass(false);
+        alert("Error en el servidor");
           console.error(error);
       }
   }

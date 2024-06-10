@@ -1,10 +1,10 @@
-import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FormReports from "./formReports";
 import IndexStatusReports from "./indexStatusReports";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import styled, {useTheme} from "styled-components/native";
+import { StatusBar } from 'expo-status-bar';
 
 const Tab = createBottomTabNavigator();
 
