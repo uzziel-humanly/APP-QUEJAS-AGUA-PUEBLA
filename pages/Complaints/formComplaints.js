@@ -49,6 +49,7 @@ export default function FormComplaints({ text, onOK }) {
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
       >
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} scrollEnabled={scrollEnabled}>
+        <StatusBar style="auto" />
           {!isFormVisible ? (
             <View style={styles.container}>
               <View style={styles.header}>

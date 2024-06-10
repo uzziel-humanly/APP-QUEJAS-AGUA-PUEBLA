@@ -11,57 +11,98 @@ export const useReports = () => {
   const { showAlertReport } = AlertPrincipal();
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisibleC, setModalVisibleC] = useState(false);
   const [idReporte, setIdReporte] = useState("");
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
 
   //* Acciones registro *//
   const handleRegisterReport = async (data) => {
-    let _id_user = await AsyncStorage.getItem("id");
-    try {
-      setLoading(true);
-      let pass = md5(API_TOKEN);
-      let credentials = `${API_AUTH}:${pass}`;
-      let encodedCredentials = btoa(credentials);
-      let auth = "Basic " + encodedCredentials;
+    //console.log(data);
+    if (data.evidencia != undefined) {
+      let _id_user = await AsyncStorage.getItem("id");
+      try {
+        setLoading(true);
+        let pass = md5(API_TOKEN);
+        let credentials = `${API_AUTH}:${pass}`;
+        let encodedCredentials = btoa(credentials);
+        let auth = "Basic " + encodedCredentials;
 
-      const currentDate = new Date().toISOString().split("T")[0];
-      const additionalData = {
-        id_usuario_app: _id_user,
-        fecha: currentDate,
-        nis: "3074856",
-        folio: "",
-      };
-      //Esa informacion extra la metemos dentro del json body
-      const completeData = { ...data, ...additionalData };
-      let body = JSON.stringify(completeData);
-      //console.log(body);
+        const currentDate = new Date().toISOString().split("T")[0];
+        var completeData = "";
 
-      let response = await axios({
-        method: "POST",
-        url: `${API_URL}/api/setReporte`,
-        headers: { Authorization: auth, "Content-Type": "application/json" },
-        data: body,
-      });
+        if (
+          data.hasOwnProperty("latitud") == false &&
+          data.hasOwnProperty("longitud") == false
+        ) {
+          const additionalData = {
+            id_usuario_app: _id_user,
+            fecha: currentDate,
+            nis: "3074856",
+            folio: "",
+            longitud: "",
+            latitud: "",
+          };
+          //Esa informacion extra la metemos dentro del json body
+          completeData = { ...data, ...additionalData };
+        } else {
+          const additionalData = {
+            id_usuario_app: _id_user,
+            fecha: currentDate,
+            nis: "3074856",
+            folio: "",
+          };
+          //Esa informacion extra la metemos dentro del json body
+          completeData = { ...data, ...additionalData };
+        }
 
-      if (response.data.estatus === "ok") {
+        let body = JSON.stringify(completeData);
+        //console.log(body);
+
+        let response = await axios({
+          method: "POST",
+          url: `${API_URL}/api/setReporte`,
+          headers: { Authorization: auth, "Content-Type": "application/json" },
+          data: body,
+        });
+
+        if (response.data.estatus === "ok") {
+          setLoading(false);
+          const data = [
+            { status: "Exito", msj: "Los datos se han registrado" },
+          ];
+          showAlertReport(data);
+        } else {
+          setLoading(false);
+          const data = [
+            {
+              status: "Error",
+              msj: "Ha ocurrido un error al intentar registrar los datos",
+            },
+          ];
+          showAlertReport(data);
+        }
+      } catch (error) {
         setLoading(false);
-        const data = [{ status: "Exito", msj: "Los datos se han registrado" }];
-        showAlertReport(data);
-      } else {
-        setLoading(false);
+        //console.error(error);
         const data = [
           {
             status: "Error",
-            msj: "Ha ocurrido un error al intentar registrar los datos",
+            msj: "Ocurrio un error en el servidor",
           },
         ];
         showAlertReport(data);
       }
-    } catch (error) {
+    } else {
       setLoading(false);
       //console.error(error);
-      alert("Ocurrió un error en el servidor");
+      const data = [
+        {
+          status: "Error",
+          msj: "Debes adjuntar o tomar una fotografia",
+        },
+      ];
+      showAlertReport(data);
     }
   };
 
@@ -75,17 +116,24 @@ export const useReports = () => {
     setModalVisible(!modalVisible);
   };
 
+  const handleModalColonia = () => {
+    setModalVisibleC(!modalVisibleC);
+  };
+
   return {
     handleRegisterReport,
     handleClickReport,
     handleModalReport,
     modalVisible,
     setModalVisible,
+    modalVisibleC,
+    setModalVisibleC,
     idReporte,
     setIdReporte,
     status,
     setStatus,
     loading,
     setLoading,
+    handleModalColonia,
   };
 };

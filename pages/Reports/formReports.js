@@ -1,4 +1,3 @@
-import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
   Text,
@@ -9,6 +8,7 @@ import {
   TouchableOpacity,
   Switch,
   Alert,
+  FlatList,
   ActivityIndicator,
 } from "react-native";
 import { useReports } from "../../hooks/Reports/useReports";
@@ -27,9 +27,34 @@ import { Feather } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Title1, ButtonP } from "../../styles/index/stylesHome";
+import {
+  ButtonPrimary,
+  ButtonSecondary,
+  TextNeutral,
+  Header,
+  ButtonInfo,
+  ButtonDisabled,
+  ButtonStatusAlta,
+  ButtonSandy,
+} from "../../styles/resources/stylesButton";
+import { StatusBar } from "expo-status-bar";
+import ModalReports from "./modalColonias";
+import ModalColonias from "./modalColonias";
+import { MaterialIcons } from '@expo/vector-icons';
 
 export default function FormReports() {
-  const { handleRegisterReport, loading } = useReports();
+  const {
+    handleRegisterReport,
+    loading,
+    modalVisibleC,
+    setModalVisibleC,
+    handleModalColonia,
+  } = useReports();
+
+  const [disabledButtons, setDisabledButtons] = useState({
+    PICINCIDENCIA: false,
+    evidencia: false,
+  });
   //Formulario
   const {
     control,
@@ -69,10 +94,12 @@ export default function FormReports() {
       });
 
       if (option == "PICINCIDENCIA") {
+        setDisabledButtons((prev) => ({ ...prev, [option]: true }));
         let base64Image = `data:image/jpeg;base64,${result.assets[0].base64}`;
         base64Image = base64Image.replace(/(?:\r\n|\r|\n)/g, "");
         setImage(result.assets.name);
         setValue("evidencia", base64Image);
+        setDisabledButtons((prev) => ({ ...prev, ["evidencia"]: false }));
       }
 
       // if (!result.cancelled) {
@@ -82,6 +109,7 @@ export default function FormReports() {
       //   setImage(result.uri);
       // }
     } catch (err) {
+      //setDisabledButtons((prev) => ({ ...prev, [option]: false }));
       //console.log("Error picking document: ", err);
       //alert("Ocurrió un error en el servidor");
     }
@@ -115,7 +143,7 @@ export default function FormReports() {
   useEffect(() => {
     getTipoReporte();
     //getTipoIncidencia();
-    getCatalogoColonias();
+    //getCatalogoColonias();
   }, []);
 
   const getTipoReporte = async () => {
@@ -175,31 +203,47 @@ export default function FormReports() {
     }
   };
 
-  const getCatalogoColonias = async () => {
-    try {
-      let pass = md5(API_TOKEN);
-      let credentials = `${API_AUTH}:${pass}`;
-      let encodedCredentials = btoa(credentials);
-      let auth = "Basic " + encodedCredentials;
+  // const [searchTerm, setSearchTerm] = useState("");
+  // const [filteredColonias, setFilteredColonias] = useState(colonias);
+  // const [selectedColonia, setSelectedColonia] = useState("");
 
-      let response = await axios({
-        method: "post",
-        url: `${API_URL}/api/getColonias`,
-        headers: { Authorization: auth, "Content-Type": "application/json" },
-      });
+  // const handleSearch = (text) => {
+  //   setSearchTerm(text);
+  //   if (text === "") {
+  //     setFilteredColonias(colonias);
+  //   } else {
+  //     const filtered = colonias.filter((colonia) =>
+  //       colonia.nombre.toLowerCase().includes(text.toLowerCase())
+  //     );
+  //     setFilteredColonias(filtered);
+  //   }
+  // };
 
-      if (response.data.estatus === "ok") {
-        let _data = response.data.mensaje;
-        setColonias(_data);
-      } else {
-        alert("Ocurrió un error en el servidor");
-        //console.error("Error en la respuesta de la API");
-      }
-    } catch (error) {
-      //console.error(error);
-      alert("Ocurrió un error en el servidor");
-    }
-  };
+  // const getCatalogoColonias = async () => {
+  //   try {
+  //     let pass = md5(API_TOKEN);
+  //     let credentials = `${API_AUTH}:${pass}`;
+  //     let encodedCredentials = btoa(credentials);
+  //     let auth = "Basic " + encodedCredentials;
+
+  //     let response = await axios({
+  //       method: "post",
+  //       url: `${API_URL}/api/getColonias`,
+  //       headers: { Authorization: auth, "Content-Type": "application/json" },
+  //     });
+
+  //     if (response.data.estatus === "ok") {
+  //       let _data = response.data.mensaje;
+  //       setColonias(_data);
+  //     } else {
+  //       alert("Ocurrió un error en el servidor");
+  //       //console.error("Error en la respuesta de la API");
+  //     }
+  //   } catch (error) {
+  //     //console.error(error);
+  //     alert("Ocurrió un error en el servidor");
+  //   }
+  // };
 
   const [selectedDocument, setSelectedDocument] = useState("");
 
@@ -241,20 +285,28 @@ export default function FormReports() {
       });
 
       if (option == "evidencia") {
+        setDisabledButtons((prev) => ({ ...prev, [option]: true }));
         let base64Image = `data:image/jpeg;base64,${result.assets[0].base64}`;
         base64Image = base64Image.replace(/(?:\r\n|\r|\n)/g, "");
         setImage(result.assets.name);
         setValue("evidencia", base64Image);
+        setDisabledButtons((prev) => ({ ...prev, ["PICINCIDENCIA"]: false }));
       }
     } catch (err) {
+      //setDisabledButtons((prev) => ({ ...prev, [option]: false }));
       //console.log("Error picking document: ", err);
       //alert("Ocurrió un error en el servidor");
     }
   };
 
+  const handleSelectColonia = async (setValue, id_colonia) => {
+    setValue("id_colonia", id_colonia);
+  };
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <StatusBar style="auto" />
         <View style={styles.container}>
           <Title1>Formulario de Reporte</Title1>
           <View style={styles.line} />
@@ -360,22 +412,31 @@ export default function FormReports() {
                   //rules={{ required: true }}
                   render={({ field: { onChange, value } }) => (
                     <View>
-                      <TouchableOpacity
-                        style={styles.button}
+                      <ButtonSandy
+                        //style={styles.button}
+                        style={[
+                          styles.button,
+                          disabledButtons.PICINCIDENCIA &&
+                            styles.buttonDisabled,
+                        ]}
                         //onPress={takePhoto}
                         onPress={() => takePhoto("PICINCIDENCIA")}
                       >
                         <AntDesign name="camera" size={24} color="#FFFFFF" />
                         <Text style={styles.buttonText}>Toma una foto</Text>
-                      </TouchableOpacity>
+                      </ButtonSandy>
                       {value && (
                         <Text style={styles.selectedText}>{value.name}</Text>
                       )}
                     </View>
                   )}
                 />
-                <TouchableOpacity
-                  style={styles.button}
+                <ButtonSandy
+                  style={[
+                    styles.button,
+                    disabledButtons.evidencia && styles.buttonDisabled,
+                  ]}
+                  //style={styles.button}
                   onPress={() => handleDocumentPicker(setValue, "evidencia")}
                 >
                   <MaterialCommunityIcons
@@ -384,7 +445,7 @@ export default function FormReports() {
                     color="#FFFFFF"
                   />
                   <Text style={styles.buttonText}>Adjunta imagen</Text>
-                </TouchableOpacity>
+                </ButtonSandy>
               </View>
               {/* {errors.evidencia && (
                 <Text style={styles.error}>La fotografia es obligatoria.</Text>
@@ -564,8 +625,71 @@ export default function FormReports() {
                   <Text style={styles.error}>{errors.num_int.message}</Text>
                 )}
               </View>
+              
+              <Text style={styles.inputLabel}>Selecciona o busca tu colonia</Text>
+              <ButtonPrimary
+                style={styles.btn}
+                onPress={() => handleModalColonia()}
+              >
+                <Text style={styles.btnTxt}>Colonias</Text>
+              </ButtonPrimary>
+              <View style={styles.formAction}>
+                {modalVisibleC && (
+                  <ModalColonias
+                    modalVisibleC={modalVisibleC}
+                    setModalVisibleC={setModalVisibleC}
+                    handleSelectColonia={handleSelectColonia}
+                    setValue={setValue}
+                  />
+                )}
+              </View>
 
-              <View style={styles.inputContainer}>
+              {/* <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>Colonia:</Text>
+                <Controller
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { onChange } }) => (
+                    <>
+                      <TextInput
+                        style={styles.searchInput}
+                        placeholder="Buscar colonia"
+                        value={searchTerm}
+                        onChangeText={handleSearch}
+                      />
+                      <FlatList
+                        data={filteredColonias}
+                        keyExtractor={(item) => item.id.toString()}
+                        renderItem={({ item }) => (
+                          <TouchableOpacity
+                            style={styles.coloniaItem}
+                            onPress={() => {
+                              onChange(item.id);
+                              setSelectedColonia(item.nombre);
+                              setSearchTerm("");
+                              setFilteredColonias(colonias);
+                            }}
+                          >
+                            <Text>{item.nombre}</Text>
+                          </TouchableOpacity>
+                        )}
+                      />
+                    </>
+                  )}
+                  name="id_colonia"
+                  defaultValue=""
+                />
+                {errors.id_colonia && (
+                  <Text style={styles.error}>La colonia es obligatoria</Text>
+                )}
+                {selectedColonia ? (
+                  <Text style={styles.selectedColonia}>
+                    Colonia seleccionada: {selectedColonia}
+                  </Text>
+                ) : null}
+              </View> */}
+
+              {/* <View style={styles.inputContainer}>
                 <Text style={styles.inputLabel}>Colonia:</Text>
                 <Controller
                   control={control}
@@ -581,6 +705,7 @@ export default function FormReports() {
                         }}
                       >
                         <Picker.Item label="Selecciona tu colonia" value="" />
+
                         {colonias.map((item) => (
                           <Picker.Item
                             label={item.nombre}
@@ -597,7 +722,7 @@ export default function FormReports() {
                 {errors.id_colonia && (
                   <Text style={styles.error}>La colonia es obligatoria</Text>
                 )}
-              </View>
+              </View> */}
             </View>
           )}
 
@@ -608,12 +733,12 @@ export default function FormReports() {
             showElement &&
             Object.keys(errors).length === 0 && (
               <View style={styles.formAction}>
-                <TouchableOpacity
+                <ButtonPrimary
                   style={styles.btn}
                   onPress={handleSubmit(handleRegisterReport)}
                 >
                   <Text style={styles.btnTxt}>Registrar</Text>
-                </TouchableOpacity>
+                </ButtonPrimary>
               </View>
             )
           )}
@@ -755,7 +880,7 @@ const styles = StyleSheet.create({
     width: 150,
     height: 45,
     flexDirection: "row",
-    backgroundColor: "#00bf63",
+    //backgroundColor: "#00bf63",
     padding: 10,
     borderRadius: 8,
     marginBottom: 10,
@@ -770,7 +895,7 @@ const styles = StyleSheet.create({
     marginVertical: 24,
   },
   btn: {
-    backgroundColor: "#000",
+    //backgroundColor: "#000",
     borderRadius: 8,
     borderWidth: 1,
     flexDirection: "row",
@@ -805,6 +930,9 @@ const styles = StyleSheet.create({
   },
   btnFotos: {
     flexDirection: "row",
+  },
+  buttonDisabled: {
+    backgroundColor: "#A9A9A9",
   },
 
   // selectedPicker: {

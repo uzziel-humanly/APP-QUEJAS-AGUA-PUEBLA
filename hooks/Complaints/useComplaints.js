@@ -5,11 +5,9 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import md5 from "js-md5";
-import {API_URL, API_TOKEN,API_AUTH} from "@env"
-
+import { API_URL, API_TOKEN, API_AUTH } from "@env";
 
 export function useComplaints() {
-
   // Complaints
   const tableHead = ["Folio seguimiento", "Estatus"];
   const [tableData, setTableData] = useState([]);
@@ -21,12 +19,17 @@ export function useComplaints() {
 
   const [loadingComplaints, setLoadingComplaints] = useState(false);
 
-
   const [modules, setModules] = useState([]);
   //New complaint
-  const { control, handleSubmit, formState: { errors }, reset, setValue,watch } = useForm();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    setValue,
+    watch,
+  } = useForm();
   const [enabledForm, setEnabledForm] = useState(false);
-  
 
   const [scrollEnabled, setScrollEnabled] = useState(true);
 
@@ -38,13 +41,9 @@ export function useComplaints() {
   const [colony, setColony] = useState([]);
 
   const [requests, setRequests] = useState([]);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
 
   const [selectedFiles, setSelectedFiles] = useState([]);
-
-
-  
-
 
   const ref = useRef();
 
@@ -81,36 +80,37 @@ export function useComplaints() {
 
   const [idGender, setIdGender] = useState(0);
 
-
-  const gender = useMemo(() => ([
+  const gender = useMemo(() => [
     {
-      id:'F',
-      label:'F',
-      value:'F'
+      id: "F",
+      label: "F",
+      value: "F",
     },
     {
-      id:'M',
-      label:'M',
-      value: 'M'
-    }
-  ]))
+      id: "M",
+      label: "M",
+      value: "M",
+    },
+  ]);
 
-  const [telefonoError, setTelefonoError] = useState('');
-  const telefonoValue = watch('telefono');
+  const [telefonoError, setTelefonoError] = useState("");
+  const telefonoValue = watch("telefono");
 
   useEffect(() => {
     if (!telefonoValue) {
-      setTelefonoError('');
+      setTelefonoError("");
     } else if (!/^\d{10}$/.test(telefonoValue)) {
-      setTelefonoError('El número de teléfono debe tener exactamente 10 dígitos.');
+      setTelefonoError(
+        "El número de teléfono debe tener exactamente 10 dígitos."
+      );
     } else {
-      setTelefonoError('');
+      setTelefonoError("");
     }
   }, [telefonoValue]);
 
   const handleSelectgender = (id_gender) => {
     setIdGender(id_gender);
-  }
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -133,7 +133,7 @@ export function useComplaints() {
 
   const handleClearForm = () => {
     handleSelectNiss([]);
-    setInputValue('');
+    setInputValue("");
     requests.splice(0, requests.length);
     selectedFiles.splice(0, selectedFiles.length);
     reset();
@@ -156,15 +156,14 @@ export function useComplaints() {
         let _data = response.data.mensaje;
         let _colony = [];
 
-          if(_data.length > 0)
-          {
-           _data.map((_c, _i) => {
-              _colony.push({
-                id: _c.id,
-                name: _c.nombre
-              })
-            })
-          }
+        if (_data.length > 0) {
+          _data.map((_c, _i) => {
+            _colony.push({
+              id: _c.id,
+              name: _c.nombre,
+            });
+          });
+        }
         setColony(_colony);
       } else {
         alert("Ocurrió un error en el servidor");
@@ -175,9 +174,7 @@ export function useComplaints() {
     }
   };
 
-
-  const getModules = async() => {
-
+  const getModules = async () => {
     try {
       let pass = md5(API_TOKEN);
       let credentials = `${API_AUTH}:${pass}`;
@@ -194,15 +191,14 @@ export function useComplaints() {
         let _data = response.data.mensaje;
         let _modules = [];
 
-          if(_data.length > 0)
-          {
-           _data.map((_m, _i) => {
-              _modules.push({
-                id: _m.id,
-                title: _m.modulo
-              })
-            })
-          }
+        if (_data.length > 0) {
+          _data.map((_m, _i) => {
+            _modules.push({
+              id: _m.id,
+              title: _m.modulo,
+            });
+          });
+        }
         setModules(_modules);
       } else {
         alert("Ocurrió un error en el servidor");
@@ -211,83 +207,68 @@ export function useComplaints() {
       //console.error(error);
       alert("Ocurrió un error en el servidor");
     }
-  }
+  };
 
   const getNisAccount = async () => {
     let _niss = [];
     let _nissComplaint = [];
-    let _nis = await AsyncStorage.getItem('nis');
-    let _nis2 = await AsyncStorage.getItem('nis');
-     _nis = JSON.parse(_nis);
-     _nis2 = JSON.parse(_nis2);
+    let _nis = await AsyncStorage.getItem("nis");
+    let _nis2 = await AsyncStorage.getItem("nis");
+    _nis = JSON.parse(_nis);
+    _nis2 = JSON.parse(_nis2);
 
-     if(_nis.length > 0)
-      {
-        _nis.map((item, index) => {
-          _niss.push({
-            id: item.nis,
-            name: item.nis
-          })
-        })
+    if (_nis.length > 0) {
+      _nis.map((item, index) => {
+        _niss.push({
+          id: item.nis,
+          name: item.nis,
+        });
+      });
 
-       
-       
-        
-        setNiss(_niss);
-      } 
-
-
-      if(_nis2.length > 0)
-        {
-          _nis2.map((_nis, _i) => {
-            _nissComplaint.push({
-              title: _nis.nis
-            })
-          })
-
-
-          setNiss2(_nissComplaint);
-        }
-
+      setNiss(_niss);
     }
-  
+
+    if (_nis2.length > 0) {
+      _nis2.map((_nis, _i) => {
+        _nissComplaint.push({
+          title: _nis.nis,
+        });
+      });
+
+      setNiss2(_nissComplaint);
+    }
+  };
+
   useEffect(() => {
     getModules();
     getNisAccount();
     getColony();
-   }, []);
+  }, []);
 
-   
-   const handleSelectNiss = (selectedItems) => {
+  const handleSelectNiss = (selectedItems) => {
     setNissSelected(selectedItems);
-  }
-  
-  
+  };
 
   const handleFileSelect = async () => {
     let _selectedFiles = [...selectedFiles];
-    if(_selectedFiles.length < 1)
-      {
-        let result = await DocumentPicker.getDocumentAsync();
-    
-        if (result.canceled === false) {
-              result.assets.map((_item, _index) => {
-                _selectedFiles.push(_item);
-              })
-    
-         
-          setSelectedFiles(_selectedFiles);
-          setValue("file", _selectedFiles);
-        }
+    if (_selectedFiles.length < 1) {
+      let result = await DocumentPicker.getDocumentAsync();
+      console.log(result);
+
+      if (result.canceled === false) {
+        result.assets.map((_item, _index) => {
+          _selectedFiles.push(_item);
+        });
+
+        setSelectedFiles(_selectedFiles);
+        setValue("file", _selectedFiles);
       }
+    }
   };
 
   const handleFileRemove = (index) => {
     setSelectedFiles(selectedFiles.filter((_, i) => i !== index));
   };
-
- 
-  
 
   const handleEmpty = () => {
     console.log("Empty");
@@ -303,7 +284,6 @@ export function useComplaints() {
     setScrollEnabled(true);
   };
 
-
   const handleData = (data) => {
     handleShowModalSignature();
   };
@@ -311,19 +291,17 @@ export function useComplaints() {
   const handleBegin = () => {
     setScrollEnabled(false);
   };
- 
 
   const handleAddRequest = () => {
-    setValue('folio', 1)
-    setValue('id_clasificacion', 1)
-    let _request = ([...requests]);
-    if(_request.length < 6)
-      {
-        if (inputValue.trim()) {
-          setRequests([...requests, inputValue.trim()]);
-          setInputValue('');
-        }
+    setValue("folio", 1);
+    setValue("id_clasificacion", 1);
+    let _request = [...requests];
+    if (_request.length < 6) {
+      if (inputValue.trim()) {
+        setRequests([...requests, inputValue.trim()]);
+        setInputValue("");
       }
+    }
   };
 
   const handleRemoveRequest = (index) => {
@@ -336,58 +314,57 @@ export function useComplaints() {
     }, [])
   );
 
-
   const onSubmit = async (data) => {
-    let _id_user = await AsyncStorage.getItem('id');
-  
+    console.log("ENTROOOO");
+    let _id_user = await AsyncStorage.getItem("id");
+
     let today = new Date();
     let year = today.getFullYear();
-    let month = String(today.getMonth() + 1).padStart(2, '0');
-    let day = String(today.getDate()).padStart(2, '0');
-  
+    let month = String(today.getMonth() + 1).padStart(2, "0");
+    let day = String(today.getDate()).padStart(2, "0");
+
     let dateComplaint = `${year}-${month}-${day}`;
-  
+
     let formData = new FormData();
-  
-    formData.append('id_usuario_app', _id_user);
-    formData.append('nis', data.nis.title);
-    formData.append('fecha', dateComplaint);
-    formData.append('folio', 'SOAPAP-Q-1');
-    formData.append('telefono', data.telefono);
-    formData.append('sexo', data.sexo);
-    formData.append('descripcion', data.descripcion);
-    formData.append('firma', data.firma);
-    formData.append('domicilio', data.domicilio);
-    formData.append('id_colonia', data.colonia[0]);
-    formData.append('id_clasificacion', 1);
-    formData.append('id_modulo', data.modulo.id);
-    formData.append('atendio', data.atendio);
-    formData.append('archivo', data.file[0]);
-    formData.append('estado', 'PUEBLA') 
-    
+
+    formData.append("id_usuario_app", _id_user);
+    formData.append("nis", data.nis.title);
+    formData.append("fecha", dateComplaint);
+    formData.append("folio", "SOAPAP-Q-1");
+    formData.append("telefono", data.telefono);
+    formData.append("sexo", data.sexo);
+    formData.append("descripcion", data.descripcion);
+    formData.append("firma", data.firma);
+    formData.append("domicilio", data.domicilio);
+    formData.append("id_colonia", data.colonia[0]);
+    formData.append("id_clasificacion", 1);
+    formData.append("id_modulo", data.modulo.id);
+    formData.append("atendio", data.atendio);
+    formData.append("archivo", {
+      uri: data.file[0].uri,
+      type: data.file[0].mimeType,
+      name: data.file[0].name,
+    });
+    //formData.append('archivo', data.file[0]);
+    formData.append("estado", "PUEBLA");
+
     data.nis_extra.forEach((item, index) => {
       formData.append(`nis_extra[${index}]`, item);
     });
-  
+
     data.expresa.forEach((item, index) => {
       formData.append(`expresa[${index}]`, item);
     });
 
-
     let _file = data.file;
-  
 
-    
     console.log(formData);
-      
-      
-    
-  
+
     let pass = md5(API_TOKEN);
     let credentials = `${API_AUTH}:${pass}`;
     let encodedCredentials = btoa(credentials);
     let auth = "Basic " + encodedCredentials;
-  
+
     try {
       let response = await axios({
         method: "POST",
@@ -395,149 +372,175 @@ export function useComplaints() {
         headers: { Authorization: auth, "Content-Type": "multipart/form-data" },
         data: formData,
       });
-console.log(response.data.estatus);
-      if(response.data.estatus === "ok")
-        {
+      console.log(response.data.estatus);
+      if (response.data.estatus === "ok") {
+        console.log(message);
 
-          console.log(message);
-
-          let message = response.data.mensaje;
-          alert(message);
-          handleClearForm();
-          setIsFormVisible(false);
-        }
-
+        let message = response.data.mensaje;
+        alert(message);
+        handleClearForm();
+        setIsFormVisible(false);
+      }
     } catch (error) {
       console.error("Error al enviar la solicitud:", error);
     }
   };
-  
-  
-  
-  
 
-//#REGION Complaints 
+  //#REGION Complaints
 
-const getEstatus = async () => {
-  try {
-    let pass = md5(API_TOKEN);
-    let credentials = `${API_AUTH}:${pass}`;
-    let encodedCredentials = btoa(credentials);
-    let auth = "Basic " + encodedCredentials;
+  const getEstatus = async () => {
+    try {
+      let pass = md5(API_TOKEN);
+      let credentials = `${API_AUTH}:${pass}`;
+      let encodedCredentials = btoa(credentials);
+      let auth = "Basic " + encodedCredentials;
 
-    const data = {
-      id_usuario_app: "1",
-    };
-    let body = JSON.stringify(data);
+      const data = {
+        id_usuario_app: "1",
+      };
+      let body = JSON.stringify(data);
 
-    let response = await axios({
-      method: "post",
-      url: `${API_URL}/api/getEstatus`,
-      headers: { Authorization: auth, "Content-Type": "application/json" },
-      data: body,
-    });
+      let response = await axios({
+        method: "post",
+        url: `${API_URL}/api/getEstatus`,
+        headers: { Authorization: auth, "Content-Type": "application/json" },
+        data: body,
+      });
 
-    if (response.data.estatus === "ok") {
-      let _data = response.data.mensaje;
-      setStatusComplaints(_data);
-      return _data;  
-    } else {
-      throw new Error("Failed to get status");
-    }
-  } catch (error) {
-    alert("Ocurrió un error en el servidor");
-    throw error;  
-  }
-};
-
-
-const viewDetailComplaint = (index) => {
-  setSelectedComplaint(complaints[index]);
-  setModalComplaint(true);
-}
-
-
-
-
-const toggleModalComplaint = () => {
-  setModalComplaint(false);
-  setSelectedComplaint(null);
-};
-
-
-const handleGetComplaints = async () => {
-  setLoadingComplaints(true);
-  try {
-    let statusComplaints = await getEstatus();
-
-    let _id_user = await AsyncStorage.getItem('id');
-    let _body = [{
-      id_usuario_app: _id_user
-    }];
-
-    let pass = md5(API_TOKEN);
-    let credentials = `${API_AUTH}:${pass}`;
-    let encodedCredentials = btoa(credentials);
-    let auth = 'Basic ' + encodedCredentials;
-
-    let response = await axios({
-      method: 'post',
-      url: `${API_URL}/api/getQuejas`,
-      headers: { 'Authorization': auth, 'Content-Type': 'application/json' },
-      data: _body[0]
-    });
-
-    if (response.data.estatus === "ok") {
-      setLoadingComplaints(false);
-      let _complaints = response.data.mensaje;
-      if (_complaints.length > 0) {
-        let updatedComplaints = _complaints.map((item) => {
-          let _statusComplaint = statusComplaints.find(x => x.id === item.estatus);
-          return {
-            ...item,
-            estatus: _statusComplaint ? _statusComplaint.estatus : "Desconocido"
-          };
-        });
-      
-        
-        _complaints = updatedComplaints;
+      if (response.data.estatus === "ok") {
+        let _data = response.data.mensaje;
+        setStatusComplaints(_data);
+        return _data;
+      } else {
+        throw new Error("Failed to get status");
       }
-      
-
-      setComplaints(_complaints);
-
-      let _tableData = _complaints.length > 0 ? 
-        _complaints.map((item) => {
-          return [item.folio, item.estatus];
-        }) : [];
-      
-      setTableData(_tableData);
+    } catch (error) {
+      alert("Ocurrió un error en el servidor");
+      throw error;
     }
-  } catch (error) {
-    alert('Ocurrió un error en el servidor');
-  }
-};
+  };
 
+  const viewDetailComplaint = (index) => {
+    setSelectedComplaint(complaints[index]);
+    setModalComplaint(true);
+  };
 
+  const toggleModalComplaint = () => {
+    setModalComplaint(false);
+    setSelectedComplaint(null);
+  };
 
+  const handleGetComplaints = async () => {
+    setLoadingComplaints(true);
+    try {
+      let statusComplaints = await getEstatus();
+
+      let _id_user = await AsyncStorage.getItem("id");
+      let _body = [
+        {
+          id_usuario_app: _id_user,
+        },
+      ];
+
+      let pass = md5(API_TOKEN);
+      let credentials = `${API_AUTH}:${pass}`;
+      let encodedCredentials = btoa(credentials);
+      let auth = "Basic " + encodedCredentials;
+
+      let response = await axios({
+        method: "post",
+        url: `${API_URL}/api/getQuejas`,
+        headers: { Authorization: auth, "Content-Type": "application/json" },
+        data: _body[0],
+      });
+
+      if (response.data.estatus === "ok") {
+        setLoadingComplaints(false);
+        let _complaints = response.data.mensaje;
+        if (_complaints.length > 0) {
+          let updatedComplaints = _complaints.map((item) => {
+            let _statusComplaint = statusComplaints.find(
+              (x) => x.id === item.estatus
+            );
+            return {
+              ...item,
+              estatus: _statusComplaint
+                ? _statusComplaint.estatus
+                : "Desconocido",
+            };
+          });
+
+          _complaints = updatedComplaints;
+        }
+
+        setComplaints(_complaints);
+
+        let _tableData =
+          _complaints.length > 0
+            ? _complaints.map((item) => {
+                return [item.folio, item.estatus];
+              })
+            : [];
+
+        setTableData(_tableData);
+      }
+    } catch (error) {
+      alert("Ocurrió un error en el servidor");
+    }
+  };
 
   useEffect(() => {
-
-      handleGetComplaints();
-  }, [])
+    handleGetComplaints();
+  }, []);
 
   return {
-
-    //Complaints 
-    tableHead, complaints, handleGetComplaints, tableData,selectedComplaint, modalComplaint, viewDetailComplaint, toggleModalComplaint,setModalComplaint,
+    //Complaints
+    tableHead,
+    complaints,
+    handleGetComplaints,
+    tableData,
+    selectedComplaint,
+    modalComplaint,
+    viewDetailComplaint,
+    toggleModalComplaint,
+    setModalComplaint,
     loadingComplaints,
 
     //Create complaint
-    ref, webStyle, handleEmpty, handleClear, handleEnd, handleData, scrollEnabled, handleBegin,
-    niss, handleSelectNiss, nisSelected, handleAddRequest, handleRemoveRequest, requests, inputValue, setInputValue,
-    handleFileSelect, handleFileRemove, selectedFiles, isFormVisible, handleNewComplaint, setValue, handleSubmit, control, errors, onSubmit, gender,
-    handleSelectgender, idGender, nisComplaint, niss2, colony,getNisAccount, telefonoError, modules
-   
+    ref,
+    webStyle,
+    handleEmpty,
+    handleClear,
+    handleEnd,
+    handleData,
+    scrollEnabled,
+    handleBegin,
+    niss,
+    handleSelectNiss,
+    nisSelected,
+    handleAddRequest,
+    handleRemoveRequest,
+    requests,
+    inputValue,
+    setInputValue,
+    handleFileSelect,
+    handleFileRemove,
+    selectedFiles,
+    isFormVisible,
+    handleNewComplaint,
+    setValue,
+    handleSubmit,
+    control,
+    errors,
+    onSubmit,
+    gender,
+    handleSelectgender,
+    idGender,
+    nisComplaint,
+    niss2,
+    colony,
+    getNisAccount,
+    telefonoError,
+    modules,
   };
 }
-

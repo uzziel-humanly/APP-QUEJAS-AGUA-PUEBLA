@@ -39,14 +39,19 @@ import IndexBoardingComplaints from "../pages/Complaints/indexBoardingComplaints
 import { ThemeProvider } from "styled-components/native";
 import { theme } from "../theme";
 import styled, { useTheme } from "styled-components/native";
+import { AntDesign } from '@expo/vector-icons';
+import { Octicons } from '@expo/vector-icons';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
-const MenuButtonItem = ({ text, onPress }) => {
+const colorSideMenu = theme.Colors.bandw.gray;
+
+
+const MenuButtonItem = ({ text, onPress, iconName }) => {
   return (
     <TouchableOpacity style={styles.buttonContainer} onPress={onPress}>
-      <Text>{text}</Text>
+      <Text style={{color:"white"}}><AntDesign name={iconName} size={24} color="white" /> {text}</Text>
     </TouchableOpacity>
   );
 };
@@ -60,14 +65,17 @@ const MenuItems = ({ navigation }) => {
       <MenuButtonItem
         text={"Inicio"}
         onPress={() => navigation.navigate("Inicio")}
+        iconName="home"
       />
       <MenuButtonItem
         text={"Quejas"}
         onPress={() => navigation.navigate("Quejas")}
+        iconName="form"
       />
       <MenuButtonItem
         text={"Reportes"}
         onPress={() => navigation.navigate("Reportes")}
+        iconName="carryout"
       />
     </DrawerContentScrollView>
   );
@@ -75,7 +83,6 @@ const MenuItems = ({ navigation }) => {
 
 function MainStack() {
   const theme = useTheme(); 
-
   return (
     <ThemeProvider theme={theme}>
       <Drawer.Navigator
@@ -199,14 +206,17 @@ const styles = StyleSheet.create({
     minHeight: "100%",
   },
   title: {
+    textAlign:"center",
     fontWeight: "bold",
     fontSize: 40,
     marginBottom: 20,
   },
   buttonContainer: {
-    backgroundColor: "#d9d9d9",
-    marginBottom: 15,
+    marginLeft:10,
+    marginRight:10,
+    backgroundColor: colorSideMenu,
+    marginBottom: 10,
     padding: 15,
-    borderRadius: 8,
+    borderRadius: 10,
   },
 });
