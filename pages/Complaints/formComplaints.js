@@ -1,4 +1,4 @@
-import React, { useState, forwardRef } from 'react';
+import React, { useState, forwardRef, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button, KeyboardAvoidingView, Platform, ScrollView, TextInput, TouchableOpacity, Keyboard, Image, ActivityIndicator } from 'react-native';
 import { useComplaints } from '../../hooks/Complaints/useComplaints';
@@ -24,9 +24,17 @@ export default function FormComplaints({ text, onOK }) {
 
   const [filteredColonies, setFilteredColonies] = useState(colony);
 
+  useEffect(() => {
+    setFilteredColonies(colony.slice(0, 5));
+  }, [colony]);
+
   const handleSearch = (text) => {
     const filteredData = colony.filter(item => item.name.toLowerCase().includes(text.toLowerCase()));
-    setFilteredColonies(filteredData);
+    if (filteredData.length === 0) {
+      setFilteredColonies([{ id: '0', name: 'No se encontró la colonia' }]);
+    } else {
+      setFilteredColonies(filteredData);
+    }
   };
 
   const handleOK = (signature) => {
@@ -197,45 +205,45 @@ export default function FormComplaints({ text, onOK }) {
 
 
                 <View style={styles.form}>
-      <View style={styles.input}>
-        <Text style={styles.inputLabel}>Colonia</Text>
-        <Controller
-          control={control}
-          name="colonia"
-          rules={{ required: 'Selecciona la colonia.' }}
-          render={({ field: { onChange, value } }) => (
-            <MultiSelect
-              items={filteredColonies}
-              uniqueKey="id"
-              ref={(component) => { this.multiSelect = component }}
-              onSelectedItemsChange={(selectedItems) => {
-                if (selectedItems.length > 1) {
-                  selectedItems = [selectedItems[selectedItems.length - 1]];
-                }
-                onChange(selectedItems);
-              }}
-              selectedItems={value}
-              single
-              selectText="Selecciona tu colonia"
-              searchInputPlaceholderText="Busca tu colonia..."
-              onChangeInput={handleSearch}
-              altFontFamily="ProximaNova-Light"
-              tagRemoveIconColor="#fff"
-              tagBorderColor="#000"
-              tagContainerStyle={{ backgroundColor: '#000' }}
-              tagTextColor="#fff"
-              selectedItemTextColor="#CCC"
-              selectedItemIconColor="#CCC"
-              itemTextColor="#000"
-              displayKey="name"
-              searchInputStyle={{ color: '#CCC' }}
-              submitButtonColor="#000"
-              submitButtonText="Seleccionar colonia"
-            />
-          )}
-        />
-        {errors.colonia && <Text style={styles.errorText}>{errors.colonia.message}</Text>}
-      </View>
+                <View style={styles.input}>
+      <Text style={styles.inputLabel}>Colonia</Text>
+      <Controller
+        control={control}
+        name="colonia"
+        rules={{ required: 'Selecciona la colonia.' }}
+        render={({ field: { onChange, value } }) => (
+          <MultiSelect
+            items={filteredColonies}
+            uniqueKey="id"
+            ref={(component) => { this.multiSelect = component }}
+            onSelectedItemsChange={(selectedItems) => {
+              if (selectedItems.length > 1) {
+                selectedItems = [selectedItems[selectedItems.length - 1]];
+              }
+              onChange(selectedItems);
+            }}
+            selectedItems={value}
+            single
+            selectText="Selecciona tu colonia"
+            searchInputPlaceholderText="Busca tu colonia..."
+            onChangeInput={handleSearch}
+            altFontFamily="ProximaNova-Light"
+            tagRemoveIconColor="#fff"
+            tagBorderColor="#000"
+            tagContainerStyle={{ backgroundColor: '#000' }}
+            tagTextColor="#fff"
+            selectedItemTextColor="#CCC"
+            selectedItemIconColor="#CCC"
+            itemTextColor="#000"
+            displayKey="name"
+            searchInputStyle={{ color: '#CCC' }}
+            submitButtonColor="#000"
+            submitButtonText="Seleccionar colonia"
+          />
+        )}
+      />
+      {errors.colonia && <Text style={styles.errorText}>{errors.colonia.message}</Text>}
+    </View>
     </View>
 
                 

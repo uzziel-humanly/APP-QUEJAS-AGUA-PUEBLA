@@ -340,27 +340,40 @@ export function useComplaints() {
     formData.append("domicilio", data.domicilio);
     formData.append("id_colonia", data.colonia[0]);
     formData.append("id_clasificacion", 1);
-    formData.append("id_modulo", data.modulo.id);
+    formData.append("id_modulo", (data.modulo.id !== null && data.modulo.id !== undefined) ? data.modulo.id : "");
     formData.append("atendio", data.atendio);
-    formData.append("archivo", {
-      uri: data.file[0].uri,
-      type: data.file[0].mimeType,
-      name: data.file[0].name,
-    });
+    if(data.file !== null && data.file !== undefined)
+      {
+        formData.append("archivo", {
+          uri: data.file[0].uri,
+          type: data.file[0].mimeType,
+          name: data.file[0].name,
+        });
+      }
+      else
+      {
+        formData.append("archivo", "");
+      }
     //formData.append('archivo', data.file[0]);
     formData.append("estado", "PUEBLA");
 
-    data.nis_extra.forEach((item, index) => {
-      formData.append(`nis_extra[${index}]`, item);
-    });
+    if(data.nis_extra !== null && data.nis_extra !== undefined)
+      {
+        data.nis_extra.forEach((item, index) => {
+          formData.append(`nis_extra[${index}]`, item);
+        });
+      }
+      else
+      {
+        formData.append(`nis_extra[${0}]`, "");
+      }
 
     data.expresa.forEach((item, index) => {
       formData.append(`expresa[${index}]`, item);
     });
 
-    let _file = data.file;
+  
 
-    console.log(formData);
 
     let pass = md5(API_TOKEN);
     let credentials = `${API_AUTH}:${pass}`;
