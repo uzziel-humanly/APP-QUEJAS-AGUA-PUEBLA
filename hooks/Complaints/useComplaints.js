@@ -340,8 +340,8 @@ export function useComplaints() {
     formData.append("domicilio", data.domicilio);
     formData.append("id_colonia", data.colonia[0]);
     formData.append("id_clasificacion", 1);
-    formData.append("id_modulo", (data.modulo.id !== null && data.modulo.id !== undefined) ? data.modulo.id : "");
-    formData.append("atendio", data.atendio);
+    formData.append("id_modulo", (data.modulo.id !== null && data.modulo.id !== undefined && data.modulo.id > 0) ? data.modulo.id : "");
+    formData.append("atendio", data.atendio ? data.atendio : "");
     if(data.file !== null && data.file !== undefined)
       {
         formData.append("archivo", {
@@ -365,7 +365,7 @@ export function useComplaints() {
       }
       else
       {
-        formData.append(`nis_extra[${0}]`, "");
+        formData.append(`nis_extra`, "");
       }
 
     data.expresa.forEach((item, index) => {
@@ -389,7 +389,7 @@ export function useComplaints() {
         headers: { Authorization: auth, "Content-Type": "multipart/form-data" },
         data: formData,
       });
-      console.log(response.data.estatus);
+      console.log(response.data);
       if (response.data.estatus === "ok") {
         console.log(message);
 
