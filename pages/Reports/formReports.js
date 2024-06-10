@@ -40,7 +40,7 @@ import {
 import { StatusBar } from "expo-status-bar";
 import ModalReports from "./modalColonias";
 import ModalColonias from "./modalColonias";
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function FormReports() {
   const {
@@ -73,6 +73,7 @@ export default function FormReports() {
 
   useFocusEffect(
     useCallback(() => {
+      setDisabledButtons(false);
       setShowElement(false);
     }, [])
   );
@@ -412,7 +413,7 @@ export default function FormReports() {
                   //rules={{ required: true }}
                   render={({ field: { onChange, value } }) => (
                     <View>
-                      <ButtonSandy
+                      <ButtonInfo
                         //style={styles.button}
                         style={[
                           styles.button,
@@ -424,14 +425,14 @@ export default function FormReports() {
                       >
                         <AntDesign name="camera" size={24} color="#FFFFFF" />
                         <Text style={styles.buttonText}>Toma una foto</Text>
-                      </ButtonSandy>
+                      </ButtonInfo>
                       {value && (
                         <Text style={styles.selectedText}>{value.name}</Text>
                       )}
                     </View>
                   )}
                 />
-                <ButtonSandy
+                <ButtonInfo
                   style={[
                     styles.button,
                     disabledButtons.evidencia && styles.buttonDisabled,
@@ -445,7 +446,7 @@ export default function FormReports() {
                     color="#FFFFFF"
                   />
                   <Text style={styles.buttonText}>Adjunta imagen</Text>
-                </ButtonSandy>
+                </ButtonInfo>
               </View>
               {/* {errors.evidencia && (
                 <Text style={styles.error}>La fotografia es obligatoria.</Text>
@@ -625,8 +626,10 @@ export default function FormReports() {
                   <Text style={styles.error}>{errors.num_int.message}</Text>
                 )}
               </View>
-              
-              <Text style={styles.inputLabel}>Selecciona o busca tu colonia</Text>
+
+              <Text style={styles.inputLabel}>
+                Selecciona o busca tu colonia
+              </Text>
               <ButtonPrimary
                 style={styles.btn}
                 onPress={() => handleModalColonia()}
