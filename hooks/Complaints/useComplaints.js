@@ -23,7 +23,10 @@ export function useComplaints() {
 
 
   const [modules, setModules] = useState([]);
+
+
   //New complaint
+  const [processComplaint, setProcessComplaint] = useState(false);
   const { control, handleSubmit, formState: { errors }, reset, setValue,watch } = useForm();
   const [enabledForm, setEnabledForm] = useState(false);
   
@@ -378,7 +381,7 @@ export function useComplaints() {
   
 
     
-    console.log(formData);
+   
       
       
     
@@ -387,7 +390,10 @@ export function useComplaints() {
     let credentials = `${API_AUTH}:${pass}`;
     let encodedCredentials = btoa(credentials);
     let auth = "Basic " + encodedCredentials;
-  
+
+    
+    setProcessComplaint(true);
+
     try {
       let response = await axios({
         method: "POST",
@@ -395,11 +401,10 @@ export function useComplaints() {
         headers: { Authorization: auth, "Content-Type": "multipart/form-data" },
         data: formData,
       });
-console.log(response.data.estatus);
       if(response.data.estatus === "ok")
         {
 
-          console.log(message);
+          setProcessComplaint(false);
 
           let message = response.data.mensaje;
           alert(message);
@@ -408,6 +413,7 @@ console.log(response.data.estatus);
         }
 
     } catch (error) {
+      setProcessComplaint(false);
       console.error("Error al enviar la solicitud:", error);
     }
   };
@@ -466,8 +472,8 @@ const toggleModalComplaint = () => {
 
 
 const handleGetComplaints = async () => {
-  setLoadingComplaints(true);
   try {
+    setLoadingComplaints(true);
     let statusComplaints = await getEstatus();
 
     let _id_user = await AsyncStorage.getItem('id');
@@ -514,6 +520,7 @@ const handleGetComplaints = async () => {
       setTableData(_tableData);
     }
   } catch (error) {
+    setLoadingComplaints(false);
     alert('Ocurrió un error en el servidor');
   }
 };
@@ -530,7 +537,7 @@ const handleGetComplaints = async () => {
 
     //Complaints 
     tableHead, complaints, handleGetComplaints, tableData,selectedComplaint, modalComplaint, viewDetailComplaint, toggleModalComplaint,setModalComplaint,
-    loadingComplaints,
+    loadingComplaints, processComplaint,
 
     //Create complaint
     ref, webStyle, handleEmpty, handleClear, handleEnd, handleData, scrollEnabled, handleBegin,

@@ -1,6 +1,6 @@
 import React, { useState, forwardRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, KeyboardAvoidingView, Platform, ScrollView, TextInput, TouchableOpacity, Keyboard, Image } from 'react-native';
+import { StyleSheet, Text, View, Button, KeyboardAvoidingView, Platform, ScrollView, TextInput, TouchableOpacity, Keyboard, Image, ActivityIndicator } from 'react-native';
 import { useComplaints } from '../../hooks/Complaints/useComplaints';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import SignatureScreen from 'react-native-signature-canvas';
@@ -17,7 +17,7 @@ export default function FormComplaints({ text, onOK }) {
     ref, webStyle, handleEmpty, handleClear, handleData, scrollEnabled, handleEnd, handleBegin,
     niss, handleSelectNiss, nisSelected, requests, inputValue, handleAddRequest, handleRemoveRequest, setInputValue,
     handleFileSelect, handleFileRemove, selectedFiles, handleNewComplaint, isFormVisible, handleSubmit, control, setValue, errors, onSubmit,
-    gender, handleSelectgender, idGender, nisComplaint, niss2,colony,getNisAccount, telefonoError, modules
+    gender, handleSelectgender, idGender, nisComplaint, niss2,colony,getNisAccount, telefonoError, modules, processComplaint
   } = useComplaints();
 
   const theme = useTheme();
@@ -231,7 +231,7 @@ export default function FormComplaints({ text, onOK }) {
               displayKey="name"
               searchInputStyle={{ color: '#CCC' }}
               submitButtonColor="#000"
-              submitButtonText="Seleccionar NIS"
+              submitButtonText="Seleccionar colonia"
             />
           )}
         />
@@ -339,7 +339,7 @@ export default function FormComplaints({ text, onOK }) {
         <Controller
           control={control}
           name="modulo"
-          rules={{ required: 'Selecciona un módulo.' }}
+          // rules={{ required: 'Selecciona un módulo.' }}
           render={({ field: { onChange, value } }) => (
             <SelectDropdown
   data={modules}
@@ -367,7 +367,7 @@ export default function FormComplaints({ text, onOK }) {
 
           )}
         />
-        {errors.modulo && <Text style={styles.errorText}>{errors.modulo.message}</Text>}
+        {/* {errors.modulo && <Text style={styles.errorText}>{errors.modulo.message}</Text>} */}
       </View>
 
               <View style={styles.input}>
@@ -375,7 +375,7 @@ export default function FormComplaints({ text, onOK }) {
                   <Controller
                     control={control}
                     name="atendio"
-                    rules={{ required: 'Debes escribir el nombre de la persona que atendió.' }}
+                    // rules={{ required: 'Debes escribir el nombre de la persona que atendió.' }}
                     render={({ field: { onChange, onBlur, value } }) => (
                       <TextInput
                         style={styles.inputControl}
@@ -386,7 +386,7 @@ export default function FormComplaints({ text, onOK }) {
                       />
                     )}
                   />
-                  {errors.atendio && <Text style={styles.errorText}>{errors.atendio.message}</Text>}
+                  {/* {errors.atendio && <Text style={styles.errorText}>{errors.atendio.message}</Text>} */}
                 </View>
 
                 
@@ -396,7 +396,7 @@ export default function FormComplaints({ text, onOK }) {
                   <Controller
                     control={control}
                     name="firma"
-                    // rules={{ required: 'La firma es obligatoria.' }}
+                     rules={{ required: 'La firma es obligatoria.' }}
                     render={({ field: { onChange } }) => (
                       <SignatureScreen
                         ref={ref}
@@ -424,10 +424,15 @@ export default function FormComplaints({ text, onOK }) {
                 </View>
 
                 <View style={styles.formAction}>
-                  <ButtonP
+                  {
+                    processComplaint === true ? 
+                    <ActivityIndicator size="large" />
+                    :
+                    <ButtonP
                    onPress={handleSubmit(onSubmit)}>
                       <Text style={styles.btnTxt}>Enviar queja</Text>
                   </ButtonP>
+                  }
                 </View>
               </View>
             </View>
@@ -605,6 +610,11 @@ const styles = StyleSheet.create({
   dropdownItemIconStyle: {
     fontSize: 28,
     marginRight: 8,
+  },
+  errorText: {
+    color: 'red', 
+    fontSize: 14,
+    marginTop: 4,
   },
   
 });
