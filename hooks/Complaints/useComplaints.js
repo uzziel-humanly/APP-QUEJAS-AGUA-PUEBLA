@@ -20,7 +20,9 @@ export function useComplaints() {
   const [loadingComplaints, setLoadingComplaints] = useState(false);
 
   const [modules, setModules] = useState([]);
+
   //New complaint
+  const [processComplaint, setProcessComplaint] = useState(false);
   const {
     control,
     handleSubmit,
@@ -315,7 +317,7 @@ export function useComplaints() {
   );
 
   const onSubmit = async (data) => {
-    console.log("ENTROOOO");
+
     let _id_user = await AsyncStorage.getItem("id");
 
     let today = new Date();
@@ -366,6 +368,8 @@ export function useComplaints() {
     let auth = "Basic " + encodedCredentials;
 
     try {
+
+      setProcessComplaint(true);
       let response = await axios({
         method: "POST",
         url: `${API_URL}/api/setQUejas`,
@@ -379,10 +383,13 @@ export function useComplaints() {
         let message = response.data.mensaje;
         alert(message);
         handleClearForm();
+        setProcessComplaint(false);
         setIsFormVisible(false);
       }
     } catch (error) {
-      console.error("Error al enviar la solicitud:", error);
+      setProcessComplaint(false);
+      setProcessComplaint(false);
+      alert("Hubo un error en el servidor");
     }
   };
 
@@ -431,8 +438,8 @@ export function useComplaints() {
   };
 
   const handleGetComplaints = async () => {
-    setLoadingComplaints(true);
     try {
+      setLoadingComplaints(true);
       let statusComplaints = await getEstatus();
 
       let _id_user = await AsyncStorage.getItem("id");
@@ -453,6 +460,7 @@ export function useComplaints() {
         headers: { Authorization: auth, "Content-Type": "application/json" },
         data: _body[0],
       });
+      console.log(response.data.estatus);
 
       if (response.data.estatus === "ok") {
         setLoadingComplaints(false);
@@ -483,8 +491,11 @@ export function useComplaints() {
             : [];
 
         setTableData(_tableData);
+      } else if (response.data.estatus === "error") {
+        setLoadingComplaints(false);
       }
     } catch (error) {
+      setLoadingComplaints(false);
       alert("Ocurrió un error en el servidor");
     }
   };

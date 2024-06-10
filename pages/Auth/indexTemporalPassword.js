@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Platform, KeyboardAvoidingView } from "react-native";
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Platform, KeyboardAvoidingView, ActivityIndicator } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useUserProfile } from "../../hooks/useUserProfile";
 import {ButtonP, Title1} from "../../styles/index/stylesHome"
@@ -9,7 +9,7 @@ export default function IndexTemporalPassword()
 
     const{
         handleChangeNewPassword, handleChangeConfirmNewPassword, passwordMatch, messagePassword, messagePassword2, handleChangeEmail2, 
-        handleUpdatePassword
+        handleUpdatePassword, loadingPass
     } = useUserProfile();
 
     return (
@@ -30,14 +30,14 @@ export default function IndexTemporalPassword()
             <View style={styles.form}>
 
 
-            <View style={styles.input}>
+            {/* <View style={styles.input}>
                     <Text style={styles.inputLabel}>Correo</Text>
                     <TextInput
                     placeholder="usuario@ejemplo.com"
                     onChangeText={handleChangeEmail2}
                     style={styles.inputControl}
                     />
-                </View>
+                </View> */}
                 
                 <View style={styles.input}>
                     <Text style={styles.inputLabel}>Introduce la nueva contraseña</Text>
@@ -64,11 +64,16 @@ export default function IndexTemporalPassword()
             </View>
 
 
-            <ButtonP
+            {
+              loadingPass === true ? 
+              <ActivityIndicator size="large" />
+              :
+              <ButtonP
             onPress={() => handleUpdatePassword(2)}
             >
                 <Text style={styles.btnTxt}>Cambiar contraseña</Text>
             </ButtonP>
+            }
 
             <View>
 
