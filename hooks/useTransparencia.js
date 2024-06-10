@@ -5,6 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 export function useTransparencia() {
   const [modalVisible, setModalVisible] = useState(false);
   const [idObra, setIdObra] = useState('');
+  const [loading, setLoading] = useState(true);
 
   const handleModalObras = (id) => {
     setIdObra(id);
@@ -15,6 +16,6 @@ export function useTransparencia() {
     modalVisible,
     setModalVisible,
     handleModalObras,
-    idObra,setIdObra
+    idObra,setIdObra,loading,setLoading
   };
 }

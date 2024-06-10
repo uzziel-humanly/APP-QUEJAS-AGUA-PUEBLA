@@ -12,7 +12,7 @@ import {
   Switch,
   KeyboardAvoidingView,
   Platform,
-  ActivityIndicator,
+  ActivityIndicator
 } from "react-native";
 import { useRegister } from "../../hooks/useRegister";
 import { useForm, Controller } from "react-hook-form";
@@ -36,14 +36,21 @@ import md5 from "js-md5";
 import {
   ButtonPrimary,
   ButtonSecondary,
-  TitleSecondary,
   TextNeutral,
   Header,
   ButtonInfo,
   ButtonDisabled,
   ButtonStatusAlta,
-} from "../../styles/buttons/stylesButton";
+} from "../../styles/resources/stylesButton";
+import {
+  TitlePrimary,
+  TitleSecondary,
+  TitleInfo,
+  TitleMine,
+  TitleGray,
+} from "../../styles/resources/styleTitles";
 import { Colors } from "../../theme/colors";
+import { StatusBar } from 'expo-status-bar';
 
 export default function Register() {
   const [tipoCuenta, setTipoCuenta] = useState([]);
@@ -267,6 +274,7 @@ export default function Register() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <StatusBar style="auto" />
         <View style={styles.safeArea}>
           <View style={styles.container}>
             <View style={styles.header}>
@@ -274,13 +282,13 @@ export default function Register() {
                 source={require("../../assets/tuSoapap.png")}
                 style={styles.headerImg}
               />
-              <TitleSecondary style={styles.title}>
+              <TitlePrimary style={styles.title}>
                 Formulario de Registro
-              </TitleSecondary>
-              <Text style={styles.subtitle}>
+              </TitlePrimary>
+              <TitleSecondary style={styles.subtitle}>
                 A continuación ingrese cada uno de los datos solicitados sin
                 omitir campos.
-              </Text>
+              </TitleSecondary>
             </View>
 
             <View style={styles.form}>
@@ -545,15 +553,13 @@ export default function Register() {
                         selectedValue={value}
                         style={styles.picker}
                         onValueChange={(itemValue) => {
-                         
                           onChange(itemValue);
                           setSelectedValue(itemValue);
                           validaSelector(itemValue);
-                          
                         }}
                       >
                         <Picker.Item label="Selecciona una opción" value="" />
-                        
+
                         {tipoCuenta.map((item) => (
                           <Picker.Item
                             label={item.tipo.toUpperCase()}
@@ -954,6 +960,7 @@ export default function Register() {
          /> */}
           </View>
         </View>
+
         {/* 
         <WebView
           originWhitelist={["*"]}

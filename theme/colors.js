@@ -15,10 +15,28 @@ export const Colors = {
         tramite: "#00bf63",
         concluido: ""
     },
-    pastel:{
-        french:"#b8e1ff",
-        polar:"#d6f3f5",
-        sandy:"#ffebc7"
-
-    }
+    pastel: {
+        french:"#85CCFF",
+        //french: "#b8e1ff",
+        polar:"#6BD4DB",
+        //polar: "#d6f3f5",
+        sandy:"#FFDB99",
+        //sandy: "#ffebc7",
+        romantic:"#FFC299",
+        //romantic: "#ffd4b8",
+        mandys:"#EB8499"
+        //mandys: "#f3b4c1",
+      },
+      minimalist: {
+        gallery: "#f0f0f0",
+        alto: "#d1d1d1",
+        nobel: "#b3b3b3",
+        dusty: "#949494",
+        dove: "#737373",
+      },
+      bandw: {
+        mercury: "#e6e6e6",
+        gray: "#808080",
+        mine: "#333333",
+      },
 }

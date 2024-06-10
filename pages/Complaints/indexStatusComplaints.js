@@ -34,6 +34,7 @@ export default function IndexStatusComplaints() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <StatusBar style="auto" />
         <View style={styles.container}>
           <Title1>Historial de quejas</Title1>
           <View style={styles.line} />
