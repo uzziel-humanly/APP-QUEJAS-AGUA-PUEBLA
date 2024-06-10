@@ -43,11 +43,7 @@ export default function FormComplaints({ text, onOK }) {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
-      >
+    
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} scrollEnabled={scrollEnabled}>
         <StatusBar style="auto" />
           {!isFormVisible ? (
@@ -120,7 +116,7 @@ export default function FormComplaints({ text, onOK }) {
         <Controller
           control={control}
           name="nis_extra"
-          rules={{ required: 'Selecciona al menos un NIS.' }}
+          // rules={{ required: 'Selecciona al menos un NIS.' }}
           render={({ field: { onChange, value } }) => (
             <MultiSelect
               items={filteredNiss}
@@ -146,7 +142,7 @@ export default function FormComplaints({ text, onOK }) {
             />
           )}
         />
-        {errors.nis_extra && <Text style={styles.errorText}>{errors.nis_extra.message}</Text>}
+        {/* {errors.nis_extra && <Text style={styles.errorText}>{errors.nis_extra.message}</Text>} */}
       </View>
               
 
@@ -221,7 +217,7 @@ export default function FormComplaints({ text, onOK }) {
               selectedItems={value}
               single
               selectText="Selecciona tu colonia"
-              searchInputPlaceholderText="Buscar Colonia..."
+              searchInputPlaceholderText="Busca tu colonia..."
               onChangeInput={handleSearch}
               altFontFamily="ProximaNova-Light"
               tagRemoveIconColor="#fff"
@@ -441,7 +437,6 @@ export default function FormComplaints({ text, onOK }) {
             </View>
           )}
         </ScrollView>
-      </KeyboardAvoidingView>
     </GestureHandlerRootView>
   );
 }
