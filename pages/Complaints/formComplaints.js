@@ -424,7 +424,7 @@ export default function FormComplaints({ text, onOK }) {
 
                 <View style={styles.formAction}>
                   {
-                    processComplaint === true ? 
+                    processComplaint ? 
                     <ActivityIndicator size="large" />
                     :
                     <ButtonP
