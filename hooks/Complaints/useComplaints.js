@@ -139,6 +139,7 @@ export function useComplaints() {
     requests.splice(0, requests.length);
     selectedFiles.splice(0, selectedFiles.length);
     reset();
+    setProcessComplaint(false);
   };
 
   const getColony = async () => {
@@ -343,37 +344,55 @@ export function useComplaints() {
     formData.append("id_clasificacion", 1);
 
     if (data.hasOwnProperty("modulo") == true) {
-      formData.append("id_modulo", "");
+
+      formData.append("id_modulo",  data.modulo  !== undefined ? data.modulo.id : "");
     }else{
-      formData.append("id_modulo", data.modulo.id);
+      formData.append("id_modulo","");
     }
-    formData.append("atendio", data.atendio == undefined ? data.atendio : "");
-    if(data.file !== null && data.file !== undefined)
+
+
+    formData.append("atendio", data.atendio !== undefined ? data.atendio : "");
+    if(data.hasOwnProperty("nis_extra"))
       {
-        formData.append("archivo", {
-          uri: data.file[0].uri,
-          type: data.file[0].mimeType,
-          name: data.file[0].name,
-        });
+       if(data.file !== undefined)
+        {
+          formData.append("archivo", {
+            uri: data.file[0].uri,
+            type: data.file[0].mimeType,
+            name: data.file[0].name,
+          });
+        }
+        else
+        {
+          formData.append("archivo", "[]");
+        }
       }
       else
       {
-        formData.append("archivo", []);
+         formData.append("archivo", "[]");
       }
     //formData.append('archivo', data.file[0]);
     formData.append("estado", "PUEBLA");
 
-    if(data.hasOwnProperty("nis_extra"))
+      if(data.hasOwnProperty("nis_extra"))
       {
-        data.nis_extra.forEach((item, index) => {
-          formData.append(`nis_extra[${index}]`, item);
-        });
+        if(data.nis_extra !== undefined)
+          {
+            data.nis_extra.forEach((item, index) => {
+              formData.append(`nis_extra[${index}]`, item);
+            });
+          }
+          else
+          {
+            formData.append('nis_extra', 0);
+          }
+        
       }
-      else
-      {
-        //["nis_extra[0]", "3074856"]
-        formData.append('nis_extra[0]', "NA");
-      }
+      // else
+      // {
+      //   let value = 0;
+      //   formData.append('nis_extra', value);
+      // }
 
 
 
@@ -381,8 +400,7 @@ export function useComplaints() {
       formData.append(`expresa[${index}]`, item);
     });
 
-  
-console.log(formData);
+
 
     let pass = md5(API_TOKEN);
     let credentials = `${API_AUTH}:${pass}`;
