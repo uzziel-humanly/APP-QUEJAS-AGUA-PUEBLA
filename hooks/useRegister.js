@@ -166,6 +166,8 @@ export function useRegister() {
                 data: formData,
               });
 
+              console.log(response);
+
               if (response.data.estatus === "ok") {
                 setLoading(false);
                 const data = [
@@ -285,7 +287,10 @@ export function useRegister() {
     setModalVisible(!modalVisible);
   };
 
-  return {onSubmit, handleCheckPassword, handleClickLogin,
+  return {
+    onSubmit,
+    handleCheckPassword,
+    handleClickLogin,
     loading,
     setLoading,
     handleConfirmPassword,

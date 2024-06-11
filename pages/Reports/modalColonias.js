@@ -29,11 +29,10 @@ export default function ModalColonias({
   modalVisibleC,
   setModalVisibleC,
   handleSelectColonia,
-  setValue,
+  setValue,selectedColonia,setSelectedColonia
 }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredColonias, setFilteredColonias] = useState([]);
-  const [selectedColonia, setSelectedColonia] = useState("");
   const [colonias, setColonias] = useState([]);
 
   useEffect(() => {
@@ -130,11 +129,6 @@ export default function ModalColonias({
                         </TouchableOpacity>
                       )}
                     />
-                    {selectedColonia ? (
-                      <Text style={styles.selectedColonia}>
-                        Colonia seleccionada: {selectedColonia}
-                      </Text>
-                    ) : null}
                   </View>
                 </View>
               </View>

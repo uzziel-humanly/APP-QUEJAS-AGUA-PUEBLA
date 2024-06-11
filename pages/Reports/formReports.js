@@ -36,6 +36,7 @@ import {
   ButtonDisabled,
   ButtonStatusAlta,
   ButtonSandy,
+  selectedColonia,setSelectedColonia
 } from "../../styles/resources/stylesButton";
 import { StatusBar } from "expo-status-bar";
 import ModalReports from "./modalColonias";
@@ -49,6 +50,7 @@ export default function FormReports() {
     modalVisibleC,
     setModalVisibleC,
     handleModalColonia,
+    selectedColonia,setSelectedColonia
   } = useReports();
 
   const [disabledButtons, setDisabledButtons] = useState({
@@ -636,6 +638,11 @@ export default function FormReports() {
               >
                 <Text style={styles.btnTxt}>Colonias</Text>
               </ButtonPrimary>
+              {selectedColonia ? (
+                      <Text style={styles.selectedColonia}>
+                        Colonia seleccionada: {selectedColonia}
+                      </Text>
+                    ) : null}
               <View style={styles.formAction}>
                 {modalVisibleC && (
                   <ModalColonias
@@ -643,6 +650,7 @@ export default function FormReports() {
                     setModalVisibleC={setModalVisibleC}
                     handleSelectColonia={handleSelectColonia}
                     setValue={setValue}
+                    setSelectedColonia={setSelectedColonia}
                   />
                 )}
               </View>
