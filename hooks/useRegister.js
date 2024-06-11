@@ -150,9 +150,9 @@ export function useRegister() {
               formData.append("celular", data.celular);
               formData.append("correo", data.correo);
               formData.append("id_tipo_cuenta", data.id_tipo_cuenta);
-              formData.append("fecha_registro", currentDate);
-              formData.append("hr_registro", currentTime);
-              formData.append("id_estatus_registro", "1");
+              //formData.append("fecha_registro", currentDate);
+              //formData.append("hr_registro", currentTime);
+              ///formData.append("id_estatus_registro", "1");
               formData.append("pass", passcyrpt);
               console.log(formData);
 
