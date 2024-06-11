@@ -139,6 +139,7 @@ export function useComplaints() {
     requests.splice(0, requests.length);
     selectedFiles.splice(0, selectedFiles.length);
     reset();
+    setProcessComplaint(false);
   };
 
   const getColony = async () => {
@@ -317,6 +318,7 @@ export function useComplaints() {
   );
 
   const onSubmit = async (data) => {
+    
 
     let _id_user = await AsyncStorage.getItem("id");
 
@@ -340,27 +342,65 @@ export function useComplaints() {
     formData.append("domicilio", data.domicilio);
     formData.append("id_colonia", data.colonia[0]);
     formData.append("id_clasificacion", 1);
-    formData.append("id_modulo", data.modulo.id);
-    formData.append("atendio", data.atendio);
-    formData.append("archivo", {
-      uri: data.file[0].uri,
-      type: data.file[0].mimeType,
-      name: data.file[0].name,
-    });
+
+    if (data.hasOwnProperty("modulo") == true) {
+
+      formData.append("id_modulo",  data.modulo  !== undefined ? data.modulo.id : "");
+    }else{
+      formData.append("id_modulo","");
+    }
+
+
+    formData.append("atendio", data.atendio !== undefined ? data.atendio : "");
+    if(data.hasOwnProperty("nis_extra"))
+      {
+       if(data.file !== undefined)
+        {
+          formData.append("archivo", {
+            uri: data.file[0].uri,
+            type: data.file[0].mimeType,
+            name: data.file[0].name,
+          });
+        }
+        else
+        {
+          formData.append("archivo", "[]");
+        }
+      }
+      else
+      {
+         formData.append("archivo", "[]");
+      }
     //formData.append('archivo', data.file[0]);
     formData.append("estado", "PUEBLA");
 
-    data.nis_extra.forEach((item, index) => {
-      formData.append(`nis_extra[${index}]`, item);
-    });
+      if(data.hasOwnProperty("nis_extra"))
+      {
+        if(data.nis_extra !== undefined)
+          {
+            data.nis_extra.forEach((item, index) => {
+              formData.append(`nis_extra[${index}]`, item);
+            });
+          }
+          else
+          {
+            formData.append('nis_extra', 0);
+          }
+        
+      }
+      // else
+      // {
+      //   let value = 0;
+      //   formData.append('nis_extra', value);
+      // }
+
+
 
     data.expresa.forEach((item, index) => {
       formData.append(`expresa[${index}]`, item);
     });
 
-    let _file = data.file;
 
-    console.log(formData);
 
     let pass = md5(API_TOKEN);
     let credentials = `${API_AUTH}:${pass}`;
@@ -376,7 +416,7 @@ export function useComplaints() {
         headers: { Authorization: auth, "Content-Type": "multipart/form-data" },
         data: formData,
       });
-      console.log(response.data.estatus);
+      console.log(response.data);
       if (response.data.estatus === "ok") {
         console.log(message);
 

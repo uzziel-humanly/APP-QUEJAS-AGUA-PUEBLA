@@ -15,6 +15,7 @@ export const useReports = () => {
   const [idReporte, setIdReporte] = useState("");
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
+  const [selectedColonia, setSelectedColonia] = useState("");
 
   //* Acciones registro *//
   const handleRegisterReport = async (data) => {
@@ -57,7 +58,6 @@ export const useReports = () => {
         }
 
         let body = JSON.stringify(completeData);
-        //console.log(body);
 
         let response = await axios({
           method: "POST",
@@ -135,5 +135,7 @@ export const useReports = () => {
     loading,
     setLoading,
     handleModalColonia,
+    selectedColonia,
+    setSelectedColonia,
   };
 };
