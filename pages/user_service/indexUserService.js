@@ -22,14 +22,18 @@ export default function IndexUserService() {
     };
 
     const filterServiceData = (data) => {
-        console.log('Que pasa por aqui???', data);
+        const serviceObj = data[0]; 
         let services = [];
         for (let i = 1; i <= 6; i++) {
-            if (data[`serv_${i}`] && !data[`serv_${i}`].includes("SIN SERVICIO") && data[`serv_${i}`] !== "N/A") {
+            const service = serviceObj[`serv_${i}`];
+            const startTime = serviceObj[`serv_${i}_hri`];
+            const endTime = serviceObj[`serv_${i}_hrf`];
+            console.log(`Service ${i}:`, service, startTime, endTime);
+            if (service && !service.includes("SIN SERVICIO") && service !== "N/A") {
                 services.push({
-                    day: data[`serv_${i}`],
-                    startTime: data[`serv_${i}_hri`],
-                    endTime: data[`serv_${i}_hrf`]
+                    day: service,
+                    startTime: startTime !== "N/A" ? startTime : null,
+                    endTime: endTime !== "N/A" ? endTime : null
                 });
             }
         }
@@ -59,7 +63,7 @@ export default function IndexUserService() {
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index.toString()}
                 numColumns={2}
-                columnWrapperStyle={styles.row} 
+                columnWrapperStyle={styles.row}
             />
             <Modal isVisible={isModalVisible}>
                 <View style={styles.modalContent}>

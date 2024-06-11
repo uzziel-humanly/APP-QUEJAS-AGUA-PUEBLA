@@ -57,10 +57,8 @@ export function useHome() {
                 headers: { Authorization: auth, "Content-Type": "application/json" },
                 data: _body,
             });
-
-            console.log(response);
     
-            return response;
+            return response.data.mensaje;
         } catch (error) {
             console.error(error);
             alert('Error en el servidor');
