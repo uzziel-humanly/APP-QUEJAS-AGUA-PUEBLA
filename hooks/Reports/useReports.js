@@ -58,7 +58,6 @@ export const useReports = () => {
         }
 
         let body = JSON.stringify(completeData);
-        //console.log(body);
 
         let response = await axios({
           method: "POST",
@@ -137,6 +136,6 @@ export const useReports = () => {
     setLoading,
     handleModalColonia,
     selectedColonia,
-    setSelectedColonia
+    setSelectedColonia,
   };
 };

@@ -36,7 +36,8 @@ import {
   ButtonDisabled,
   ButtonStatusAlta,
   ButtonSandy,
-  selectedColonia,setSelectedColonia
+  selectedColonia,
+  setSelectedColonia,
 } from "../../styles/resources/stylesButton";
 import { StatusBar } from "expo-status-bar";
 import ModalReports from "./modalColonias";
@@ -50,7 +51,8 @@ export default function FormReports() {
     modalVisibleC,
     setModalVisibleC,
     handleModalColonia,
-    selectedColonia,setSelectedColonia
+    selectedColonia,
+    setSelectedColonia,
   } = useReports();
 
   const [disabledButtons, setDisabledButtons] = useState({
@@ -77,6 +79,9 @@ export default function FormReports() {
     useCallback(() => {
       setDisabledButtons(false);
       setShowElement(false);
+      setSelectedColonia("");
+      setDisabledButtons((prev) => ({ ...prev, ["evidencia"]: false }));
+      setDisabledButtons((prev) => ({ ...prev, ["PICINCIDENCIA"]: false }));
     }, [])
   );
 
@@ -406,49 +411,50 @@ export default function FormReports() {
                   <Text style={styles.error}>Este campo es obligatorio.</Text>
                 )}
               </View>
-
-              <Text style={styles.inputLabel}>Fotografia de incidencia:</Text>
-              <View style={styles.btnFotos}>
-                <Controller
-                  control={control}
-                  name="evidencia"
-                  //rules={{ required: true }}
-                  render={({ field: { onChange, value } }) => (
-                    <View>
-                      <ButtonInfo
-                        //style={styles.button}
-                        style={[
-                          styles.button,
-                          disabledButtons.PICINCIDENCIA &&
-                            styles.buttonDisabled,
-                        ]}
-                        //onPress={takePhoto}
-                        onPress={() => takePhoto("PICINCIDENCIA")}
-                      >
-                        <AntDesign name="camera" size={24} color="#FFFFFF" />
-                        <Text style={styles.buttonText}>Toma una foto</Text>
-                      </ButtonInfo>
-                      {value && (
-                        <Text style={styles.selectedText}>{value.name}</Text>
-                      )}
-                    </View>
-                  )}
-                />
-                <ButtonInfo
-                  style={[
-                    styles.button,
-                    disabledButtons.evidencia && styles.buttonDisabled,
-                  ]}
-                  //style={styles.button}
-                  onPress={() => handleDocumentPicker(setValue, "evidencia")}
-                >
-                  <MaterialCommunityIcons
-                    name="file-image-outline"
-                    size={24}
-                    color="#FFFFFF"
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>Fotografia de incidencia:</Text>
+                <View style={styles.btnFotos}>
+                  <Controller
+                    control={control}
+                    name="evidencia"
+                    //rules={{ required: true }}
+                    render={({ field: { onChange, value } }) => (
+                      <View>
+                        <ButtonInfo
+                          //style={styles.button}
+                          style={[
+                            styles.button,
+                            disabledButtons.PICINCIDENCIA &&
+                              styles.buttonDisabled,
+                          ]}
+                          //onPress={takePhoto}
+                          onPress={() => takePhoto("PICINCIDENCIA")}
+                        >
+                          <AntDesign name="camera" size={24} color="#FFFFFF" />
+                          <Text style={styles.buttonText}>Toma una foto</Text>
+                        </ButtonInfo>
+                        {value && (
+                          <Text style={styles.selectedText}>{value.name}</Text>
+                        )}
+                      </View>
+                    )}
                   />
-                  <Text style={styles.buttonText}>Adjunta imagen</Text>
-                </ButtonInfo>
+                  <ButtonInfo
+                    style={[
+                      styles.button,
+                      disabledButtons.evidencia && styles.buttonDisabled,
+                    ]}
+                    //style={styles.button}
+                    onPress={() => handleDocumentPicker(setValue, "evidencia")}
+                  >
+                    <MaterialCommunityIcons
+                      name="file-image-outline"
+                      size={24}
+                      color="#FFFFFF"
+                    />
+                    <Text style={styles.buttonText}>Adjunta imagen</Text>
+                  </ButtonInfo>
+                </View>
               </View>
               {/* {errors.evidencia && (
                 <Text style={styles.error}>La fotografia es obligatoria.</Text>
@@ -639,10 +645,10 @@ export default function FormReports() {
                 <Text style={styles.btnTxt}>Colonias</Text>
               </ButtonPrimary>
               {selectedColonia ? (
-                      <Text style={styles.selectedColonia}>
-                        Colonia seleccionada: {selectedColonia}
-                      </Text>
-                    ) : null}
+                <Text style={styles.selectedColonia}>
+                  Colonia seleccionada: {selectedColonia}
+                </Text>
+              ) : null}
               <View style={styles.formAction}>
                 {modalVisibleC && (
                   <ModalColonias
@@ -837,13 +843,13 @@ const styles = StyleSheet.create({
   inputContainer: {
     width: 300,
     alignItems: "center",
+    marginTop: 20,
   },
   inputLabel: {
     width: "100%",
     fontSize: 17,
     fontWeight: "600",
     color: "#222",
-    marginBottom: 8,
     alignSelf: "flex-start",
   },
   inputControl: {
@@ -854,7 +860,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     fontWeight: "500",
     color: "#222",
-    marginBottom: 16,
+
   },
   inputControlIncident: {
     width: "100%",
@@ -933,7 +939,6 @@ const styles = StyleSheet.create({
     height: 44,
     width: "115%",
     alignSelf: "center",
-    marginBottom: 20,
   },
   picker: {
     height: 50,
