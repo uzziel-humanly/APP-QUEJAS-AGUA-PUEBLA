@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState, useContext} from "react";
 import {
   NavigationContainer,
   useScrollToTop,
@@ -15,6 +15,7 @@ import {
   Text,
   AppRegistry,
   Button,
+  ActivityIndicator
 } from "react-native";
 import Home from "../pages/indexHome";
 import TransparenciaPagina from "../pages/indexTransparencia";
@@ -41,6 +42,7 @@ import { theme } from "../theme";
 import styled, { useTheme } from "styled-components/native";
 import { AntDesign } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -104,12 +106,31 @@ function MainStack() {
 }
 
 export default function StackNavigation() {
+
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+const [isLoading, setIsLoading] = useState(true);
+
+useEffect(() => {
+  const checkAuthentication = async () => {
+    const username = await AsyncStorage.getItem('username');
+    setIsAuthenticated(username);
+    setIsLoading(false);
+  };
+
+  checkAuthentication();
+}, []);
+
+if (isLoading) {
+   return <ActivityIndicator size="large" />;
+}
+
+
   const theme = useTheme(); 
 
   return (
     <ThemeProvider theme={theme}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={"IndexScreen"}>
+      <Stack.Navigator initialRouteName={isAuthenticated ? "IndexScreen" : "Login"}>
           <Stack.Screen
             name="Boarding"
             component={IndexBoarding}
@@ -128,7 +149,7 @@ export default function StackNavigation() {
           <Stack.Screen
             name="IndexScreen"
             component={MainStack}
-            options={{ headerShown: false }}
+            options={{ headerShown: false,gestureEnabled: false }}
           />
           <Stack.Screen
             name="Login"
