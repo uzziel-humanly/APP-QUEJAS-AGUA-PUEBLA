@@ -1,40 +1,53 @@
 import React from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, ActivityIndicator } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Table, Row } from "react-native-table-component";
 import { useComplaints } from "../../hooks/Complaints/useComplaints";
 import ModalDetailComplaint from "./modalDetailComplaint";
-import {Title1} from "../../styles/index/stylesHome";
-import styled, {useTheme} from "styled-components";
+import { Title1 } from "../../styles/index/stylesHome";
+import styled, { useTheme } from "styled-components";
 
 const getRowStyle = (status) => {
-
   const theme = useTheme();
   switch (status) {
     case "ALTA":
-      return { backgroundColor: theme.Colors.status.alta }; 
+      return { backgroundColor: theme.Colors.status.alta };
     case "TRAMITE":
-      return { backgroundColor: theme.Colors.status.tramite }; 
+      return { backgroundColor: theme.Colors.status.tramite };
     case "CONCLUIDO":
-      return { backgroundColor: theme.Colors.status.concluido }; 
+      return { backgroundColor: theme.Colors.status.concluido };
     case "Desconocido":
     default:
-      return { backgroundColor: "#808080" }; 
+      return { backgroundColor: "#808080" };
   }
 };
 
 export default function IndexStatusComplaints() {
-
   const theme = useTheme();
-  const { tableHead, tableData, viewDetailComplaint, modalComplaint, setModalComplaint, toggleModalComplaint, selectedComplaint,
-    loadingComplaints
-   } = useComplaints();
+  const {
+    tableHead,
+    tableData,
+    viewDetailComplaint,
+    modalComplaint,
+    setModalComplaint,
+    toggleModalComplaint,
+    selectedComplaint,
+    loadingComplaints,
+  } = useComplaints();
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <StatusBar style="auto" />
+        <StatusBar style="auto" />
         <View style={styles.container}>
           <Title1>Historial de quejas</Title1>
           <View style={styles.line} />
@@ -48,26 +61,35 @@ export default function IndexStatusComplaints() {
         </View>
 
         <View style={styles.container2}>
-         {loadingComplaints === true ? 
-        <ActivityIndicator size="large" />
-        :
-        <Table borderStyle={styles.tableBorder}>
-        <Row 
-            data={tableHead} 
-            style={[styles.head, {backgroundColor: theme.Colors.ui.primary}]} 
-            textStyle={styles.headerText} 
-          />
-          {tableData.map((rowData, index) => (
-            <TouchableOpacity key={index} onPress={() => viewDetailComplaint(index)}>
+          {loadingComplaints === true ? (
+            <ActivityIndicator size="large" />
+          ) : (
+            <Table borderStyle={styles.tableBorder}>
               <Row
-                data={rowData}
-                style={[styles.row, getRowStyle(rowData[1])]}
-                textStyle={styles.rowText}
+                data={tableHead}
+                style={[
+                  styles.head,
+                  {
+                    backgroundColor: theme.Colors.ui.primary,
+                    borderRadius: 10,
+                  },
+                ]}
+                textStyle={styles.headerText}
               />
-            </TouchableOpacity>
-          ))}
-        </Table> 
-        }
+              {tableData.map((rowData, index) => (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => viewDetailComplaint(index)}
+                >
+                  <Row
+                    data={rowData}
+                    style={[styles.row, getRowStyle(rowData[1])]}
+                    textStyle={styles.rowText}
+                  />
+                </TouchableOpacity>
+              ))}
+            </Table>
+          )}
         </View>
         {modalComplaint && (
           <ModalDetailComplaint
@@ -115,21 +137,16 @@ const styles = StyleSheet.create({
   },
   container2: { flex: 1, padding: 16, color: "#ffffff" },
   head: { height: 40, color: "white", marginBottom: 12 },
-  headerText: { color: "#fff", fontWeight: "bold" },
+  headerText: { color: "#fff", fontWeight: "bold", textAlign: "center" },
   row: {
-    height: 40,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 10,
-    marginBottom: 5,
-    borderRadius: 6
-    // Add margin between rows
+    paddingHorizontal:20,
+    height: 45,
+    marginBottom: 10,
+    borderRadius: 20,
   },
   rowText: {
+    textAlign: "center",
     color: "#fff", // White text
     fontSize: 13,
   },
-
 });
-

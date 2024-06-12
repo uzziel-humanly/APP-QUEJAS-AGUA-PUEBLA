@@ -43,6 +43,9 @@ import { StatusBar } from "expo-status-bar";
 import ModalReports from "./modalColonias";
 import ModalColonias from "./modalColonias";
 import { MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome6 } from "@expo/vector-icons";
+import MultiSelect from "react-native-multiple-select";
+import { Colors } from "../../theme/colors";
 
 export default function FormReports() {
   const {
@@ -147,9 +150,11 @@ export default function FormReports() {
   const [incidenciaFiltrada, setIncidenciaFiltrada] = useState([]);
 
   const [colonias, setColonias] = useState([]);
+  const [colony, setColony] = useState([]);
 
   useEffect(() => {
     getTipoReporte();
+    getColony();
     //getTipoIncidencia();
     //getCatalogoColonias();
   }, []);
@@ -307,8 +312,60 @@ export default function FormReports() {
     }
   };
 
+  const getColony = async () => {
+    try {
+      let pass = md5(API_TOKEN);
+      let credentials = `${API_AUTH}:${pass}`;
+      let encodedCredentials = btoa(credentials);
+      let auth = "Basic " + encodedCredentials;
+
+      let response = await axios({
+        method: "post",
+        url: `${API_URL}/api/getColonias`,
+        headers: { Authorization: auth, "Content-Type": "application/json" },
+      });
+
+      if (response.data.estatus === "ok") {
+        let _data = response.data.mensaje;
+        let _colony = [];
+
+        if (_data.length > 0) {
+          _data.map((_c, _i) => {
+            _colony.push({
+              id: _c.id,
+              name: _c.nombre,
+            });
+          });
+        }
+        setColony(_colony);
+      } else {
+        alert("Ocurrió un error en el servidor");
+      }
+    } catch (error) {
+      //console.error(error);
+      alert("Ocurrió un error en el servidor");
+    }
+  };
+
   const handleSelectColonia = async (setValue, id_colonia) => {
     setValue("id_colonia", id_colonia);
+  };
+
+  const [filteredColonies, setFilteredColonies] = useState(colony);
+
+  useEffect(() => {
+    setFilteredColonies(colony.slice(0, 5));
+  }, [colony]);
+
+  const handleSearch = (text) => {
+    const filteredData = colony.filter((item) =>
+      item.name.toLowerCase().includes(text.toLowerCase())
+    );
+    if (filteredData.length === 0) {
+      setFilteredColonies([{ id: "0", name: "No se encontró la colonia" }]);
+    } else {
+      setFilteredColonies(filteredData);
+    }
   };
 
   return (
@@ -461,14 +518,35 @@ export default function FormReports() {
               )} */}
 
               <View style={styles.inputContainer}>
-                <Text style={styles.inputLabel}>
-                  ¿Se encuentra en la ubicación del incidente?
+                <Text style={styles.inputLabel}>Ubicación:</Text>
+
+                <Text
+                  style={{
+                    textAlign: "justify",
+                    marginBottom: 10,
+                    fontWeight: "500",
+                    marginTop: 10,
+                  }}
+                >
+                  Para poder registrar una incidencia y garantizar un
+                  seguimiento preciso de su solicitud, es necesario que active
+                  las coordenadas de su dispositivo. Las coordenadas se
+                  capturarán en tiempo real, por lo que le pedimos que se
+                  asegure de estar en el lugar exacto de la incidencia al
+                  momento de realizar el registro.
                 </Text>
+
                 <Controller
                   control={control}
-                  //rules={{required: "Debe aceptar el contrato de adhesión",}}
+                  rules={{ required: "Debe agregar la ubicación" }}
                   render={({ field: { onChange, value } }) => (
                     <Switch
+                       trackColor={{false: Colors.minimalist.alto, true: Colors.pastel.french}}
+                      //trackColor={{ true: Colors.pastel.french }}
+                      thumbColor={
+                        onChange ? Colors.pastel.french : Colors.pastel.french
+                      }
+                      ios_backgroundColor={Colors.pastel.french}
                       value={value}
                       onValueChange={onChange}
                       onChange={getLocation}
@@ -485,7 +563,9 @@ export default function FormReports() {
               </View>
 
               <View style={styles.inputContainer}>
-                <Text style={styles.inputLabel}>Descripción del incidente</Text>
+                <Text style={styles.inputLabel}>
+                  Descripción del incidente:
+                </Text>
                 <Controller
                   control={control}
                   rules={{
@@ -512,7 +592,7 @@ export default function FormReports() {
               </View>
 
               <View style={styles.inputContainer}>
-                <Text style={styles.inputLabel}>Calle</Text>
+                <Text style={styles.inputLabel}>Calle:</Text>
                 <Controller
                   control={control}
                   rules={{
@@ -536,12 +616,12 @@ export default function FormReports() {
               </View>
 
               <View style={styles.inputContainer}>
-                <Text style={styles.inputLabel}>Entre calle 1</Text>
+                <Text style={styles.inputLabel}>Entre calle 1:</Text>
                 <Controller
                   control={control}
-                  // rules={{
-                  //   required: "La calle es obligatoria",
-                  // }}
+                  rules={{
+                    required: "Entre calle es obligatoria",
+                  }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
                       style={styles.inputControl}
@@ -562,12 +642,12 @@ export default function FormReports() {
               </View>
 
               <View style={styles.inputContainer}>
-                <Text style={styles.inputLabel}>Entre calle 2</Text>
+                <Text style={styles.inputLabel}>Entre calle 2:</Text>
                 <Controller
                   control={control}
-                  // rules={{
-                  //   required: "La calle es obligatoria",
-                  // }}
+                  rules={{
+                    required: "Entre calle es obligatoria",
+                  }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
                       style={styles.inputControl}
@@ -588,7 +668,7 @@ export default function FormReports() {
               </View>
 
               <View style={styles.inputContainer}>
-                <Text style={styles.inputLabel}>Número exterior</Text>
+                <Text style={styles.inputLabel}>Número exterior:</Text>
                 <Controller
                   control={control}
                   rules={{
@@ -612,7 +692,7 @@ export default function FormReports() {
               </View>
 
               <View style={styles.inputContainer}>
-                <Text style={styles.inputLabel}>Número interior</Text>
+                <Text style={styles.inputLabel}>Número interior:</Text>
                 <Controller
                   control={control}
                   // rules={{
@@ -634,30 +714,80 @@ export default function FormReports() {
                   <Text style={styles.error}>{errors.num_int.message}</Text>
                 )}
               </View>
-
-              <Text style={styles.inputLabel}>
-                Selecciona o busca tu colonia
-              </Text>
-              <ButtonPrimary
-                style={styles.btn}
-                onPress={() => handleModalColonia()}
-              >
-                <Text style={styles.btnTxt}>Colonias</Text>
-              </ButtonPrimary>
-              {selectedColonia ? (
-                <Text style={styles.selectedColonia}>
-                  Colonia seleccionada: {selectedColonia}
+              {/* <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>
+                  Selecciona o busca tu colonia:
                 </Text>
-              ) : null}
-              <View style={styles.formAction}>
-                {modalVisibleC && (
-                  <ModalColonias
-                    modalVisibleC={modalVisibleC}
-                    setModalVisibleC={setModalVisibleC}
-                    handleSelectColonia={handleSelectColonia}
-                    setValue={setValue}
-                    setSelectedColonia={setSelectedColonia}
-                  />
+                <ButtonPrimary
+                  style={styles.btn}
+                  onPress={() => handleModalColonia()}
+                >
+                  <Text style={styles.btnTxt}>
+                    <FontAwesome6 name="tree-city" size={24} color="white" />{" "}
+                    Colonias
+                  </Text>
+                </ButtonPrimary>
+                {selectedColonia ? (
+                  <Text style={styles.selectedColonia}>
+                    Colonia seleccionada: {selectedColonia}
+                  </Text>
+                ) : null}
+                <View style={styles.formAction}>
+                  {modalVisibleC && (
+                    <ModalColonias
+                      modalVisibleC={modalVisibleC}
+                      setModalVisibleC={setModalVisibleC}
+                      handleSelectColonia={handleSelectColonia}
+                      setValue={setValue}
+                      setSelectedColonia={setSelectedColonia}
+                    />
+                  )}
+                </View>
+              </View> */}
+
+              <View style={{ marginTop: 20 }}>
+                <Text style={styles.inputLabel}>Colonia</Text>
+                <Controller
+                  control={control}
+                  name="colonia"
+                  rules={{ required: "Debes seleccionar la colonia." }}
+                  render={({ field: { onChange, value } }) => (
+                    <MultiSelect
+                      items={filteredColonies}
+                      uniqueKey="id"
+                      ref={(component) => {
+                        this.multiSelect = component;
+                      }}
+                      onSelectedItemsChange={(selectedItems) => {
+                        if (selectedItems.length > 1) {
+                          selectedItems = [
+                            selectedItems[selectedItems.length - 1],
+                          ];
+                        }
+                        onChange(selectedItems);
+                      }}
+                      selectedItems={value}
+                      single
+                      selectText="Selecciona tu colonia"
+                      searchInputPlaceholderText="Busca tu colonia..."
+                      onChangeInput={handleSearch}
+                      altFontFamily="ProximaNova-Light"
+                      tagRemoveIconColor="#fff"
+                      tagBorderColor="#000"
+                      tagContainerStyle={{ backgroundColor: "#000" }}
+                      tagTextColor="#fff"
+                      selectedItemTextColor="#CCC"
+                      selectedItemIconColor="#CCC"
+                      itemTextColor="#000"
+                      displayKey="name"
+                      searchInputStyle={{ color: "#CCC" }}
+                      submitButtonColor="#000"
+                      submitButtonText="Seleccionar colonia"
+                    />
+                  )}
+                />
+                {errors.colonia && (
+                  <Text style={styles.error}>{errors.colonia.message}</Text>
                 )}
               </View>
 
@@ -838,7 +968,7 @@ const styles = StyleSheet.create({
   form: {
     flex: 1,
     marginBottom: 24,
-    width: "80%",
+    width: "100%",
   },
   inputContainer: {
     width: 300,
@@ -860,7 +990,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     fontWeight: "500",
     color: "#222",
-
   },
   inputControlIncident: {
     width: "100%",

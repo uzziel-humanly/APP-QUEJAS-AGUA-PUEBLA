@@ -19,76 +19,99 @@ export const useReports = () => {
 
   //* Acciones registro *//
   const handleRegisterReport = async (data) => {
-    //console.log(data);
-    if (data.evidencia != undefined) {
-      let _id_user = await AsyncStorage.getItem("id");
-      try {
-        setLoading(true);
-        let pass = md5(API_TOKEN);
-        let credentials = `${API_AUTH}:${pass}`;
-        let encodedCredentials = btoa(credentials);
-        let auth = "Basic " + encodedCredentials;
+    if (data.hasOwnProperty("colonia") == true) {
+      if (data.evidencia != undefined) {
+        let _id_user = await AsyncStorage.getItem("id");
+        let _nis = await AsyncStorage.getItem("nis");
+        let _nis2 = JSON.parse(_nis);
+  
+        try {
+          setLoading(true);
+          let pass = md5(API_TOKEN);
+          let credentials = `${API_AUTH}:${pass}`;
+          let encodedCredentials = btoa(credentials);
+          let auth = "Basic " + encodedCredentials;
 
-        const currentDate = new Date().toISOString().split("T")[0];
-        var completeData = "";
+          const currentDate = new Date().toISOString().split("T")[0];
+          var completeData = "";
 
-        if (
-          data.hasOwnProperty("latitud") == false &&
-          data.hasOwnProperty("longitud") == false
-        ) {
-          const additionalData = {
-            id_usuario_app: _id_user,
-            fecha: currentDate,
-            nis: "3074856",
-            folio: "",
-            longitud: "",
-            latitud: "",
-          };
-          //Esa informacion extra la metemos dentro del json body
-          completeData = { ...data, ...additionalData };
-        } else {
-          const additionalData = {
-            id_usuario_app: _id_user,
-            fecha: currentDate,
-            nis: "3074856",
-            folio: "",
-          };
-          //Esa informacion extra la metemos dentro del json body
-          completeData = { ...data, ...additionalData };
-        }
+          if (
+            data.hasOwnProperty("latitud") == false &&
+            data.hasOwnProperty("longitud") == false
+          ) {
+            const additionalData = {
+              id_usuario_app: _id_user,
+              fecha: currentDate,
+              //nis: "3074856",
+              nis: _nis2[0].nis,
+              folio: "",
+              longitud: "",
+              latitud: "",
+              id_colonia: data.colonia[0],
+            };
+            //Esa informacion extra la metemos dentro del json body
+            completeData = { ...data, ...additionalData };
+          } else {
+            const additionalData = {
+              id_usuario_app: _id_user,
+              fecha: currentDate,
+              //nis: "3074856",
+              nis: _nis2[0].nis,
+              folio: "",
+              id_colonia: data.colonia[0],
+            };
+            //Esa informacion extra la metemos dentro del json body
+            completeData = { ...data, ...additionalData };
+          }
 
-        let body = JSON.stringify(completeData);
+          let body = JSON.stringify(completeData);
 
-        let response = await axios({
-          method: "POST",
-          url: `${API_URL}/api/setReporte`,
-          headers: { Authorization: auth, "Content-Type": "application/json" },
-          data: body,
-        });
+          //console.log(body);
 
-        if (response.data.estatus === "ok") {
+          let response = await axios({
+            method: "POST",
+            url: `${API_URL}/api/setReporte`,
+            headers: {
+              Authorization: auth,
+              "Content-Type": "application/json",
+            },
+            data: body,
+          });
+
+          if (response.data.estatus === "ok") {
+            setLoading(false);
+            const data = [
+              { status: "Exito", msj: "Los datos se han registrado" },
+            ];
+            showAlertReport(data);
+          } else {
+            setLoading(false);
+            const data = [
+              {
+                status: "Error",
+                msj: "Ha ocurrido un error al intentar registrar los datos",
+              },
+            ];
+            showAlertReport(data);
+          }
+        } catch (error) {
           setLoading(false);
-          const data = [
-            { status: "Exito", msj: "Los datos se han registrado" },
-          ];
-          showAlertReport(data);
-        } else {
-          setLoading(false);
+          //console.error(error);
           const data = [
             {
               status: "Error",
-              msj: "Ha ocurrido un error al intentar registrar los datos",
+              msj: "Ocurrio un error en el servidor",
             },
           ];
           showAlertReport(data);
         }
-      } catch (error) {
+      } else {
         setLoading(false);
         //console.error(error);
         const data = [
           {
             status: "Error",
-            msj: "Ocurrio un error en el servidor",
+            msj: "Debes adjuntar o tomar una fotografia",
           },
         ];
         showAlertReport(data);
@@ -99,7 +122,7 @@ export const useReports = () => {
       const data = [
         {
           status: "Error",
-          msj: "Debes adjuntar o tomar una fotografia",
+          msj: "Debes elegir una colonia",
         },
       ];
       showAlertReport(data);

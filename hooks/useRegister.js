@@ -154,7 +154,7 @@ export function useRegister() {
               //formData.append("hr_registro", currentTime);
               ///formData.append("id_estatus_registro", "1");
               formData.append("pass", passcyrpt);
-              console.log(formData);
+              //console.log(formData);
 
               let response = await axios({
                 method: "POST",
@@ -166,7 +166,7 @@ export function useRegister() {
                 data: formData,
               });
 
-              console.log(response);
+              //console.log(response);
 
               if (response.data.estatus === "ok") {
                 setLoading(false);

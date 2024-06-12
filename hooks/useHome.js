@@ -88,7 +88,7 @@ export function useHome() {
                 _welcomeMessage = `¡Buenas noches, ${_username}!`
             }
 
-            console.log(_username);
+
 
         setWelcomeMessage(_welcomeMessage);
 

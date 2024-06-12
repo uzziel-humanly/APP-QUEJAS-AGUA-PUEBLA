@@ -184,9 +184,9 @@ export const useLogin = () => {
           headers: { Authorization: auth, "Content-Type": "application/json" },
           data: _body[0],
         });
-        console.log(response);
+
         if (response.data.estatus === "ok") {
-          console.log(response);
+     
 
           navigation.navigate("New Password");
         } else {

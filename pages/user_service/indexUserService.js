@@ -28,7 +28,7 @@ export default function IndexUserService() {
             const service = serviceObj[`serv_${i}`];
             const startTime = serviceObj[`serv_${i}_hri`];
             const endTime = serviceObj[`serv_${i}_hrf`];
-            console.log(`Service ${i}:`, service, startTime, endTime);
+            //console.log(`Service ${i}:`, service, startTime, endTime);
             if (service && !service.includes("SIN SERVICIO") && service !== "N/A") {
                 services.push({
                     day: service,

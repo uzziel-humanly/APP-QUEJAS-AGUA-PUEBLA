@@ -6,7 +6,7 @@ import UserAvatar from 'react-native-user-avatar';
 import ModalChangePassword from "./modalChangePassword";// Asegúrate de importar el componente con el nombre correcto
 
 export default function IndexUserProfile() {
-    const { name, email, handleChangePassword, modalVisible, setModalVisible } = useUserProfile();
+    const { name, email, handleChangePassword, modalVisible, setModalVisible,handleCloseSesion } = useUserProfile();
 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
@@ -44,6 +44,10 @@ export default function IndexUserProfile() {
                         <View style={styles.formAction}>
                             <TouchableOpacity style={styles.btn} onPress={handleChangePassword}>
                                 <Text style={styles.btnTxt}>Cambiar contraseña</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity style={styles.btn} onPress={handleCloseSesion}>
+                                <Text style={styles.btnTxt}>Cerrar Sesión</Text>
                             </TouchableOpacity>
 
                             {modalVisible && (
@@ -107,12 +111,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     btn: {
+        height:45,
+        width:220,
         backgroundColor: '#000',
-        borderRadius: 8,
+        borderRadius: 20,
         paddingVertical: 12,
         paddingHorizontal: 24,
+        marginBottom:20
     },
     btnTxt: {
+        textAlign:"center",
         fontSize: 18,
         fontWeight: 'bold',
         color: '#fff',
