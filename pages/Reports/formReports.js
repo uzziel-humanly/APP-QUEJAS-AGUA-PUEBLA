@@ -541,7 +541,10 @@ export default function FormReports() {
                   rules={{ required: "Debe agregar la ubicación" }}
                   render={({ field: { onChange, value } }) => (
                     <Switch
-                       trackColor={{false: Colors.minimalist.alto, true: Colors.pastel.french}}
+                      trackColor={{
+                        false: Colors.minimalist.alto,
+                        true: Colors.pastel.french,
+                      }}
                       //trackColor={{ true: Colors.pastel.french }}
                       thumbColor={
                         onChange ? Colors.pastel.french : Colors.pastel.french
