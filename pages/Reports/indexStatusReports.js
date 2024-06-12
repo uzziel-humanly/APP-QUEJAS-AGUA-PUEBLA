@@ -21,7 +21,8 @@ import ModalReports from "./modalReports";
 import { useFocusEffect } from "@react-navigation/native";
 import { Title1, ButtonP } from "../../styles/index/stylesHome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { StatusBar } from 'expo-status-bar';
+import { StatusBar } from "expo-status-bar";
+import { FontAwesome5 } from '@expo/vector-icons';
 
 const getRandomColors = () => {
   const colorsList = [
@@ -138,17 +139,17 @@ export default function IndexStatusReports() {
 
   const tableData = reportes.map((item) => {
     const status = estatus.find((status) => status.id === item.estatus);
-    return [item.id, status ? status.estatus : "Desconocido"];
+    return [item.id, status ? status.estatus : "Desconocido",item.folio];
   });
 
-  //console.log(tableData);
+  console.log(tableData);
 
   //const tableData = reportes.map((item) => [item.id, item.tipo]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <StatusBar style="auto" />
+        <StatusBar style="auto" />
         <View style={styles.container}>
           <Title1>Historial de reportes</Title1>
           <View style={styles.line} />
@@ -165,75 +166,78 @@ export default function IndexStatusReports() {
           {loading ? (
             // Si loading es true, no se muestra nada
             <ActivityIndicator size="large" />
-          ) : (
-            !loading && (
-              <Table borderStyle={styles.tableBorder}>
-                <Row
-                  data={tableHead}
-                  style={styles.head}
-                  textStyle={styles.textRow}
-                />
+          ) : !loading && tableData != "" ? (
+            <Table borderStyle={styles.tableBorder}>
+              <Row
+                data={tableHead}
+                style={styles.head}
+                textStyle={styles.textRow}
+              />
 
-                {/* <Rows data={tableData} textStyle={{ textAlign: "center" }} /> */}
-                {tableData.map((reportes) => {
-                  let color;
+              {/* <Rows data={tableData} textStyle={{ textAlign: "center" }} /> */}
+              {tableData.map((reportes) => {
+                let color;
 
-                  if (reportes[1] === "ALTA") {
-                    color = "#1bbac8";
-                  } else if (reportes[1] === "TRAMITE") {
-                    color = "#020402";
-                  } else if (reportes[1] === "CONCLUIDO") {
-                    color = "#00bf63";
-                  }else if(reportes[1] === "Desconocido"){
-                    color = "#D1CCDC";
-                  }
+                if (reportes[1] === "ALTA") {
+                  color = "#1bbac8";
+                } else if (reportes[1] === "TRAMITE") {
+                  color = "#020402";
+                } else if (reportes[1] === "CONCLUIDO") {
+                  color = "#00bf63";
+                } else if (reportes[1] === "Desconocido") {
+                  color = "#D1CCDC";
+                }
 
-                  return (
-                    <TouchableOpacity
-                      onPress={() =>
-                        handleModalReport(reportes[0], reportes[1])
-                      }
+                return (
+                  <TouchableOpacity
+                    onPress={() => handleModalReport(reportes[0], reportes[1])}
+                  >
+                    <View
+                      //key={index}
+                      style={{
+                        width: 350,
+                        marginTop: 10,
+                        padding: 10,
+                        backgroundColor: color,
+                        borderRadius: 20,
+                      }}
+                      //colors={getRandomColors()}
                     >
                       <View
-                        //key={index}
                         style={{
-                          width: 350,
-                          marginTop: 10,
-                          padding: 10,
-                          backgroundColor: color,
-                          borderRadius: 20,
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "center",
                         }}
-                        //colors={getRandomColors()}
                       >
-                        <View
+                        <Text
                           style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            justifyContent: "center",
+                            alignSelf: "left",
+                            color: "white",
+                            fontWeight: "600",
+                            marginRight: 50,
                           }}
                         >
-                          <Text
-                            style={{
-                              alignSelf: "left",
-                              color: "white",
-                              fontWeight: "600",
-                              marginRight: 100,
-                            }}
-                          >
-                            FOL-SOAP{reportes[0]}
-                          </Text>
+                          {reportes[2]}
+                        </Text>
 
-                          <Text style={{ color: "white", fontWeight: "600" }}>
-                            {reportes[1]}
-                          </Text>
-                        </View>
+                        <Text style={{ color: "white", fontWeight: "600" }}>
+                          {reportes[1]}
+                        </Text>
                       </View>
-                    </TouchableOpacity>
-                  );
-                })}
-              </Table>
-            )
+                    </View>
+                  </TouchableOpacity>
+                );
+              })}
+            </Table>
+          ) : (
+            <View>
+              <Text style={{ color: "black", textAlign: "center" }}>
+                Ops, ¡Parece que no hay resultados!
+              </Text>
+            </View>
           )}
+
           {modalVisible && (
             <ModalReports
               modalVisible={modalVisible}
@@ -290,10 +294,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   container2: { flex: 1, padding: 16, color: "#ffffff" },
-  head: { height: 40, backgroundColor: "#000000", color: "#fff52w" },
+  head: { height: 40, backgroundColor: "#333333", color: "#fff52w",borderRadius:10 },
   text: { margin: 6 },
-  textRow: { 
-    textAlign: 'center', 
-    color: 'white' 
-  }
+  textRow: {
+    textAlign: "center",
+    color: "white",
+  },
 });

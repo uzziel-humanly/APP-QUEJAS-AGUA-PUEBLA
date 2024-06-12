@@ -256,7 +256,7 @@ export function useComplaints() {
     let _selectedFiles = [...selectedFiles];
     if (_selectedFiles.length < 1) {
       let result = await DocumentPicker.getDocumentAsync();
-      console.log(result);
+
 
       if (result.canceled === false) {
         result.assets.map((_item, _index) => {
@@ -274,7 +274,7 @@ export function useComplaints() {
   };
 
   const handleEmpty = () => {
-    console.log("Empty");
+    //console.log("Empty");
   };
 
   const handleClear = () => {
@@ -334,7 +334,7 @@ export function useComplaints() {
     formData.append("id_usuario_app", _id_user);
     formData.append("nis", data.nis.title);
     formData.append("fecha", dateComplaint);
-    formData.append("folio", "SOAPAP-Q-1");
+    //formData.append("folio", "SOAPAP-Q-1");
     formData.append("telefono", data.telefono);
     formData.append("sexo", data.sexo);
     formData.append("descripcion", data.descripcion);
@@ -416,9 +416,10 @@ export function useComplaints() {
         headers: { Authorization: auth, "Content-Type": "multipart/form-data" },
         data: formData,
       });
+
       console.log(response.data);
       if (response.data.estatus === "ok") {
-        console.log(message);
+   
 
         let message = response.data.mensaje;
         alert(message);
