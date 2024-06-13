@@ -748,60 +748,6 @@ export default function FormReports() {
                 </View>
               </View> */}
 
-              <View style={{ marginTop: 20 }}>
-                <Text style={styles.inputLabel}>Colonia</Text>
-                <Controller
-                  control={control}
-                  name="colonia"
-                  rules={{ required: "Debes seleccionar la colonia." }}
-                  render={({ field: { onChange, value } }) => (
-                    <MultiSelect
-                      items={filteredColonies}
-                      uniqueKey="id"
-                      ref={(component) => {
-                        this.multiSelect = component;
-                      }}
-                      onSelectedItemsChange={(selectedItems) => {
-                        if (selectedItems.length > 1) {
-                          selectedItems = [
-                            selectedItems[selectedItems.length - 1],
-                          ];
-                        }
-                        onChange(selectedItems);
-                      }}
-                      selectedItems={value}
-                      single
-                      selectText="Selecciona tu colonia"
-                      searchInputPlaceholderText="Busca tu colonia..."
-                      onChangeInput={handleSearch}
-                      altFontFamily="ProximaNova-Light"
-                      tagRemoveIconColor="#fff"
-                      tagBorderColor="#000"
-                      tagContainerStyle={{ backgroundColor: "#000" }}
-                      tagTextColor="#fff"
-                      selectedItemTextColor="#CCC"
-                      selectedItemIconColor="#CCC"
-                      itemTextColor="#000"
-                      displayKey="name"
-                      searchInputStyle={{ color: "#CCC" }}
-                      submitButtonColor="#000"
-                      submitButtonText="Seleccionar colonia"
-                      styleDropdownMenuSubsection={{
-                        borderRadius: 10,
-                        height: 50, 
-                        width: "150%",
-                        paddingLeft: 10,
-                        paddingRight: 10,
-                        marginTop:10
-                      }}
-                    />
-                  )}
-                />
-                {errors.colonia && (
-                  <Text style={styles.error}>{errors.colonia.message}</Text>
-                )}
-              </View>
-
               {/* <View style={styles.inputContainer}>
                 <Text style={styles.inputLabel}>Colonia:</Text>
                 <Controller
@@ -890,7 +836,72 @@ export default function FormReports() {
             !loading &&
             showElement &&
             Object.keys(errors).length === 0 && (
-              <View style={styles.formAction}>
+              <View>
+                <Text
+                  style={{
+                    width: "100%",
+                    fontSize: 17,
+                    fontWeight: "600",
+                    color: "#222",
+                    marginLeft: 25,
+                  }}
+                >
+                  Colonia
+                </Text>
+                <View style={{ width: 350 }}>
+                  <Controller
+                    control={control}
+                    name="colonia"
+                    rules={{ required: "Debes seleccionar la colonia." }}
+                    render={({ field: { onChange, value } }) => (
+                      <MultiSelect
+                        items={filteredColonies}
+                        uniqueKey="id"
+                        ref={(component) => {
+                          this.multiSelect = component;
+                        }}
+                        onSelectedItemsChange={(selectedItems) => {
+                          if (selectedItems.length > 1) {
+                            selectedItems = [
+                              selectedItems[selectedItems.length - 1],
+                            ];
+                          }
+                          onChange(selectedItems);
+                        }}
+                        selectedItems={value}
+                        single
+                        selectText="Selecciona tu colonia"
+                        searchInputPlaceholderText="Busca tu colonia..."
+                        onChangeInput={handleSearch}
+                        altFontFamily="ProximaNova-Light"
+                        tagRemoveIconColor="#fff"
+                        tagBorderColor="#000"
+                        tagContainerStyle={{ backgroundColor: "#000" }}
+                        tagTextColor="#fff"
+                        selectedItemTextColor="#CCC"
+                        selectedItemIconColor="#CCC"
+                        itemTextColor="#000"
+                        displayKey="name"
+                        searchInputStyle={{ color: "#CCC" }}
+                        submitButtonColor="#000"
+                        submitButtonText="Seleccionar colonia"
+                        styleDropdownMenuSubsection={{
+                          borderRadius: 10,
+                          height: 50,
+                          width: "150%",
+                          alignContent: "flex-start",
+                          paddingLeft: 10,
+                          paddingRight: 10,
+                          marginTop: 10,
+                        }}
+                      />
+                    )}
+                  />
+                  {errors.colonia && (
+                    <Text style={styles.error}>{errors.colonia.message}</Text>
+                  )}
+                </View>
+
                 <ButtonPrimary
                   style={styles.btn}
                   onPress={handleSubmit(handleRegisterReport)}
@@ -1048,18 +1059,16 @@ const styles = StyleSheet.create({
 
     //marginLeft: 10,
   },
-  formAction: {
-    marginVertical: 24,
-  },
   btn: {
     //backgroundColor: "#000",
     borderRadius: 8,
     borderWidth: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    marginTop: 50,
     paddingVertical: 8,
     paddingHorizontal: 20,
+    width: 120,
+    height: 45,
+    alignSelf: "center",
   },
   btnTxt: {
     fontSize: 18,
