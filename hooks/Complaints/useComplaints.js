@@ -284,6 +284,7 @@ export function useComplaints() {
 
   const handleEnd = () => {
     ref.current.readSignature();
+    console.log('Que pasa por aca?', );
     setScrollEnabled(true);
   };
 
@@ -292,7 +293,7 @@ export function useComplaints() {
   };
 
   const handleBegin = () => {
-    setScrollEnabled(false);
+    setScrollEnabled(true);
   };
 
   const handleAddRequest = () => {
@@ -423,6 +424,7 @@ export function useComplaints() {
 
         let message = response.data.mensaje;
         alert(message);
+        reset();
         handleClearForm();
         setProcessComplaint(false);
         setIsFormVisible(false);
@@ -435,6 +437,12 @@ export function useComplaints() {
   };
 
   //#REGION Complaints
+
+  useFocusEffect(
+    useCallback(() => {
+      handleGetComplaints();
+    }, [])
+  );
 
   const getEstatus = async () => {
     try {
@@ -595,5 +603,6 @@ export function useComplaints() {
     getNisAccount,
     telefonoError,
     modules,
+    setScrollEnabled
   };
 }

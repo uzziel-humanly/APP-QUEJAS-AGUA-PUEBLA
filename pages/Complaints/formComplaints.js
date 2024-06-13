@@ -63,6 +63,7 @@ export default function FormComplaints({ text, onOK }) {
     telefonoError,
     modules,
     processComplaint,
+    setScrollEnabled
   } = useComplaints();
 
   const theme = useTheme();
@@ -533,7 +534,7 @@ export default function FormComplaints({ text, onOK }) {
                       clearText="Limpiar"
                       confirmText="Guardar"
                       webStyle={webStyle}
-                      onBegin={handleBegin}
+                      onBegin={() => setScrollEnabled(false)}
                       onEnd={handleEnd}
                       autoClear={false}
                     />

@@ -78,7 +78,7 @@ export default function IndexUserService() {
                     ) : (
                         <Text style={styles.noServiceText}>No hay servicios disponibles</Text>
                     )}
-                    <Button title="Cerrar" onPress={() => setModalVisible(false)} />
+                    <Button color={theme.Colors.ui.primary} title="Cerrar" onPress={() => setModalVisible(false)} />
                 </View>
             </Modal>
         </View>

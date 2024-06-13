@@ -1,7 +1,11 @@
 import React from "react";
 import { Modal, Button, StyleSheet, View, Text } from "react-native";
+import { useTheme } from "styled-components";
 
 export default function ModalDetailComplaint({ modalVisible, toggleModalComplaint, selectedComplaint }) {
+
+
+  const theme = useTheme();
 
   return (
     <Modal
@@ -27,7 +31,7 @@ export default function ModalDetailComplaint({ modalVisible, toggleModalComplain
           ) : (
             <Text>No hay detalles disponibles</Text>
           )}
-          <Button title="Cerrar" onPress={toggleModalComplaint} />
+          <Button color={theme.Colors.ui.primary} title="Cerrar" onPress={toggleModalComplaint} />
         </View>
       </View>
     </Modal>
