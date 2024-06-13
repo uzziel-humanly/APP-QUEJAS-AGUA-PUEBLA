@@ -541,7 +541,10 @@ export default function FormReports() {
                   rules={{ required: "Debe agregar la ubicación" }}
                   render={({ field: { onChange, value } }) => (
                     <Switch
-                       trackColor={{false: Colors.minimalist.alto, true: Colors.pastel.french}}
+                      trackColor={{
+                        false: Colors.minimalist.alto,
+                        true: Colors.pastel.french,
+                      }}
                       //trackColor={{ true: Colors.pastel.french }}
                       thumbColor={
                         onChange ? Colors.pastel.french : Colors.pastel.french
@@ -783,6 +786,13 @@ export default function FormReports() {
                       searchInputStyle={{ color: "#CCC" }}
                       submitButtonColor="#000"
                       submitButtonText="Seleccionar colonia"
+                      styleDropdownMenuSubsection={{
+                        borderRadius: 10,
+                        height: 50, 
+                        width: "150%",
+                        paddingLeft: 10,
+                        paddingRight: 10,
+                      }}
                     />
                   )}
                 />

@@ -270,7 +270,9 @@ export function useRegister() {
   };
 
   const validaCelular = (celular) => {
-    if (celular.length >= 10 && celular.length <= 10) {
+    const esNumero = /^[0-9]+$/.test(celular);
+    if (celular.length === 10 && esNumero) {
+      //if (celular.length >= 10 && celular.length <= 10) {
       setCelularMatch(1);
       setMessageCelular("Telefono celular valido");
     } else {
