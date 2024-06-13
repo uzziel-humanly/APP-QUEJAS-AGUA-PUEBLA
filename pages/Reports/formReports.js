@@ -786,6 +786,13 @@ export default function FormReports() {
                       searchInputStyle={{ color: "#CCC" }}
                       submitButtonColor="#000"
                       submitButtonText="Seleccionar colonia"
+                      styleDropdownMenuSubsection={{
+                        borderRadius: 10,
+                        height: 50, 
+                        width: "150%",
+                        paddingLeft: 10,
+                        paddingRight: 10,
+                      }}
                     />
                   )}
                 />

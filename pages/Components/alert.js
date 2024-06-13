@@ -9,9 +9,9 @@ export const AlertPrincipal = () => {
     if (data[0].status == "Exito") {
       Alert.alert(data[0].status, data[0].msj, [
         {
-          text: "Cancelar",
+          text: "Cerrar",
           onPress: () => navigation.navigate("BoardingScreen"),
-          style: "cancel",
+          //style: "cancel",
         },
         { text: "OK", onPress: () => navigation.navigate("BoardingScreen") },
       ]);
@@ -51,9 +51,9 @@ export const AlertPrincipal = () => {
     if (data[0].status == "Exito") {
       Alert.alert(data[0].status, data[0].msj, [
         {
-          text: "Cancelar",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
+          text: "Cerrar",
+          onPress: () => navigation.navigate("Regresar a reportes"),
+          //style: "cancel",
         },
         {
           text: "OK",

@@ -142,7 +142,7 @@ export default function IndexStatusReports() {
     return [item.id, status ? status.estatus : "Desconocido",item.folio];
   });
 
-  console.log(tableData);
+  //console.log(tableData);
 
   //const tableData = reportes.map((item) => [item.id, item.tipo]);
 

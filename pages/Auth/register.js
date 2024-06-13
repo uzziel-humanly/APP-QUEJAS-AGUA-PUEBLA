@@ -12,7 +12,7 @@ import {
   Switch,
   KeyboardAvoidingView,
   Platform,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import { useRegister } from "../../hooks/useRegister";
 import { useForm, Controller } from "react-hook-form";
@@ -50,7 +50,7 @@ import {
   TitleGray,
 } from "../../styles/resources/styleTitles";
 import { Colors } from "../../theme/colors";
-import { StatusBar } from 'expo-status-bar';
+import { StatusBar } from "expo-status-bar";
 
 export default function Register() {
   const [tipoCuenta, setTipoCuenta] = useState([]);
@@ -73,46 +73,13 @@ export default function Register() {
         setTipoCuenta(_data);
       } else {
         //console.error("Error en la respuesta de la API");
-        alert("Ocurrió un error en el servidor");
+        alert("Ocurrió un error al obtener los datos");
       }
     } catch (error) {
       //console.error(error);
       alert("Ocurrió un error en el servidor");
     }
   };
-
-  // useEffect(() => {
-  //   getTipoCuenta();
-  // }, []);
-  // const [pdfUri, setPdfUri] = useState(null);
-
-  // useEffect(() => {
-  //   const loadPdf = async () => {
-  //     try {
-  //       // Cargar el archivo PDF desde assets
-  //       const asset = Asset.fromModule(require("../../assets/banner.png"));
-  //       await asset.downloadAsync();
-  //       // Obtener la URI del archivo descargado
-  //       const fileUri = `${FileSystem.documentDirectory}banner.png`;
-
-  //       console.log(fileUri);
-  //       // Copiar el archivo a un directorio accesible
-  //       await FileSystem.copyAsync({
-  //         from: asset.localUri,
-  //         to: fileUri,
-  //       });
-
-  //       setPdfUri(fileUri);
-  //     } catch (error) {
-  //       console.error("Error loading PDF:", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   loadPdf();
-  // }, []);
-
   //Boton para guardar el formulario
   const {
     onSubmit,
@@ -274,7 +241,7 @@ export default function Register() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <StatusBar style="auto" />
+        <StatusBar style="auto" />
         <View style={styles.safeArea}>
           <View style={styles.container}>
             <View style={styles.header}>
@@ -549,7 +516,7 @@ export default function Register() {
                   render={({ field: { onChange, value } }) => (
                     <View style={styles.pickerContainer}>
                       <Picker
-                        onPress={getTipoCuenta()}
+                        onPress={() => getTipoCuenta()}
                         selectedValue={value}
                         style={styles.picker}
                         onValueChange={(itemValue) => {
