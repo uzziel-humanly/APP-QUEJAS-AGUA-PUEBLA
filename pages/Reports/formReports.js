@@ -792,6 +792,7 @@ export default function FormReports() {
                         width: "150%",
                         paddingLeft: 10,
                         paddingRight: 10,
+                        marginTop:10
                       }}
                     />
                   )}
