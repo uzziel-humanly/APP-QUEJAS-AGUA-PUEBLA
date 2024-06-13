@@ -285,7 +285,6 @@ export function useComplaints() {
 
   const handleEnd = () => {
     ref.current.readSignature();
-    console.log('Que pasa por aca?', );
     setScrollEnabled(true);
   };
 
@@ -294,7 +293,7 @@ export function useComplaints() {
   };
 
   const handleBegin = () => {
-    setScrollEnabled(true);
+    setScrollEnabled(false);
   };
 
   const handleAddRequest = () => {
@@ -419,12 +418,16 @@ export function useComplaints() {
         data: formData,
       });
 
-      console.log(response.data);
+      
       if (response.data.estatus === "ok") {
    
 
         let message = response.data.mensaje;
-        alert(message);
+        let folio = response.data.folio;
+
+        let messageComplaint = message + '\n' + 'Su número de folio es: ' + folio;
+
+        alert(messageComplaint);
         reset();
         handleClearForm();
         setProcessComplaint(false);
