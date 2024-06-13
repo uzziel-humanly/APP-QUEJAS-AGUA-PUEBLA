@@ -116,6 +116,7 @@ export function useComplaints() {
 
   useFocusEffect(
     useCallback(() => {
+      setScrollEnabled(true);
       setIsFormVisible(false);
       return () => {
         handleClearForm();
