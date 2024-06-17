@@ -351,6 +351,8 @@ export function useComplaints() {
       formData.append("id_modulo","");
     }
 
+    console.log(formData);
+
 
     formData.append("atendio", data.atendio !== undefined ? data.atendio : "");
     if(data.hasOwnProperty("nis_extra"))
@@ -513,7 +515,7 @@ export function useComplaints() {
         headers: { Authorization: auth, "Content-Type": "application/json" },
         data: _body[0],
       });
-      console.log(response.data.estatus);
+      console.log(response.data.mensaje);
 
       if (response.data.estatus === "ok") {
         setLoadingComplaints(false);
