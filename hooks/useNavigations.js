@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useContext} from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   NavigationContainer,
   useScrollToTop,
@@ -15,7 +15,7 @@ import {
   Text,
   AppRegistry,
   Button,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import Home from "../pages/indexHome";
 import TransparenciaPagina from "../pages/indexTransparencia";
@@ -40,30 +40,34 @@ import IndexBoardingComplaints from "../pages/Complaints/indexBoardingComplaints
 import { ThemeProvider } from "styled-components/native";
 import { theme } from "../theme";
 import styled, { useTheme } from "styled-components/native";
-import { AntDesign } from '@expo/vector-icons';
-import { Octicons } from '@expo/vector-icons';
+import { AntDesign } from "@expo/vector-icons";
+import { Octicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ExtraNis from "../pages/ExtraNis/indexExtraNis";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 const colorSideMenu = theme.Colors.bandw.gray;
 
-
 const MenuButtonItem = ({ text, onPress, iconName }) => {
   return (
     <TouchableOpacity style={styles.buttonContainer} onPress={onPress}>
-      <Text style={{color:"white"}}><AntDesign name={iconName} size={24} color="white" /> {text}</Text>
+      <Text style={{ color: "white" }}>
+        <AntDesign name={iconName} size={24} color="white" /> {text}
+      </Text>
     </TouchableOpacity>
   );
 };
 
 const MenuItems = ({ navigation }) => {
-  const theme = useTheme(); 
+  const theme = useTheme();
 
   return (
     <DrawerContentScrollView style={styles.container}>
-      <Text style={[styles.title, {color: theme.Colors.ui.primary}]}>Menú</Text>
+      <Text style={[styles.title, { color: theme.Colors.ui.primary }]}>
+        Menú
+      </Text>
       <MenuButtonItem
         text={"Inicio"}
         onPress={() => navigation.navigate("Inicio")}
@@ -79,12 +83,17 @@ const MenuItems = ({ navigation }) => {
         onPress={() => navigation.navigate("Reportes")}
         iconName="carryout"
       />
+      <MenuButtonItem
+        text={"NIS Extra"}
+        onPress={() => navigation.navigate("NIS")}
+        iconName="plus"
+      />
     </DrawerContentScrollView>
   );
 };
 
 function MainStack() {
-  const theme = useTheme(); 
+  const theme = useTheme();
   return (
     <ThemeProvider theme={theme}>
       <Drawer.Navigator
@@ -92,7 +101,7 @@ function MainStack() {
         drawerContent={(props) => <MenuItems {...props} />}
         screenOptions={({ navigation }) => ({
           headerStyle: {
-            backgroundColor: theme.Colors.ui.primary, 
+            backgroundColor: theme.Colors.ui.primary,
           },
           headerTintColor: "#fff",
         })}
@@ -100,37 +109,38 @@ function MainStack() {
         <Drawer.Screen name="Inicio" component={Home} />
         <Drawer.Screen name="Quejas" component={Complaints} />
         <Drawer.Screen name="Reportes" component={Reports} />
+        <Drawer.Screen name="NIS" component={ExtraNis} />
       </Drawer.Navigator>
     </ThemeProvider>
   );
 }
 
 export default function StackNavigation() {
-
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
-useEffect(() => {
-  const checkAuthentication = async () => {
-    const username = await AsyncStorage.getItem('username');
-    setIsAuthenticated(username);
-    setIsLoading(false);
-  };
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      const username = await AsyncStorage.getItem("username");
+      setIsAuthenticated(username);
+      setIsLoading(false);
+    };
 
-  checkAuthentication();
-}, []);
+    checkAuthentication();
+  }, []);
 
-if (isLoading) {
-   return <ActivityIndicator size="large" />;
-}
+  if (isLoading) {
+    return <ActivityIndicator size="large" />;
+  }
 
-
-  const theme = useTheme(); 
+  const theme = useTheme();
 
   return (
     <ThemeProvider theme={theme}>
       <NavigationContainer>
-      <Stack.Navigator initialRouteName={isAuthenticated ? "IndexScreen" : "Login"}>
+        <Stack.Navigator
+          initialRouteName={isAuthenticated ? "IndexScreen" : "Login"}
+        >
           <Stack.Screen
             name="Boarding"
             component={IndexBoarding}
@@ -149,7 +159,7 @@ if (isLoading) {
           <Stack.Screen
             name="IndexScreen"
             component={MainStack}
-            options={{ headerShown: false,gestureEnabled: false }}
+            options={{ headerShown: false, gestureEnabled: false }}
           />
           <Stack.Screen
             name="Login"
@@ -216,6 +226,12 @@ if (isLoading) {
             component={IndexBoardingComplaints}
             options={{ headerShown: false }}
           />
+
+          <Stack.Screen
+            name="ExtraNis"
+            component={ExtraNis}
+            options={{ headerShown: false }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </ThemeProvider>
@@ -227,14 +243,14 @@ const styles = StyleSheet.create({
     minHeight: "100%",
   },
   title: {
-    textAlign:"center",
+    textAlign: "center",
     fontWeight: "bold",
     fontSize: 40,
     marginBottom: 20,
   },
   buttonContainer: {
-    marginLeft:10,
-    marginRight:10,
+    marginLeft: 10,
+    marginRight: 10,
     backgroundColor: colorSideMenu,
     marginBottom: 10,
     padding: 15,

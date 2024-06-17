@@ -36,6 +36,37 @@ export const AlertPrincipal = () => {
     }
   };
 
+  const showAlertRegisterNis = (data) => {
+    if (data[0].status == "Exito") {
+      Alert.alert(data[0].status, data[0].msj, [
+        {
+          text: "Cerrar",
+          onPress: () => navigation.navigate("ExtraNis"),
+          //style: "cancel",
+        },
+        { text: "OK", onPress: () => navigation.navigate("ExtraNis") },
+      ]);
+    } else if (data[0].status == "Advertencia") {
+      Alert.alert(data[0].status, data[0].msj, [
+        {
+          text: "Cancelar",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        { text: "OK", onPress: () => console.log("OK Pressed") },
+      ]);
+    } else if (data[0].status == "Error") {
+      Alert.alert(data[0].status, data[0].msj, [
+        {
+          text: "Cancelar",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        { text: "OK", onPress: () => console.log("OK Pressed") },
+      ]);
+    }
+  };
+
   const showAlertPasswordIncorrect = (data) => {
     Alert.alert(data[0].status, data[0].msj, [
       {
@@ -76,5 +107,6 @@ export const AlertPrincipal = () => {
     showAlertRegister,
     showAlertPasswordIncorrect,
     showAlertReport,
+    showAlertRegisterNis
   };
 };

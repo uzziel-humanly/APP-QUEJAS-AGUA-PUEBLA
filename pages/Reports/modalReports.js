@@ -12,10 +12,12 @@ import {
   ScrollView,
   ActivityIndicator,
   Image,
+  Animated,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useReports } from "../../hooks/Reports/useReports";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { API_URL, API_TOKEN, API_AUTH } from "@env";
 import md5 from "js-md5";
@@ -33,6 +35,18 @@ export default function ModalReports({
   useEffect(() => {
     getReportesInfo();
   }, []);
+
+  const [zoomed, setZoomed] = useState(false);
+  const scale = useRef(new Animated.Value(1)).current;
+
+  const handleTap = () => {
+    Animated.timing(scale, {
+      toValue: zoomed ? 1 : 2,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+    setZoomed(!zoomed);
+  };
 
   const getReportesInfo = async () => {
     let _id_user = await AsyncStorage.getItem("id");
@@ -108,12 +122,20 @@ export default function ModalReports({
                         <Text>Fecha: {dataFiltrada.fecha}</Text>
                         <Text>Estatus: {status}</Text>
                         <Text style={{ marginBottom: 10 }}>Evidencia:</Text>
-                        <Image
-                          source={{
-                            uri: `${dataFiltrada.evidencia}`,
-                          }}
-                          style={{ alignSelf:"center",width: 200, height: 200 }}
-                        />
+                        <TouchableWithoutFeedback onPress={handleTap}>
+                          <Animated.View style={{ transform: [{ scale }] }}>
+                            <Image
+                              source={{
+                                uri: `${dataFiltrada.evidencia}`,
+                              }}
+                              style={{
+                                alignSelf: "center",
+                                width: 200,
+                                height: 200,
+                              }}
+                            />
+                          </Animated.View>
+                        </TouchableWithoutFeedback>
                       </View>
                     ) : (
                       // Si loading es false pero dataFiltrada está vacío, mostrar el mensaje de error
@@ -122,12 +144,14 @@ export default function ModalReports({
                   </View>
 
                   <View>
-                    <Pressable
-                      style={[styles.button, styles.buttonClose]}
-                      onPress={() => setModalVisible(false)}
-                    >
-                      <Text style={styles.textStyle}>Cerrar</Text>
-                    </Pressable>
+                    {!zoomed && (
+                      <Pressable
+                        style={[styles.button, styles.buttonClose]}
+                        onPress={() => setModalVisible(false)}
+                      >
+                        <Text style={styles.textStyle}>Cerrar</Text>
+                      </Pressable>
+                    )}
                   </View>
                 </View>
               </View>
@@ -178,7 +202,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   buttonClose: {
-    backgroundColor: "grey"
+    backgroundColor: "grey",
   },
   buttonConfirm: {
     backgroundColor: "black",
