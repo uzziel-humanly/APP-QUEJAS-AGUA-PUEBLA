@@ -1,5 +1,6 @@
 import { React, useEffect } from "react";
 import {
+  Linking,
   Text,
   View,
   Image,
@@ -23,9 +24,9 @@ import * as ImagePicker from "expo-image-picker";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
-// import * as FileSystem from "expo-file-system";
-// import { Asset } from "expo-asset";
-// import { WebView } from "react-native-webview";
+import * as FileSystem from "expo-file-system";
+import { Asset } from "expo-asset";
+import { WebView } from "react-native-webview";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Feather } from "@expo/vector-icons";
 import ModalDocuments from "./modalDocuments";
@@ -80,6 +81,39 @@ export default function Register() {
       alert("Ocurrió un error en el servidor");
     }
   };
+
+  const handleOpenPdf = async () => {
+    try {
+      // Cargar el archivo PDF desde assets
+      const asset = Asset.fromModule(require("../../assets/ccaunidad1.pdf"));
+      await asset.downloadAsync();
+      // Obtener la URI del archivo descargado
+      const fileUri = `${FileSystem.documentDirectory}doc.pdf`;
+
+      //console.log(fileUri);
+      // Copiar el archivo a un directorio accesible
+      await FileSystem.copyAsync({
+        from: asset.localUri,
+        to: fileUri,
+      });
+
+          // Verificar si el dispositivo tiene una aplicación para abrir PDFs
+    const supported = await Linking.canOpenURL(pdfUri);
+    
+    if (supported) {
+      // Abrir la URL del PDF en una aplicación de visor de PDF
+      await Linking.openURL(fileUri);
+    } else {
+      alert(`No se puede abrir el PDF: ${pdfUri}`);
+    }
+
+      setPdfUri(fileUri);
+    } catch (error) {
+      //console.error("Error loading PDF:", error);
+    } finally {
+    }
+
+  };
   //Boton para guardar el formulario
   const {
     onSubmit,
@@ -98,6 +132,7 @@ export default function Register() {
     validaCelular,
     messageCelular,
     celularMatch,
+    tipoContrato,setTipoContrato
   } = useRegister();
 
   const [disabledButtons, setDisabledButtons] = useState({
@@ -516,7 +551,7 @@ export default function Register() {
                   render={({ field: { onChange, value } }) => (
                     <View style={styles.pickerContainer}>
                       <Picker
-                        onPress={() => getTipoCuenta()}
+                        onPress={getTipoCuenta()}
                         selectedValue={value}
                         style={styles.picker}
                         onValueChange={(itemValue) => {
@@ -768,7 +803,7 @@ export default function Register() {
                     //     "https://publuu.com/flip-book/4712/9016/page/4"
                     //   )
                     // }
-                    onPress={() => handleModalDocuments()}
+                    onPress={() => handleModalDocuments("terminos")}
                   >
                     <Text
                       style={{
@@ -817,7 +852,7 @@ export default function Register() {
                     //     "https://publuu.com/flip-book/4712/9016/page/4"
                     //   )
                     // }
-                    onPress={() => handleModalDocuments()}
+                    onPress={() => handleModalDocuments("adhesion")}
                   >
                     <Text
                       style={{
@@ -947,6 +982,7 @@ export default function Register() {
           <ModalDocuments
             modalVisible={modalVisible}
             setModalVisible={setModalVisible}
+            tipoContrato={tipoContrato}
           />
         )}
 

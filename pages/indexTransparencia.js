@@ -123,7 +123,7 @@ export default function TransparenciaPagina() {
 
       var anio = new Date().getFullYear();
       const year = {
-        anio: 2023,
+        anio: anio,
       };
       let body = JSON.stringify(year);
 
@@ -138,6 +138,7 @@ export default function TransparenciaPagina() {
         if (response.data.mensaje === "Sin datos almacenados para mostrar.") {
           setMensaje("Lo sentimos, no se han encontrado resultados");
           setCardsShow(false);
+          setLoading(false);
           //No se efectua nada por el momento
         } else {
           let _data = response.data.mensaje[0];

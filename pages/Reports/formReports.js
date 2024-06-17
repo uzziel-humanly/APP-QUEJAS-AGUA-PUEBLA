@@ -101,7 +101,7 @@ export default function FormReports() {
         mediaType: "photo",
         allowsEditing: true,
         //aspect:[4,3],
-        quality: 0.1,
+        quality: 0.8,
       });
 
       if (option == "PICINCIDENCIA") {
@@ -834,8 +834,7 @@ export default function FormReports() {
             <ActivityIndicator size="large" />
           ) : (
             !loading &&
-            showElement &&
-            Object.keys(errors).length === 0 && (
+            showElement &&(
               <View>
                 <Text
                   style={{
@@ -892,7 +891,7 @@ export default function FormReports() {
                           alignContent: "flex-start",
                           paddingLeft: 10,
                           paddingRight: 10,
-                          marginTop: 10,
+                          marginTop: 11,
                         }}
                       />
                     )}

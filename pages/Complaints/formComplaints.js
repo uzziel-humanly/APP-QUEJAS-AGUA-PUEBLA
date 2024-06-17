@@ -534,7 +534,7 @@ export default function FormComplaints({ text, onOK }) {
                       clearText="Limpiar"
                       confirmText="Guardar"
                       webStyle={webStyle}
-                      onBegin={() => setScrollEnabled(false)}
+                      onBegin={handleBegin}
                       onEnd={handleEnd}
                       autoClear={false}
                     />

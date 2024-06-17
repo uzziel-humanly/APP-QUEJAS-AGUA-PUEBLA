@@ -285,7 +285,6 @@ export function useComplaints() {
 
   const handleEnd = () => {
     ref.current.readSignature();
-    console.log('Que pasa por aca?', );
     setScrollEnabled(true);
   };
 
@@ -294,7 +293,7 @@ export function useComplaints() {
   };
 
   const handleBegin = () => {
-    setScrollEnabled(true);
+    setScrollEnabled(false);
   };
 
   const handleAddRequest = () => {
@@ -351,6 +350,8 @@ export function useComplaints() {
     }else{
       formData.append("id_modulo","");
     }
+
+    console.log(formData);
 
 
     formData.append("atendio", data.atendio !== undefined ? data.atendio : "");
@@ -419,12 +420,16 @@ export function useComplaints() {
         data: formData,
       });
 
-      console.log(response.data);
+      
       if (response.data.estatus === "ok") {
    
 
         let message = response.data.mensaje;
-        alert(message);
+        let folio = response.data.folio;
+
+        let messageComplaint = message + '\n' + 'Su número de folio es: ' + folio;
+
+        alert(messageComplaint);
         reset();
         handleClearForm();
         setProcessComplaint(false);
@@ -510,7 +515,7 @@ export function useComplaints() {
         headers: { Authorization: auth, "Content-Type": "application/json" },
         data: _body[0],
       });
-      console.log(response.data.estatus);
+      console.log(response.data.mensaje);
 
       if (response.data.estatus === "ok") {
         setLoadingComplaints(false);

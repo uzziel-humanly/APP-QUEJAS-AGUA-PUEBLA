@@ -285,7 +285,10 @@ export function useRegister() {
     setNewPassword(Text);
   };
 
-  const handleModalDocuments = () => {
+  const [tipoContrato, setTipoContrato] = useState("");
+
+  const handleModalDocuments = (tipo) => {
+    setTipoContrato(tipo);
     setModalVisible(!modalVisible);
   };
 
@@ -309,5 +312,6 @@ export function useRegister() {
     celularMatch,
     validaCelular,
     messageCelular,
+    tipoContrato,setTipoContrato
   };
 }
