@@ -47,6 +47,8 @@ export function useComplaints() {
 
   const [selectedFiles, setSelectedFiles] = useState([]);
 
+  const [typesComplaint, setTypesComplaint] = useState([]);
+
   const ref = useRef();
 
   const webStyle = `
@@ -141,7 +143,42 @@ export function useComplaints() {
     selectedFiles.splice(0, selectedFiles.length);
     reset();
     setProcessComplaint(false);
-  };
+  }
+
+  const getTypeComplaint = async () => {
+    try {
+      let pass = md5(API_TOKEN);
+      let credentials = `${API_AUTH}:${pass}`;
+      let encodedCredentials = btoa(credentials);
+      let auth = "Basic " + encodedCredentials;
+
+      let response = await axios({
+        method: "post",
+        url: `${API_URL}/api/TipoQueja`,
+        headers: { Authorization: auth, "Content-Type": "application/json" },
+      });
+
+      if (response.data.estatus === "ok") {
+        let _data = response.data.mensaje;
+        let _typesComplaint = [];
+
+        if (_data.length > 0) {
+          _data.map((_t, _i) => {
+            _typesComplaint.push({
+              id: _t.id,
+              title: _t.modulo,
+            });
+          });
+        }
+        setTypesComplaint(_typesComplaint);
+      } else {
+        alert("Ocurrió un error en el servidor");
+      }
+    } catch (error) {
+      //console.error(error);
+      alert("Ocurrió un error en el servidor");
+    }
+  }
 
   const getColony = async () => {
     try {
@@ -244,6 +281,7 @@ export function useComplaints() {
   };
 
   useEffect(() => {
+    getTypeComplaint();
     getModules();
     getNisAccount();
     getColony();
@@ -343,6 +381,7 @@ export function useComplaints() {
     formData.append("domicilio", data.domicilio);
     formData.append("id_colonia", data.colonia[0]);
     formData.append("id_clasificacion", 1);
+    formData.append("tipo_queja", data.tipo.id);
 
     if (data.hasOwnProperty("modulo") == true) {
 
@@ -351,11 +390,10 @@ export function useComplaints() {
       formData.append("id_modulo","");
     }
 
-    console.log(formData);
-
 
     formData.append("atendio", data.atendio !== undefined ? data.atendio : "");
-    if(data.hasOwnProperty("nis_extra"))
+
+    if(data.hasOwnProperty("archivo"))
       {
        if(data.file !== undefined)
         {
@@ -480,17 +518,17 @@ export function useComplaints() {
       alert("Ocurrió un error en el servidor");
       throw error;
     }
-  };
+  }
 
   const viewDetailComplaint = (index) => {
     setSelectedComplaint(complaints[index]);
     setModalComplaint(true);
-  };
+  }
 
   const toggleModalComplaint = () => {
     setModalComplaint(false);
     setSelectedComplaint(null);
-  };
+  }
 
   const handleGetComplaints = async () => {
     try {
@@ -609,6 +647,7 @@ export function useComplaints() {
     getNisAccount,
     telefonoError,
     modules,
-    setScrollEnabled
+    setScrollEnabled,
+    typesComplaint
   };
 }
