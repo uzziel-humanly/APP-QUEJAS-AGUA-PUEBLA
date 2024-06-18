@@ -154,13 +154,17 @@ export function useComplaints() {
 
       let response = await axios({
         method: "post",
-        url: `${API_URL}/api/TipoQueja`,
+        url: `${API_URL}/api/getTipoQueja`,
         headers: { Authorization: auth, "Content-Type": "application/json" },
       });
 
+
+      console.log('Pasas por aqui ', response.data);
       if (response.data.estatus === "ok") {
         let _data = response.data.mensaje;
         let _typesComplaint = [];
+
+        
 
         if (_data.length > 0) {
           _data.map((_t, _i) => {
@@ -553,7 +557,7 @@ export function useComplaints() {
         headers: { Authorization: auth, "Content-Type": "application/json" },
         data: _body[0],
       });
-      console.log(response.data.mensaje);
+      // console.log(response.data.mensaje);
 
       if (response.data.estatus === "ok") {
         setLoadingComplaints(false);
