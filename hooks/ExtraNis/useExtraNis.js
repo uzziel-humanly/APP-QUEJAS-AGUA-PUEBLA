@@ -124,7 +124,6 @@ export function useExtraNis() {
         //formData.append("nis", _nis2[0].nis);
         formData.append("correo", _email);
 
-
         let response = await axios({
           method: "POST",
           url: `${API_URL}/api/setRegistrarNis`,
@@ -141,6 +140,8 @@ export function useExtraNis() {
             { status: "Exito", msj: "Los datos se han registrado" },
           ];
           showAlertRegisterNis(data);
+          setShowElement(false);
+
         } else {
           setLoading(false);
           const data = [
@@ -191,6 +192,6 @@ export function useExtraNis() {
     tipoContrato,
     setTipoContrato,
     showElement,
-    setShowElement
+    setShowElement,
   };
 }

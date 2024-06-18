@@ -16,6 +16,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useRegister } from "../../hooks/useRegister";
+import * as Location from "expo-location";
 import { useForm, Controller } from "react-hook-form";
 import { Picker } from "@react-native-picker/picker";
 import { useState } from "react";
@@ -97,22 +98,21 @@ export default function Register() {
         to: fileUri,
       });
 
-          // Verificar si el dispositivo tiene una aplicación para abrir PDFs
-    const supported = await Linking.canOpenURL(pdfUri);
-    
-    if (supported) {
-      // Abrir la URL del PDF en una aplicación de visor de PDF
-      await Linking.openURL(fileUri);
-    } else {
-      alert(`No se puede abrir el PDF: ${pdfUri}`);
-    }
+      // Verificar si el dispositivo tiene una aplicación para abrir PDFs
+      const supported = await Linking.canOpenURL(pdfUri);
+
+      if (supported) {
+        // Abrir la URL del PDF en una aplicación de visor de PDF
+        await Linking.openURL(fileUri);
+      } else {
+        alert(`No se puede abrir el PDF: ${pdfUri}`);
+      }
 
       setPdfUri(fileUri);
     } catch (error) {
       //console.error("Error loading PDF:", error);
     } finally {
     }
-
   };
   //Boton para guardar el formulario
   const {
@@ -132,7 +132,8 @@ export default function Register() {
     validaCelular,
     messageCelular,
     celularMatch,
-    tipoContrato,setTipoContrato
+    tipoContrato,
+    setTipoContrato,
   } = useRegister();
 
   const [disabledButtons, setDisabledButtons] = useState({
@@ -201,7 +202,9 @@ export default function Register() {
         mediaType: "photo",
         allowsEditing: true,
         quality: 0.5,
+        exif: true,
       });
+      //console.log('EXIF Data:', JSON.stringify(exifData, null, 2));
 
       if (option == "PICINEFRONTAL") {
         setDisabledButtons((prev) => ({ ...prev, [option]: true }));
@@ -224,6 +227,31 @@ export default function Register() {
         setValue("banF5", "1");
         setDisabledButtons((prev) => ({ ...prev, ["CDOMIPDF"]: false }));
       } else if (option == "SELFIE") {
+        const exifData = result.assets[0].exif;
+        const [date, time] = exifData.DateTime.split(" ");
+
+        const formattedDate = date.replace(/:/g, '-');
+
+        //console.log('EXIF Data:', JSON.stringify(exifData, null, 2));
+
+        //console.log("fecha_selfie"+ date);
+        //console.log("hora_selfie"+ time);
+
+        setValue("fecha_selfie", formattedDate);
+        setValue("hora_selfie", time);
+
+        //Obtenemos las coordenadas
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          setErrorMsg("Permission to access location was denied");
+          return;
+        }
+        let location = await Location.getCurrentPositionAsync({});
+        console.log(location);
+        //Aqui agrego la longitud y latitud a la data
+        setValue("latitud", location.coords.latitude);
+        setValue("longitud", location.coords.longitude);
+
         setDisabledButtons((prev) => ({ ...prev, [option]: true }));
         setImage(result.assets.name);
         setValue("Archivo1", result.assets);

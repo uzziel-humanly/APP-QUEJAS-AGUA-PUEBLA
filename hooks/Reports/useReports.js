@@ -19,6 +19,7 @@ export const useReports = () => {
 
   //* Acciones registro *//
   const handleRegisterReport = async (data) => {
+  
     if (data.hasOwnProperty("colonia") == true) {
       if (data.evidencia != undefined) {
         let _id_user = await AsyncStorage.getItem("id");

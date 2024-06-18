@@ -41,10 +41,10 @@ export const AlertPrincipal = () => {
       Alert.alert(data[0].status, data[0].msj, [
         {
           text: "Cerrar",
-          onPress: () => navigation.navigate("ExtraNis"),
+          onPress: () => console.log("Cancel Pressed"),
           //style: "cancel",
         },
-        { text: "OK", onPress: () => navigation.navigate("ExtraNis") },
+        { text: "OK", onPress: () =>console.log("OK Pressed")  },
       ]);
     } else if (data[0].status == "Advertencia") {
       Alert.alert(data[0].status, data[0].msj, [
