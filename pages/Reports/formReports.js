@@ -358,6 +358,7 @@ export default function FormReports() {
   }, [colony]);
 
   const handleSearch = (text) => {
+  
     const filteredData = colony.filter((item) =>
       item.name.toLowerCase().includes(text.toLowerCase())
     );
@@ -830,77 +831,84 @@ export default function FormReports() {
             </View>
           )}
 
+          {showElement && (
+            <View>
+              <Text
+                style={{
+                  width: "100%",
+                  fontSize: 17,
+                  fontWeight: "600",
+                  color: "#222",
+                  marginLeft: 25,
+                }}
+              >
+                Colonia
+              </Text>
+              <View style={{ width: 350 }}>
+                <Controller
+                  control={control}
+                  name="colonia"
+                  rules={{ required: "Debes seleccionar la colonia." }}
+                  render={({ field: { onChange, value } }) => (
+                    <ScrollView>
+                    <MultiSelect
+                      items={filteredColonies}
+                      uniqueKey="id"
+                      ref={(component) => {
+                        this.multiSelect = component;
+                      }}
+                      onSelectedItemsChange={(selectedItems) => {
+                        if (selectedItems.length > 1) {
+                          selectedItems = [
+                            selectedItems[selectedItems.length - 1],
+                          ];
+                        }
+                        onChange(selectedItems);
+                      }}
+                      selectedItems={value}
+                      single
+                      selectText="Selecciona tu colonia"
+                      searchInputPlaceholderText="Busca tu colonia..."
+                      onChangeInput={handleSearch}
+                      altFontFamily="ProximaNova-Light"
+                      tagRemoveIconColor="#fff"
+                      tagBorderColor="#000"
+                      tagContainerStyle={{ backgroundColor: "#000" }}
+                      tagTextColor="#fff"
+                      selectedItemTextColor="#CCC"
+                      selectedItemIconColor="#CCC"
+                      itemTextColor="#000"
+                      displayKey="name"
+                      searchInputStyle={{ color: "#CCC" }}
+                      submitButtonColor="#000"
+                      submitButtonText="Seleccionar colonia"
+                      styleDropdownMenuSubsection={{
+                        borderRadius: 10,
+                        height: 50,
+                        width: "150%",
+                        alignContent: "flex-start",
+                        paddingLeft: 10,
+                        paddingRight: 10,
+                        marginTop: 11,
+                      }}
+                    />
+                    </ScrollView>
+                  )}
+                />
+                {errors.colonia && (
+                  <Text style={[styles.error,{ paddingLeft: 26}]}>{errors.colonia.message}</Text>
+                )}
+              </View>
+            </View>
+          )}
+
           {loading ? (
             <ActivityIndicator size="large" />
           ) : (
             !loading &&
-            showElement &&(
+            showElement &&
+            Object.keys(errors).length === 0 && (
               <View>
-                <Text
-                  style={{
-                    width: "100%",
-                    fontSize: 17,
-                    fontWeight: "600",
-                    color: "#222",
-                    marginLeft: 25,
-                  }}
-                >
-                  Colonia
-                </Text>
-                <View style={{ width: 350 }}>
-                  <Controller
-                    control={control}
-                    name="colonia"
-                    rules={{ required: "Debes seleccionar la colonia." }}
-                    render={({ field: { onChange, value } }) => (
-                      <MultiSelect
-                        items={filteredColonies}
-                        uniqueKey="id"
-                        ref={(component) => {
-                          this.multiSelect = component;
-                        }}
-                        onSelectedItemsChange={(selectedItems) => {
-                          if (selectedItems.length > 1) {
-                            selectedItems = [
-                              selectedItems[selectedItems.length - 1],
-                            ];
-                          }
-                          onChange(selectedItems);
-                        }}
-                        selectedItems={value}
-                        single
-                        selectText="Selecciona tu colonia"
-                        searchInputPlaceholderText="Busca tu colonia..."
-                        onChangeInput={handleSearch}
-                        altFontFamily="ProximaNova-Light"
-                        tagRemoveIconColor="#fff"
-                        tagBorderColor="#000"
-                        tagContainerStyle={{ backgroundColor: "#000" }}
-                        tagTextColor="#fff"
-                        selectedItemTextColor="#CCC"
-                        selectedItemIconColor="#CCC"
-                        itemTextColor="#000"
-                        displayKey="name"
-                        searchInputStyle={{ color: "#CCC" }}
-                        submitButtonColor="#000"
-                        submitButtonText="Seleccionar colonia"
-                        styleDropdownMenuSubsection={{
-                          borderRadius: 10,
-                          height: 50,
-                          width: "150%",
-                          alignContent: "flex-start",
-                          paddingLeft: 10,
-                          paddingRight: 10,
-                          marginTop: 11,
-                        }}
-                      />
-                    )}
-                  />
-                  {errors.colonia && (
-                    <Text style={styles.error}>{errors.colonia.message}</Text>
-                  )}
-                </View>
-
                 <ButtonPrimary
                   style={styles.btn}
                   onPress={handleSubmit(handleRegisterReport)}
@@ -919,6 +927,7 @@ export default function FormReports() {
                 width: 320,
                 borderRadius: 10,
                 backgroundColor: "#feba29",
+                marginTop: 20,
               }}
             >
               <Feather

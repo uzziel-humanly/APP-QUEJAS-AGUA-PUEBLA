@@ -26,6 +26,7 @@ export function useRegister() {
   };
 
   const onSubmit = async (data) => {
+    console.log(data.latitud);
     setLoading(true);
     var emailRegex =
       /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
@@ -150,11 +151,13 @@ export function useRegister() {
               formData.append("celular", data.celular);
               formData.append("correo", data.correo);
               formData.append("id_tipo_cuenta", data.id_tipo_cuenta);
+              formData.append("fecha_selfie", data.fecha_selfie);
+              formData.append("hora_selfie", data.hora_selfie);
               //formData.append("fecha_registro", currentDate);
               //formData.append("hr_registro", currentTime);
               ///formData.append("id_estatus_registro", "1");
               formData.append("pass", passcyrpt);
-              //console.log(formData);
+              console.log(formData);
 
               let response = await axios({
                 method: "POST",

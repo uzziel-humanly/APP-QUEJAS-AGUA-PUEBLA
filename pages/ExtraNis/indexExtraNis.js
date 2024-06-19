@@ -127,7 +127,6 @@ export default function ExtraNis() {
     setTipoContrato,
     showElement,
     setShowElement,
-    
   } = useExtraNis();
 
   const [disabledButtons, setDisabledButtons] = useState({
@@ -153,10 +152,7 @@ export default function ExtraNis() {
 
   useFocusEffect(
     useCallback(() => {
-      setDisabledButtons(false);
       setShowElement(false);
-      setDisabledButtons((prev) => ({ ...prev, ["evidencia"]: false }));
-      setDisabledButtons((prev) => ({ ...prev, ["PICINCIDENCIA"]: false }));
     }, [])
   );
 
@@ -282,6 +278,15 @@ export default function ExtraNis() {
   const cleanForm = async () => {
     reset();
     setShowElement(true);
+    setDisabledButtons((prev) => ({ ...prev, ["SELFIE"]: false }));
+    setDisabledButtons((prev) => ({ ...prev, ["PICINEFRONTAL"]: false }));
+    setDisabledButtons((prev) => ({ ...prev, ["PICINETRASERO"]: false }));
+    setDisabledButtons((prev) => ({ ...prev, ["PICRECIBO"]: false }));
+    setDisabledButtons((prev) => ({ ...prev, ["PICCDOM"]: false }));
+    setDisabledButtons((prev) => ({ ...prev, ["RECIBOPDF"]: false }));
+    setDisabledButtons((prev) => ({ ...prev, ["CDOMIPDF"]: false }));
+    setDisabledButtons((prev) => ({ ...prev, ["BOLETA"]: false }));
+    setDisabledButtons((prev) => ({ ...prev, ["PICBOLETA"]: false }));
   };
 
   return (
@@ -290,10 +295,15 @@ export default function ExtraNis() {
         <StatusBar style="auto" />
         <View style={styles.safeArea}>
           <View style={styles.container}>
+            <Image
+              source={require("../../assets/correct.png")}
+              style={styles.headerImg}
+            />
             <View style={styles.header}>
               <TitlePrimary style={styles.title}>
                 Registra un NIS Extra
               </TitlePrimary>
+
               <TitleSecondary style={styles.subtitle}>
                 Para dar de alta un NIS adicional deberas complentar todos los
                 campos solicitados.
@@ -302,7 +312,7 @@ export default function ExtraNis() {
             {!showElement && (
               <View style={styles.formAction}>
                 <ButtonP onPress={() => cleanForm()}>
-                  <Text style={styles.btnTxt}>Generar</Text>
+                  <Text style={styles.btnTxt}>Registrar</Text>
                 </ButtonP>
               </View>
             )}
@@ -807,10 +817,13 @@ const styles = StyleSheet.create({
     // padding: 24
   },
   container: {
+    // justifyContent: "center",
+    // alignItems: "center",
+    // padding: 24,
+    // flex: 1,
     justifyContent: "center",
     alignItems: "center",
     padding: 24,
-    flex: 1,
   },
   containerBtn: {
     flexDirection: "row",
@@ -827,11 +840,10 @@ const styles = StyleSheet.create({
     marginVertical: 36,
   },
   headerImg: {
-    width: 250,
-    height: 80,
+    width: 400,
+    height: 100,
     resizeMode: "center",
     alignSelf: "center",
-    marginBottom: 20,
   },
   title: {
     fontWeight: "700",
