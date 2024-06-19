@@ -767,6 +767,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#E9ECEF",
     borderRadius: 8,
     width: "90%",
+    
   },
   dropdownItemStyle: {
     width: "100%",

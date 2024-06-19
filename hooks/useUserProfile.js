@@ -139,6 +139,7 @@ export const useUserProfile = () => {
       await AsyncStorage.removeItem("email");
       await AsyncStorage.removeItem("nis");
       await AsyncStorage.removeItem("name");
+      await AsyncStorage.removeItem("rol");
       await AsyncStorage.clear();
 
       navigation.navigate("Login");
