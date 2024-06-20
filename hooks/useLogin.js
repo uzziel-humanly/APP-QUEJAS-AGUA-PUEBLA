@@ -72,6 +72,8 @@ export const useLogin = () => {
           headers: { Authorization: auth, "Content-Type": "application/json" },
           data: body,
         });
+
+        console.log(response.data.mensaje);
             if(response.data.estatus === "ok")
                 {
                     
@@ -119,7 +121,7 @@ export const useLogin = () => {
                   AsyncStorage.setItem('email', _userdata.correo)
                   AsyncStorage.setItem('nis', JSON.stringify(_nis))
                   AsyncStorage.setItem('name', _userdata.nombre + ' ' + _userdata.ap + ' ' + _userdata.am)
-
+                  AsyncStorage.setItem('rol', _userdata.tipo_usuario)
 
                   
                  if(_userdata.reset == 1 || monthDifference === 11)

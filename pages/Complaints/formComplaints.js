@@ -63,7 +63,8 @@ export default function FormComplaints({ text, onOK }) {
     telefonoError,
     modules,
     processComplaint,
-    setScrollEnabled
+    setScrollEnabled,
+    typesComplaint
   } = useComplaints();
 
   const theme = useTheme();
@@ -213,6 +214,50 @@ export default function FormComplaints({ text, onOK }) {
                 />
                 {/* {errors.nis_extra && <Text style={styles.errorText}>{errors.nis_extra.message}</Text>} */}
               </View>
+
+
+              <View style={styles.input}>
+                <Text style={styles.inputLabel}>Tipo de queja</Text>
+                <Controller
+                  control={control}
+                  name="tipo"
+                  rules={{ required: 'Selecciona un tipo de queja.' }}
+                  render={({ field: { onChange, value } }) => (
+                    <SelectDropdown
+                      data={typesComplaint}
+                      onSelect={(selectedItem, index) => {
+                        onChange(selectedItem);
+                      }}
+                      renderButton={(selectedItem, isOpened) => (
+                        <View style={styles.dropdownButtonStyle}>
+                          <Text style={styles.dropdownButtonTxtStyle}>
+                            {(selectedItem && selectedItem.title) ||
+                              "Selecciona un tipo de queja"}
+                          </Text>
+                        </View>
+                      )}
+                      renderItem={(item, index, isSelected) => (
+                        <View
+                          style={{
+                            ...styles.dropdownItemStyle,
+                            ...(isSelected && { backgroundColor: "#D2D9DF" }),
+                          }}
+                        >
+                          <Text style={styles.dropdownItemTxtStyle}>
+                            {item.title}
+                          </Text>
+                        </View>
+                      )}
+                      showsVerticalScrollIndicator={false}
+                      dropdownStyle={styles.dropdownMenuStyle}
+                      buttonStyle={styles.dropdownButton}
+                      rowStyle={styles.dropdownRow}
+                    />
+                  )}
+                />
+                {errors.tipo && <Text style={styles.errorText}>{errors.tipo.message}</Text>}
+              </View>
+
 
               <View style={styles.input}>
                 <Text style={styles.inputLabel}>Sexo</Text>
@@ -722,6 +767,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#E9ECEF",
     borderRadius: 8,
     width: "90%",
+    
   },
   dropdownItemStyle: {
     width: "100%",

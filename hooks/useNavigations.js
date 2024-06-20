@@ -62,6 +62,19 @@ const MenuButtonItem = ({ text, onPress, iconName }) => {
 
 const MenuItems = ({ navigation }) => {
   const theme = useTheme();
+  const [rol, setRol] = useState(0);
+
+  useEffect(() => {
+    const checkRol = async () => {
+      const _rol = await AsyncStorage.getItem('rol');
+      setRol(_rol);
+
+    };
+
+    checkRol();
+  }, []);
+
+  
 
   return (
     <DrawerContentScrollView style={styles.container}>
@@ -73,21 +86,30 @@ const MenuItems = ({ navigation }) => {
         onPress={() => navigation.navigate("Inicio")}
         iconName="home"
       />
-      <MenuButtonItem
+      {
+        rol == 1 ? 
+        <MenuButtonItem
         text={"Quejas"}
         onPress={() => navigation.navigate("Quejas")}
         iconName="form"
       />
+      :
+      ""
+      }
       <MenuButtonItem
         text={"Reportes"}
         onPress={() => navigation.navigate("Reportes")}
         iconName="carryout"
       />
-      <MenuButtonItem
+      {
+        rol == 1 ? 
+        <MenuButtonItem
         text={"NIS Extra"}
         onPress={() => navigation.navigate("NIS")}
         iconName="plus"
-      />
+      />:
+      ""
+      }
     </DrawerContentScrollView>
   );
 };

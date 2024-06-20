@@ -10,6 +10,7 @@ export function useHome() {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [listNis, setListNis] = useState([]);
+    const [rol, setRol] = useState(0);
 
     const [welcomeMessage, setWelcomeMessage] = useState('');
 
@@ -22,6 +23,7 @@ export function useHome() {
         let _username = await AsyncStorage.getItem('username');
         let _email = await AsyncStorage.getItem('email');
         let _nis = await AsyncStorage.getItem('nis');
+        let _rol = await AsyncStorage.getItem('rol');
         _nis = JSON.parse(_nis);
 
         _nis.map((_n, _i) => {
@@ -33,6 +35,7 @@ export function useHome() {
         setUsername(_username);
         setEmail(_email);
         setListNis(_listNis);
+        setRol(_rol);
 
     }
 
@@ -77,15 +80,15 @@ export function useHome() {
 
             if(hour > 5 && hour < 12)
             {
-                _welcomeMessage = `¡Buenos días, ${_username}!`
+                _welcomeMessage = `¡Buenos días, ${_username === null ? 'usuario Soapap' : _username}!`
             }
             else if (hour >= 12 && hour <18)
             {
-                _welcomeMessage = `¡Buenas tardes, ${_username}!`
+                _welcomeMessage = `¡Buenas tardes, ${_username  === null ? 'usuario Soapap' : _username}!`
             }
             else
             {
-                _welcomeMessage = `¡Buenas noches, ${_username}!`
+                _welcomeMessage = `¡Buenas noches, ${_username === null ? 'usuario Soapap' : _username}!`
             }
 
 
@@ -116,6 +119,6 @@ export function useHome() {
 
     return {
         username, email, welcomeMessage, viewProfile,getTransparencia, handleUserService,
-        listNis, getUserService
+        listNis, getUserService, rol
     }
 }

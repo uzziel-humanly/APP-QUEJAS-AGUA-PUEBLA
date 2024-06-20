@@ -21,7 +21,6 @@ export default function ModalDetailComplaint({ modalVisible, toggleModalComplain
             <>
               <Text><Text style={styles.cardLabel}>Folio:</Text> {selectedComplaint.folio}</Text>
               <Text><Text style={styles.cardLabel}>Estatus:</Text>{selectedComplaint.estatus}</Text>
-              <Text><Text style={styles.cardLabel}>Estado:</Text> {selectedComplaint.estado}</Text>
               <Text><Text style={styles.cardLabel}>Fecha:</Text> {selectedComplaint.fecha}</Text>
               <Text><Text style={styles.cardLabel}>Descripción:</Text> {selectedComplaint.descripcion}</Text>
               <Text><Text style={styles.cardLabel}>Domicilio:</Text> {selectedComplaint.domicilio}</Text>

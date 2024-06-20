@@ -32,8 +32,10 @@ export default function Home() {
     viewProfile,
     getTransparencia,
     handleUserService,
+    rol
   } = useHome();
 
+console.log('tu rol es: ', rol);
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -55,12 +57,17 @@ export default function Home() {
               </TouchableOpacity>
             </Header>
             <View style={{ marginBottom: 40 }}>
-              <View style={{ marginBottom: 40 }}>
+              {
+                rol == 1 ? 
+                <View style={{ marginBottom: 40 }}>
                 <Title>Horarios de servicio</Title>
                 <NeutralButton onPress={handleUserService}>
                   <TextNeutral>Ver mis horarios de servicio</TextNeutral>
                 </NeutralButton>
               </View>
+              :
+              ""
+              }
 
               <Title>Transparencia</Title>
               <View style={styles.groupButtons}>
@@ -80,7 +87,9 @@ export default function Home() {
               </View>
             </View>
 
-            <View>
+            {
+              rol == 1 ? 
+              <View>
               <Title>Módulo comercial</Title>
               <NeutralButton
                 onPress={() => {
@@ -90,6 +99,9 @@ export default function Home() {
                 <TextNeutral>Módulo</TextNeutral>
               </NeutralButton>
             </View>
+            :
+            ""
+            }
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

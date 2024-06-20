@@ -240,17 +240,17 @@ export default function Register() {
         setValue("fecha_selfie", formattedDate);
         setValue("hora_selfie", time);
 
-        //Obtenemos las coordenadas
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== "granted") {
-          setErrorMsg("Permission to access location was denied");
-          return;
-        }
-        let location = await Location.getCurrentPositionAsync({});
-        console.log(location);
+        // //Obtenemos las coordenadas
+        // let { status } = await Location.requestForegroundPermissionsAsync();
+        // if (status !== "granted") {
+        //   setErrorMsg("Permission to access location was denied");
+        //   return;
+        // }
+        // let location = await Location.getCurrentPositionAsync({});
+        // console.log(location);
         //Aqui agrego la longitud y latitud a la data
-        setValue("latitud", location.coords.latitude);
-        setValue("longitud", location.coords.longitude);
+        // setValue("latitud", location.coords.latitude);
+        // setValue("longitud", location.coords.longitude);
 
         setDisabledButtons((prev) => ({ ...prev, [option]: true }));
         setImage(result.assets.name);
