@@ -22,7 +22,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { Title1, ButtonP } from "../../styles/index/stylesHome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusBar } from "expo-status-bar";
-import { FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome5 } from "@expo/vector-icons";
 
 const getRandomColors = () => {
   const colorsList = [
@@ -139,7 +139,7 @@ export default function IndexStatusReports() {
 
   const tableData = reportes.map((item) => {
     const status = estatus.find((status) => status.id === item.estatus);
-    return [item.id, status ? status.estatus : "Desconocido",item.folio];
+    return [item.id, status ? status.estatus : "Desconocido", item.folio];
   });
 
   //console.log(tableData);
@@ -195,7 +195,7 @@ export default function IndexStatusReports() {
                     <View
                       //key={index}
                       style={{
-                        flex:1,
+                        flex: 1,
                         width: "auto",
                         marginTop: 10,
                         padding: 10,
@@ -206,27 +206,31 @@ export default function IndexStatusReports() {
                     >
                       <View
                         style={{
-                          flex:1,
+                          flex: 1,
                           flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "center",
                         }}
                       >
                         <Text
                           style={{
-                            flex:1,
-                            alignSelf: "left",
+                            fontSize: 13,
+                            flex: 1,
                             color: "white",
                             fontWeight: "600",
-                            marginRight: 50,
-                            flexDirection: "row",
-                            marginLeft:5
+                            textAlign: "center",
                           }}
                         >
                           {reportes[2]}
                         </Text>
 
-                        <Text style={{ color: "white", fontWeight: "600" }}>
+                        <Text
+                          style={{
+                            fontSize: 13,
+                            flex: 1,
+                            color: "white",
+                            fontWeight: "600",
+                            textAlign: "center",
+                          }}
+                        >
                           {reportes[1]}
                         </Text>
                       </View>
@@ -299,7 +303,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   container2: { flex: 1, padding: 16, color: "#ffffff" },
-  head: { height: 40, backgroundColor: "#333333", color: "#fff52w",borderRadius:10 },
+  head: {
+    height: 40,
+    backgroundColor: "#333333",
+    color: "#fff52w",
+    borderRadius: 10,
+  },
   text: { margin: 6 },
   textRow: {
     textAlign: "center",

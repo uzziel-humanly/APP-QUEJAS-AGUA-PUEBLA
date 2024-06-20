@@ -57,7 +57,15 @@ import { StatusBar } from "expo-status-bar";
 export default function Register() {
   const [tipoCuenta, setTipoCuenta] = useState([]);
 
+  // useEffect(() => {
+  //   // setTimeout(() => {
+  //     getTipoCuenta();
+  //   // }, 100);
+  // }, []);
+
   const getTipoCuenta = async () => {
+    console.log("ENTRO");
+
     try {
       let pass = md5(API_TOKEN);
       let credentials = `${API_AUTH}:${pass}`;
@@ -230,7 +238,7 @@ export default function Register() {
         const exifData = result.assets[0].exif;
         const [date, time] = exifData.DateTime.split(" ");
 
-        const formattedDate = date.replace(/:/g, '-');
+        const formattedDate = date.replace(/:/g, "-");
 
         //console.log('EXIF Data:', JSON.stringify(exifData, null, 2));
 
@@ -573,36 +581,48 @@ export default function Register() {
 
               <View style={styles.inputContainer}>
                 <Text style={styles.inputLabel}>Tipo de cuenta:</Text>
-                <Controller
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { onChange, value } }) => (
-                    <View style={styles.pickerContainer}>
-                      <Picker
-                        onPress={getTipoCuenta()}
-                        selectedValue={value}
-                        style={styles.picker}
-                        onValueChange={(itemValue) => {
-                          onChange(itemValue);
-                          setSelectedValue(itemValue);
-                          validaSelector(itemValue);
-                        }}
-                      >
-                        <Picker.Item label="Selecciona una opción" value="" />
+                <TouchableOpacity
+                  onPress={getTipoCuenta}
+                  style={{
+                    alignItems: "center",
+                    width: "100%",
+                    borderRadius: 8
+                  }}
+                >
+                  <Controller
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { onChange, value } }) => (
+                      <View style={styles.pickerContainer}>
+                        <Picker
+                          // onChange={getTipoCuenta()}
+                          //onPress={(e) => getTipoCuenta()}
+                          selectedValue={value}
+                          style={styles.picker}
+                          onValueChange={(itemValue) => {
+                            onChange(itemValue);
+                            setSelectedValue(itemValue);
+                            validaSelector(itemValue);
+                            getTipoCuenta();
+                          }}
+                        >
+                          <Picker.Item label="Selecciona una opción" 
+                          value="" />
 
-                        {tipoCuenta.map((item) => (
-                          <Picker.Item
-                            label={item.tipo.toUpperCase()}
-                            value={item.id}
-                            key={item.id}
-                          />
-                        ))}
-                      </Picker>
-                    </View>
-                  )}
-                  name="id_tipo_cuenta"
-                  defaultValue=""
-                />
+                          {tipoCuenta.map((item) => (
+                            <Picker.Item
+                              label={item.tipo.toUpperCase()}
+                              value={item.id}
+                              key={item.id}
+                            />
+                          ))}
+                        </Picker>
+                      </View>
+                    )}
+                    name="id_tipo_cuenta"
+                    defaultValue=""
+                  />
+                </TouchableOpacity>
                 {errors.id_tipo_cuenta && (
                   <Text style={styles.error}>Este campo es obligatorio.</Text>
                 )}
@@ -1041,10 +1061,13 @@ const styles = StyleSheet.create({
     // padding: 24
   },
   container: {
+    // justifyContent: "center",
+    // alignItems: "center",
+    // padding: 24,
+    // flex: 1,
     justifyContent: "center",
     alignItems: "center",
     padding: 24,
-    flex: 1,
   },
   containerBtn: {
     flexDirection: "row",
@@ -1061,11 +1084,10 @@ const styles = StyleSheet.create({
     marginVertical: 36,
   },
   headerImg: {
-    width: 250,
-    height: 80,
+    width: 400,
+    height: 100,
     resizeMode: "center",
     alignSelf: "center",
-    marginBottom: 20,
   },
   title: {
     fontWeight: "700",
@@ -1079,7 +1101,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     backgroundColor: "#FFFFFF",
     height: 44,
-    width: "105%",
+    width: "100%",
     alignSelf: "center",
     //marginBottom: 20,
   },
@@ -1092,6 +1114,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     color: "#929292",
     textAlign: "center",
+    paddingHorizontal:20
   },
   form: {
     flex: 1,
@@ -1120,7 +1143,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   inputControl: {
-    width: 320,
+    alignSelf:"center",
+    width: "100%",
     backgroundColor: "#fff",
     height: 44,
     paddingHorizontal: 16,

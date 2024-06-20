@@ -6,6 +6,8 @@ import { md5 } from "js-md5";
 import { useNavigation } from "@react-navigation/native";
 import ModalChangePassword from "../pages/Auth/modalChangePassword";
 import { err } from "react-native-svg";
+import ClearAppCache from "react-native-clear-app-cache";
+
 
 export const useUserProfile = () => {
   const navigation = useNavigation();
@@ -142,10 +144,34 @@ export const useUserProfile = () => {
       await AsyncStorage.removeItem("rol");
       await AsyncStorage.clear();
 
+      clearAllAppData();
       navigation.navigate("Login");
     } catch (error) {
       console.log(error);
       alert("Ha ocurrido un error al intentar cerrar la sesión");
+    }
+  };
+
+
+  const clearAllAppData = async () => {
+    try {
+      // Limpiar AsyncStorage
+      await AsyncStorage.clear();
+      console.log('AsyncStorage cleared');
+  
+      // Limpiar caché de imágenes
+      // FastImage.clearDiskCache().then(() => console.log('Image disk cache cleared'));
+      // FastImage.clearMemoryCache().then(() => console.log('Image memory cache cleared'));
+  
+      // Limpiar caché de la aplicación
+      ClearAppCache.clearAppCache(() => {
+        console.log('App cache cleared');
+      });
+  
+      // Aquí puedes agregar cualquier otra limpieza adicional que necesites
+      console.log('All app data cleared');
+    } catch (error) {
+      console.error('Error clearing all app data:', error);
     }
   };
 
