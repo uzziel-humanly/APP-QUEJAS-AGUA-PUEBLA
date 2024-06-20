@@ -13,9 +13,10 @@ import {
   Keyboard,
   Image,
   ActivityIndicator,
+  Modal
 } from "react-native";
 import { useComplaints } from "../../hooks/Complaints/useComplaints";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { GestureHandlerRootView, TouchableWithoutFeedback } from "react-native-gesture-handler";
 import SignatureScreen from "react-native-signature-canvas";
 import MultiSelect from "react-native-multiple-select";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -99,8 +100,12 @@ export default function FormComplaints({ text, onOK }) {
     (item) => item.id !== (selectedNIS ? selectedNIS.title : null)
   );
 
+
+
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
+      
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         scrollEnabled={scrollEnabled}
@@ -130,8 +135,10 @@ export default function FormComplaints({ text, onOK }) {
             <View style={styles.header}>
               <Title1>Formulario de quejas</Title1>
             </View>
+            
 
             <View style={styles.form}>
+            <TouchableWithoutFeedback onPress={() => setScrollEnabled(true)}>
               <View style={styles.input}>
                 <Text style={styles.inputLabel}>NIS de la queja</Text>
                 <Controller
@@ -560,6 +567,7 @@ export default function FormComplaints({ text, onOK }) {
                 />
                 {/* {errors.atendio && <Text style={styles.errorText}>{errors.atendio.message}</Text>} */}
               </View>
+              </TouchableWithoutFeedback>
 
               <View style={styles.signatureContainer}>
                 <Text style={styles.signatureLabel}>Firma</Text>
@@ -614,6 +622,7 @@ export default function FormComplaints({ text, onOK }) {
           </View>
         )}
       </ScrollView>
+      
     </GestureHandlerRootView>
   );
 }

@@ -3,9 +3,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { API_URL, API_TOKEN, API_AUTH } from "@env";
 import { md5 } from "js-md5";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, StackActions } from "@react-navigation/native";
 import ModalChangePassword from "../pages/Auth/modalChangePassword";
 import { err } from "react-native-svg";
+import { Cache } from "react-native-cache";
 
 export const useUserProfile = () => {
   const navigation = useNavigation();
@@ -142,7 +143,14 @@ export const useUserProfile = () => {
       await AsyncStorage.removeItem("rol");
       await AsyncStorage.clear();
 
+
+      
       navigation.navigate("Login");
+
+      navigation.dispatch(
+        StackActions.replace('Login')
+      );
+      
     } catch (error) {
       console.log(error);
       alert("Ha ocurrido un error al intentar cerrar la sesión");
