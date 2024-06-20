@@ -857,7 +857,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     backgroundColor: "#FFFFFF",
     height: 44,
-    width: "105%",
+    width: "100%",
     alignSelf: "center",
     //marginBottom: 20,
   },
@@ -898,7 +898,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   inputControl: {
-    width: 320,
+    alignSelf:"center",
+    width: "100%",
     backgroundColor: "#fff",
     height: 44,
     paddingHorizontal: 16,

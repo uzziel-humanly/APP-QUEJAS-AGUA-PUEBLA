@@ -186,6 +186,7 @@ export default function FormReports() {
   };
 
   const getTipoIncidencia = async (idTipo) => {
+    console.log("entrooo");
     try {
       let pass = md5(API_TOKEN);
       let credentials = `${API_AUTH}:${pass}`;

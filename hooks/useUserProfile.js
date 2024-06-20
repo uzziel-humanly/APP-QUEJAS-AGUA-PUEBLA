@@ -157,6 +157,29 @@ export const useUserProfile = () => {
     }
   };
 
+
+  const clearAllAppData = async () => {
+    try {
+      // Limpiar AsyncStorage
+      await AsyncStorage.clear();
+      console.log('AsyncStorage cleared');
+  
+      // Limpiar caché de imágenes
+      // FastImage.clearDiskCache().then(() => console.log('Image disk cache cleared'));
+      // FastImage.clearMemoryCache().then(() => console.log('Image memory cache cleared'));
+  
+      // Limpiar caché de la aplicación
+      ClearAppCache.clearAppCache(() => {
+        console.log('App cache cleared');
+      });
+  
+      // Aquí puedes agregar cualquier otra limpieza adicional que necesites
+      console.log('All app data cleared');
+    } catch (error) {
+      console.error('Error clearing all app data:', error);
+    }
+  };
+
   return {
     //information user
     name,
