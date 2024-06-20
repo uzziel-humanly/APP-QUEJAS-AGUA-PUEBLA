@@ -195,7 +195,8 @@ export default function IndexStatusReports() {
                     <View
                       //key={index}
                       style={{
-                        width: 350,
+                        flex:1,
+                        width: "auto",
                         marginTop: 10,
                         padding: 10,
                         backgroundColor: color,
@@ -205,6 +206,7 @@ export default function IndexStatusReports() {
                     >
                       <View
                         style={{
+                          flex:1,
                           flexDirection: "row",
                           alignItems: "center",
                           justifyContent: "center",
@@ -212,10 +214,13 @@ export default function IndexStatusReports() {
                       >
                         <Text
                           style={{
+                            flex:1,
                             alignSelf: "left",
                             color: "white",
                             fontWeight: "600",
                             marginRight: 50,
+                            flexDirection: "row",
+                            marginLeft:5
                           }}
                         >
                           {reportes[2]}
