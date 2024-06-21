@@ -256,7 +256,13 @@ export default function ExtraNis() {
   if (!permission.granted) {
     // Camera permissions are not granted yet.
     return (
-      <View style={styles.container}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <Text style={{ textAlign: "center" }}>
           Necesitamos permisos para acceder a la camara.
         </Text>
@@ -898,7 +904,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   inputControl: {
-    alignSelf:"center",
+    alignSelf: "center",
     width: "100%",
     backgroundColor: "#fff",
     height: 44,

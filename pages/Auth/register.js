@@ -64,8 +64,6 @@ export default function Register() {
   // }, []);
 
   const getTipoCuenta = async () => {
-    console.log("ENTRO");
-
     try {
       let pass = md5(API_TOKEN);
       let credentials = `${API_AUTH}:${pass}`;
@@ -290,7 +288,13 @@ export default function Register() {
   if (!permission.granted) {
     // Camera permissions are not granted yet.
     return (
-      <View style={styles.container}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <Text style={{ textAlign: "center" }}>
           Necesitamos permisos para acceder a la camara.
         </Text>
@@ -586,7 +590,7 @@ export default function Register() {
                   style={{
                     alignItems: "center",
                     width: "100%",
-                    borderRadius: 8
+                    borderRadius: 8,
                   }}
                 >
                   <Controller
@@ -606,8 +610,7 @@ export default function Register() {
                             getTipoCuenta();
                           }}
                         >
-                          <Picker.Item label="Selecciona una opción" 
-                          value="" />
+                          <Picker.Item label="Selecciona una opción" value="" />
 
                           {tipoCuenta.map((item) => (
                             <Picker.Item
@@ -1114,7 +1117,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     color: "#929292",
     textAlign: "center",
-    paddingHorizontal:20
+    paddingHorizontal: 20,
   },
   form: {
     flex: 1,
@@ -1143,7 +1146,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   inputControl: {
-    alignSelf:"center",
+    alignSelf: "center",
     width: "100%",
     backgroundColor: "#fff",
     height: 44,

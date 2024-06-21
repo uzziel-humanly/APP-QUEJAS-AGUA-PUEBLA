@@ -33,7 +33,7 @@ export default function Login() {
   } = useLogin();
 
   return (
- 
+ <GestureHandlerRootView>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <StatusBar style="auto" />
           <View style={styles.container}>
@@ -102,6 +102,7 @@ export default function Login() {
             </View>
           </View>
         </ScrollView>
+        </GestureHandlerRootView>
   );
 }
 
