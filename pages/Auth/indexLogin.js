@@ -33,12 +33,7 @@ export default function Login() {
   } = useLogin();
 
   return (
-     <GestureHandlerRootView style={{flex:1}}>
-      {/* <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
-      > */}
+ 
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <StatusBar style="auto" />
           <View style={styles.container}>
@@ -107,9 +102,6 @@ export default function Login() {
             </View>
           </View>
         </ScrollView>
-     </GestureHandlerRootView> 
-     //</KeyboardAvoidingView>
-    // </GestureHandlerRootView>
   );
 }
 
