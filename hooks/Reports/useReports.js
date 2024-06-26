@@ -103,7 +103,7 @@ export const useReports = () => {
           const data = [
             {
               status: "Error",
-              msj: "Ocurrio un error en el servidor",
+              msj: "Ocurrio un error en el servidor, intenta de nuevo",
             },
           ];
           showAlertReport(data);

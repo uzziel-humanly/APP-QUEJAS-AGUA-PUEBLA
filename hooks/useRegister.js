@@ -315,6 +315,8 @@ export function useRegister() {
     celularMatch,
     validaCelular,
     messageCelular,
-    tipoContrato,setTipoContrato
+    tipoContrato,setTipoContrato,
+    setCelularMatch,
+    setPasswordMatch
   };
 }

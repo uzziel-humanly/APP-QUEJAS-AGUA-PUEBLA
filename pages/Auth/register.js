@@ -19,7 +19,7 @@ import { useRegister } from "../../hooks/useRegister";
 import * as Location from "expo-location";
 import { useForm, Controller } from "react-hook-form";
 import { Picker } from "@react-native-picker/picker";
-import { useState } from "react";
+import { useState,useCallback } from "react";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 import { CameraView, useCameraPermissions } from "expo-camera";
@@ -53,9 +53,29 @@ import {
 } from "../../styles/resources/styleTitles";
 import { Colors } from "../../theme/colors";
 import { StatusBar } from "expo-status-bar";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function Register() {
   const [tipoCuenta, setTipoCuenta] = useState([]);
+  const [estadoPeticion, setEstadoPeticion] = useState(true);
+
+  useFocusEffect(
+    useCallback(() => {
+      reset();
+      setDisabledButtons((prev) => ({ ...prev, ["SELFIE"]: false }));
+      setDisabledButtons((prev) => ({ ...prev, ["PICINEFRONTAL"]: false }));
+      setDisabledButtons((prev) => ({ ...prev, ["PICINETRASERO"]: false }));
+      setDisabledButtons((prev) => ({ ...prev, ["PICRECIBO"]: false }));
+      setDisabledButtons((prev) => ({ ...prev, ["PICCDOM"]: false }));
+      setDisabledButtons((prev) => ({ ...prev, ["RECIBOPDF"]: false }));
+      setDisabledButtons((prev) => ({ ...prev, ["CDOMIPDF"]: false }));
+      setDisabledButtons((prev) => ({ ...prev, ["BOLETA"]: false }));
+      setDisabledButtons((prev) => ({ ...prev, ["PICBOLETA"]: false }));
+      setCelularMatch(0);
+      setPasswordMatch(0);
+      setEmailMatch(0);
+    }, [])
+  );
 
   // useEffect(() => {
   //   // setTimeout(() => {
@@ -64,28 +84,34 @@ export default function Register() {
   // }, []);
 
   const getTipoCuenta = async () => {
-    try {
-      let pass = md5(API_TOKEN);
-      let credentials = `${API_AUTH}:${pass}`;
-      let encodedCredentials = btoa(credentials);
-      let auth = "Basic " + encodedCredentials;
+    if (estadoPeticion) {
+      console.log("ENTROOO");
+      try {
+        let pass = md5(API_TOKEN);
+        let credentials = `${API_AUTH}:${pass}`;
+        let encodedCredentials = btoa(credentials);
+        let auth = "Basic " + encodedCredentials;
 
-      let response = await axios({
-        method: "post",
-        url: `${API_URL}/api/getTipoCuenta`,
-        headers: { Authorization: auth, "Content-Type": "application/json" },
-      });
+        let response = await axios({
+          method: "post",
+          url: `${API_URL}/api/getTipoCuenta`,
+          headers: { Authorization: auth, "Content-Type": "application/json" },
+        });
 
-      if (response.data.estatus === "ok") {
-        let _data = response.data.mensaje;
-        setTipoCuenta(_data);
-      } else {
-        //console.error("Error en la respuesta de la API");
-        alert("Ocurrió un error al obtener los datos");
+        if (response.data.estatus === "ok") {
+          let _data = response.data.mensaje;
+          setTipoCuenta(_data);
+          setEstadoPeticion(false);
+        } else {
+          setEstadoPeticion(true);
+          //console.error("Error en la respuesta de la API");
+          alert("Ocurrió un error al obtener los datos");
+        }
+      } catch (error) {
+        //console.error(error);
+        setEstadoPeticion(true);
+        alert("Ocurrió un error en el servidor");
       }
-    } catch (error) {
-      //console.error(error);
-      alert("Ocurrió un error en el servidor");
     }
   };
 
@@ -140,6 +166,9 @@ export default function Register() {
     celularMatch,
     tipoContrato,
     setTipoContrato,
+    setCelularMatch,
+    setPasswordMatch,
+    setEmailMatch
   } = useRegister();
 
   const [disabledButtons, setDisabledButtons] = useState({
@@ -158,6 +187,7 @@ export default function Register() {
     control,
     handleSubmit,
     setValue,
+    reset,
     formState: { errors },
   } = useForm();
   //Select normal
@@ -585,47 +615,47 @@ export default function Register() {
 
               <View style={styles.inputContainer}>
                 <Text style={styles.inputLabel}>Tipo de cuenta:</Text>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   onPress={getTipoCuenta}
                   style={{
                     alignItems: "center",
                     width: "100%",
                     borderRadius: 8,
                   }}
-                >
-                  <Controller
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field: { onChange, value } }) => (
-                      <View style={styles.pickerContainer}>
-                        <Picker
-                          // onChange={getTipoCuenta()}
-                          //onPress={(e) => getTipoCuenta()}
-                          selectedValue={value}
-                          style={styles.picker}
-                          onValueChange={(itemValue) => {
-                            onChange(itemValue);
-                            setSelectedValue(itemValue);
-                            validaSelector(itemValue);
-                            getTipoCuenta();
-                          }}
-                        >
-                          <Picker.Item label="Selecciona una opción" value="" />
+                > */}
+                <Controller
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { onChange, value } }) => (
+                    <View style={styles.pickerContainer}>
+                      <Picker
+                        onPress={getTipoCuenta()}
+                        //onPress={(e) => getTipoCuenta()}
+                        selectedValue={value}
+                        style={styles.picker}
+                        onValueChange={(itemValue) => {
+                          onChange(itemValue);
+                          setSelectedValue(itemValue);
+                          validaSelector(itemValue);
+                          //getTipoCuenta();
+                        }}
+                      >
+                        <Picker.Item label="Selecciona una opción" value="" />
 
-                          {tipoCuenta.map((item) => (
-                            <Picker.Item
-                              label={item.tipo.toUpperCase()}
-                              value={item.id}
-                              key={item.id}
-                            />
-                          ))}
-                        </Picker>
-                      </View>
-                    )}
-                    name="id_tipo_cuenta"
-                    defaultValue=""
-                  />
-                </TouchableOpacity>
+                        {tipoCuenta.map((item) => (
+                          <Picker.Item
+                            label={item.tipo.toUpperCase()}
+                            value={item.id}
+                            key={item.id}
+                          />
+                        ))}
+                      </Picker>
+                    </View>
+                  )}
+                  name="id_tipo_cuenta"
+                  defaultValue=""
+                />
+                {/* </TouchableOpacity> */}
                 {errors.id_tipo_cuenta && (
                   <Text style={styles.error}>Este campo es obligatorio.</Text>
                 )}
