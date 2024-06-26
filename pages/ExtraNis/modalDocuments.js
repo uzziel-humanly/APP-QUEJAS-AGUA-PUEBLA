@@ -31,7 +31,7 @@ export default function ModalDocuments({
 
   useEffect(() => {
     const loadPdf = async () => {
-      console.log(tipoContrato);
+
       try {
         var asset = "";
         // Cargar el archivo PDF desde assets

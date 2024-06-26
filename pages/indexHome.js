@@ -35,7 +35,7 @@ export default function Home() {
     rol
   } = useHome();
 
-console.log('tu rol es: ', rol);
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView

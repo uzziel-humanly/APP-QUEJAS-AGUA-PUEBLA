@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Linking,
   ActivityIndicator,
   Image,
 } from "react-native";
@@ -28,36 +29,57 @@ export default function ModalDocuments({
   tipoContrato,
 }) {
   const [pdfUri, setPdfUri] = useState("");
+  const [url, setUrl] = useState("");
 
   useEffect(() => {
-    const loadPdf = async () => {
-      console.log(tipoContrato);
-      try {
-        var asset = "";
-        // Cargar el archivo PDF desde assets
-        if (tipoContrato == "terminos") {
-          asset = Asset.fromModule(require("../../assets/terminos.jpg"));
-        } else if (tipoContrato == "adhesion") {
-          asset = Asset.fromModule(require("../../assets/adhesion.jpg"));
-        }
-        await asset.downloadAsync();
-        // Obtener la URI del archivo descargado
-        const fileUri = `${FileSystem.documentDirectory}doc.jpg`;
+    // const loadPdf = async () => {
+    //   console.log(tipoContrato);
+    //   try {
+    //     var asset = "";
+    //     // Cargar el archivo PDF desde assets
+    //     if (tipoContrato == "terminos") {
+    //       asset = Asset.fromModule(require("../../assets/terminos.jpg"));
+    //     } else if (tipoContrato == "adhesion") {
+    //       asset = Asset.fromModule(require("../../assets/adhesion.jpg"));
+    //     }
+    //     await asset.downloadAsync();
+    //     // Obtener la URI del archivo descargado
+    //     const fileUri = `${FileSystem.documentDirectory}doc.jpg`;
 
-        // Copiar el archivo a un directorio accesible
-        await FileSystem.copyAsync({
-          from: asset.localUri,
-          to: fileUri,
-        });
-        setPdfUri(fileUri);
-      } catch (error) {
-        //console.error("Error loading PDF:", error);
-      } finally {
-      }
-    };
+    //     // Copiar el archivo a un directorio accesible
+    //     await FileSystem.copyAsync({
+    //       from: asset.localUri,
+    //       to: fileUri,
+    //     });
+    //     setPdfUri(fileUri);
+    //   } catch (error) {
+    //     //console.error("Error loading PDF:", error);
+    //   } finally {
+    //   }
+    // };
 
-    loadPdf();
+    // loadPdf();
+    urls();
   }, []);
+
+  const urls = async () => {
+    try {
+      var asset = "";
+      // Cargar el archivo PDF desde assets
+      if (tipoContrato == "terminos") {
+        setUrl(
+          "https://qwerty2024.duckdns.org/contratos/CONTRATO_DE_CONFIDENCIALIDAD_SOAPAP.pdf"
+        );
+      } else if (tipoContrato == "adhesion") {
+        setUrl(
+          "https://qwerty2024.duckdns.org/contratos/CONTRATO_DE_ADHISION_SOAPAP.pdf"
+        );
+      }
+    } catch (error) {
+      //console.error("Error loading PDF:", error);
+    } finally {
+    }
+  };
 
   // useEffect(() => {
   //   const loadPdf = async () => {
@@ -101,7 +123,7 @@ export default function ModalDocuments({
                 <View style={styles.modalView}>
                   <Text style={styles.title}>Previsualización</Text>
 
-                  <WebView
+                  {/* <WebView
                     originWhitelist={["*"]}
                     //source={{ uri: pdfUri }}
                     source={{ uri: pdfUri }}
@@ -113,9 +135,15 @@ export default function ModalDocuments({
                     useWebKit={true}
                     allowFileAccess={true}
                     allowFileAccessFromFileURLs={true}
-                  />
+                  /> */}
 
-                  {/* <WebView style={{ height: 500, width: 350 }} nestedScrollEnabled={true} source={{ uri: 'https://drive.google.com/viewerng/viewer?embedded=true&url=http://faa.unse.edu.ar/apuntes/ccaunidad1.pdf' }} /> */}
+                  <WebView
+                    style={{ height: 500, width: 350 }}
+                    nestedScrollEnabled={true}
+                    source={{
+                      uri: `https://drive.google.com/viewerng/viewer?embedded=true&url=${url}`,
+                    }}
+                  />
 
                   {/* <WebView
                     style={styles.container}
@@ -145,12 +173,24 @@ export default function ModalDocuments({
                     }}
                   /> */}
 
-                  <View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                    }}
+                  >
                     <Pressable
                       style={[styles.button, styles.buttonClose]}
                       onPress={() => setModalVisible(false)}
                     >
                       <Text style={styles.textStyle}>Cerrar</Text>
+                    </Pressable>
+                    <Pressable
+                      style={[styles.button, styles.buttonClose]}
+                      onPress={() => {
+                        Linking.openURL(url);
+                      }}
+                    >
+                      <Text style={styles.textStyle}>Descargar</Text>
                     </Pressable>
                   </View>
                 </View>
@@ -194,6 +234,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   button: {
+    width:85,
+    height:40,
     borderRadius: 20,
     padding: 10,
     elevation: 2,
@@ -201,6 +243,7 @@ const styles = StyleSheet.create({
   buttonClose: {
     backgroundColor: "grey",
     marginTop: 10,
+    marginRight:10
   },
   textStyle: {
     color: "white",

@@ -159,7 +159,7 @@ export function useComplaints() {
       });
 
 
-      console.log('Pasas por aqui ', response.data);
+
       if (response.data.estatus === "ok") {
         let _data = response.data.mensaje;
         let _typesComplaint = [];
@@ -317,12 +317,12 @@ export function useComplaints() {
   };
 
   const handleEmpty = () => {
-    //console.log("Empty");
+
   };
 
   const handleClear = () => {
     ref.current.clearSignature();
-    // console.log("clear success!");
+
   };
 
   const handleEnd = () => {
@@ -557,7 +557,7 @@ export function useComplaints() {
         headers: { Authorization: auth, "Content-Type": "application/json" },
         data: _body[0],
       });
-      // console.log(response.data.mensaje);
+
 
       if (response.data.estatus === "ok") {
         setLoadingComplaints(false);

@@ -67,7 +67,7 @@ export default function ModalTransparencia({
           const mensajeFiltrado = _dataContentWithId.find(
             (mensaje) => mensaje["id"] === idObra
           );
-          //console.log(mensajeFiltrado);
+       
           setCabeceras(_data);
           setContenido(mensajeFiltrado);
           setLoading(false);

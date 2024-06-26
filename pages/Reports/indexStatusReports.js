@@ -99,7 +99,7 @@ export default function IndexStatusReports() {
       }
     } catch (error) {
       setLoading(false);
-      //console.log("AAAAA");
+
       //console.error(error);
       alert("Ocurrió un error en el servidor");
     }

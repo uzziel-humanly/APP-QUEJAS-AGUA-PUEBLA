@@ -85,7 +85,7 @@ export default function Register() {
 
   const getTipoCuenta = async () => {
     if (estadoPeticion) {
-      console.log("ENTROOO");
+
       try {
         let pass = md5(API_TOKEN);
         let credentials = `${API_AUTH}:${pass}`;
@@ -885,6 +885,7 @@ export default function Register() {
                     //   )
                     // }
                     onPress={() => handleModalDocuments("terminos")}
+          
                   >
                     <Text
                       style={{

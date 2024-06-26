@@ -22,11 +22,11 @@ export function useRegister() {
   //Validacion de contraseña ingresada
   const handleCheckPassword = (e) => {
     let password = e.target.value;
-    //console.log(password);
+
   };
 
   const onSubmit = async (data) => {
-    console.log(data.latitud);
+
     setLoading(true);
     var emailRegex =
       /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
@@ -44,7 +44,7 @@ export function useRegister() {
             data.passprev.length >= 8 &&
             data.passwordConfirmation.length >= 8
           ) {
-            //console.log("ENTRO PASS CORRECTO Y MAS DE 8 CAR")
+
             try {
               let passcyrpt = md5(data.passprev);
               let pass = md5(API_TOKEN);
@@ -157,7 +157,7 @@ export function useRegister() {
               //formData.append("hr_registro", currentTime);
               ///formData.append("id_estatus_registro", "1");
               formData.append("pass", passcyrpt);
-              console.log(formData);
+       
 
               let response = await axios({
                 method: "POST",
@@ -169,7 +169,7 @@ export function useRegister() {
                 data: formData,
               });
 
-              //console.log(response);
+   
 
               if (response.data.estatus === "ok") {
                 setLoading(false);

@@ -152,7 +152,7 @@ export const useUserProfile = () => {
       );
       
     } catch (error) {
-      console.log(error);
+
       alert("Ha ocurrido un error al intentar cerrar la sesión");
     }
   };

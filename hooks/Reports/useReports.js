@@ -67,7 +67,7 @@ export const useReports = () => {
 
           let body = JSON.stringify(completeData);
 
-          //console.log(body);
+
 
           let response = await axios({
             method: "POST",
@@ -79,7 +79,7 @@ export const useReports = () => {
             data: body,
           });
 
-          //console.log(response.data);
+      
           if (response.data.estatus === "ok") {
             let mensaje =  "Los datos se han registrado. Tu folio es: "+response.data.folio;
             setLoading(false);

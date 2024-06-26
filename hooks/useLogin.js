@@ -73,7 +73,6 @@ export const useLogin = () => {
           data: body,
         });
 
-        console.log(response.data.mensaje);
             if(response.data.estatus === "ok")
                 {
                     
@@ -112,7 +111,6 @@ export const useLogin = () => {
 
                   })
 
-                  // console.log(_nis);
 
             
                   AsyncStorage.setItem('username', _userdata.nombre)
